@@ -1,7 +1,9 @@
-# Alzheimer's Disease Market Failure Visualization
+# Untangling Alzheimer's
 
 ## Project Overview
-An interactive scrollytelling visualization exposing how patent incentives, regulatory structures, and funding mechanisms systematically prevent promising Alzheimer's interventions from reaching patients.
+**The science, the system, and the search for a cure.**
+
+An interactive exploration of Alzheimer's research that maps structural barriers preventing cures, visualizes competing theories in a network, and highlights promising future treatments. Includes the 9-stage mechanistic cascade and evidence hierarchy for evaluating causal claims.
 
 ## Tech Stack
 - **Framework**: Next.js 15 with App Router
@@ -23,31 +25,32 @@ src/
 │   │   ├── Card.tsx
 │   │   ├── Container.tsx
 │   │   ├── Heading.tsx
+│   │   ├── Section.tsx
 │   │   └── index.ts
 │   ├── sections/           # Page sections (scrollytelling acts)
 │   │   ├── Hero.tsx
 │   │   ├── InvestmentWaterfall.tsx
 │   │   ├── EvidenceGraveyard.tsx
+│   │   ├── SidelinedResearchers.tsx
 │   │   ├── FailureCascade.tsx
 │   │   ├── CaseStudies.tsx
-│   │   └── index.ts
-│   ├── visualizations/     # Data visualization components
-│   │   ├── WaterfallChart.tsx
-│   │   ├── FlowDiagram.tsx
-│   │   ├── ComparisonTable.tsx
+│   │   ├── EvidenceHierarchy.tsx
+│   │   ├── MechanisticCascade.tsx
+│   │   ├── Stakes.tsx
 │   │   └── index.ts
 │   └── layout/             # Layout components
 │       ├── Header.tsx
 │       ├── Footer.tsx
-│       └── ScrollProgress.tsx
+│       ├── ScrollProgress.tsx
+│       └── index.ts
 ├── data/                   # Data structures and constants
 │   ├── drugs.ts            # Drug comparison data
 │   ├── failures.ts         # Market failure definitions
-│   ├── caseStudies.ts      # Case study narratives
+│   ├── caseStudies.ts      # Case study narratives + Lesne scandal
+│   ├── researchers.ts      # Sidelined researchers, cascade, evidence hierarchy
 │   └── index.ts
 ├── hooks/                  # Custom React hooks
 │   ├── useScrollProgress.ts
-│   ├── useInView.ts
 │   └── index.ts
 ├── lib/                    # Utilities and helpers
 │   ├── utils.ts
@@ -55,6 +58,25 @@ src/
 └── types/                  # TypeScript type definitions
     └── index.ts
 ```
+
+## Page Structure (Narrative Flow)
+
+### Act I: The Paradox
+- **Hero**: Introduction with key statistics (55M patients, 99% trial failure rate)
+- **InvestmentWaterfall**: $50B vs $50M investment disparity visualization
+
+### Act II: The System
+- **EvidenceGraveyard**: Tombstone cards for abandoned generic drug research
+- **SidelinedResearchers**: Researchers marginalized for challenging amyloid primacy
+- **FailureCascade**: 7 interconnected market failures flow diagram
+- **CaseStudies**: Interactive case studies (Lithium, GV-971, TNF inhibitors, Nebivolol, Lesne Scandal)
+
+### Act III: The Science
+- **EvidenceHierarchy**: 5-star ranking system for causal evidence
+- **MechanisticCascade**: 9-stage causal cascade showing why amyloid is downstream
+
+### Act IV: The Stakes
+- **Stakes**: Human cost statistics and alternative timeline comparison
 
 ## Design System
 
@@ -73,8 +95,8 @@ src/
 --accent-600: #d97706;
 
 /* Semantic Colors */
---success: #10b981;     /* Generic drugs, positive outcomes */
---danger: #ef4444;      /* Failed trials, market failures */
+--success: #10b981;     /* Generic drugs, positive outcomes, upstream stages */
+--danger: #ef4444;      /* Failed trials, market failures, Stage 8 (current target) */
 --warning: #f59e0b;     /* Caution, underfunded */
 --neutral: #6b7280;     /* Secondary information */
 
@@ -102,7 +124,7 @@ src/
 
 #### Cards
 ```tsx
-<Card variant="default | highlighted | warning">
+<Card variant="default | highlighted | warning | success | danger">
   <CardHeader>...</CardHeader>
   <CardContent>...</CardContent>
 </Card>
@@ -137,7 +159,7 @@ src/
 interface Drug {
   id: string;
   name: string;
-  type: 'patented' | 'generic' | 'supplement';
+  type: 'patented' | 'generic' | 'supplement' | 'biosimilar';
   investment: number;        // in millions USD
   annualCost: number;        // patient cost per year
   fdaStatus: 'approved' | 'pending' | 'no-pathway';
@@ -145,20 +167,58 @@ interface Drug {
   outcome: string;
   mechanism: string;
   keyStudyYear: number;
+  keyEvidence?: string;
 }
 ```
 
-### Market Failure Structure
+### Sidelined Researcher Structure
 ```typescript
-interface MarketFailure {
+interface SidelinedResearcher {
   id: string;
-  title: string;
-  description: string;
-  impact: string;
-  connections: string[];     // IDs of related failures
-  icon: LucideIcon;
+  name: string;
+  institution: string;
+  hypothesis: string;
+  year: number;
+  keyFinding: string;
+  cascadeStage: number;      // 1-9
+  stageName: string;
 }
 ```
+
+### Cascade Stage Structure
+```typescript
+interface CascadeStage {
+  stage: number;
+  title: string;
+  shortTitle: string;
+  description: string;
+  mechanisms: string[];
+  evidenceLevel: string;
+  researchers?: string[];
+  drugs?: { name: string; effect: string }[];
+}
+```
+
+### Evidence Hierarchy
+```typescript
+interface EvidenceLevel {
+  stars: number;             // 1-5
+  type: string;
+  description: string;
+  examples: string[];
+}
+```
+
+## Key Visualizations
+
+1. **Investment Waterfall**: Proportional bars showing $50B vs $50M disparity (1000:1 ratio)
+2. **Evidence Graveyard**: Grid of "tombstone" cards for abandoned research
+3. **Sidelined Researchers**: Cards showing marginalized scientists and their hypotheses
+4. **Failure Cascade**: 7-node flow diagram of interconnected market failures
+5. **Case Studies**: Interactive tabbed interface with 5 case studies including Lesne scandal
+6. **Evidence Hierarchy**: 6-level star rating system for causal evidence types
+7. **Mechanistic Cascade**: 9-stage expandable cascade showing disease progression
+8. **Drug Efficacy Table**: Comparison of drugs by target stage and efficacy
 
 ## Coding Standards
 
@@ -193,19 +253,11 @@ export function Component({ ...props }: ComponentProps) {
 ```
 
 ### Naming Conventions
-- Components: PascalCase (`InvestmentWaterfall.tsx`)
+- Components: PascalCase (`MechanisticCascade.tsx`)
 - Hooks: camelCase with `use` prefix (`useScrollProgress.ts`)
 - Data files: camelCase (`caseStudies.ts`)
-- Types: PascalCase (`DrugData`)
+- Types: PascalCase (`CascadeStage`)
 - CSS classes: Use Tailwind utilities, avoid custom CSS
-
-## Key Visualizations
-
-1. **Investment Waterfall**: Proportional bars showing $50B vs $50M disparity
-2. **Evidence Graveyard**: Grid of "tombstone" cards for abandoned research
-3. **Failure Cascade**: Flow diagram of interconnected market failures
-4. **Comparison Table**: Interactive table of patented vs generic drugs
-5. **Timeline**: Alternative history showing what could have been
 
 ## Accessibility
 - All interactive elements must be keyboard accessible

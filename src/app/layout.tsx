@@ -13,23 +13,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alzheimer's Disease: Anatomy of Market Failure",
+  title: "Untangling Alzheimer's",
   description:
-    'An interactive visualization exposing how patent incentives, regulatory structures, and funding mechanisms systematically prevent promising Alzheimer\'s interventions from reaching patients.',
+    'The science, the system, and the search for a cure. An interactive exploration of Alzheimer\'s research barriers, competing theories, and emerging treatments.',
   keywords: [
     'Alzheimer\'s disease',
-    'market failure',
-    'healthcare',
-    'drug research',
+    'dementia research',
     'clinical trials',
-    'generic drugs',
+    'drug development',
+    'amyloid hypothesis',
+    'tau protein',
+    'neurodegeneration',
     'visualization',
   ],
   authors: [{ name: 'GoInvo Healthcare Design Studio' }],
   openGraph: {
-    title: "Alzheimer's Disease: Anatomy of Market Failure",
+    title: "Untangling Alzheimer's",
     description:
-      'Why the drugs that might help you will never be tested. A visualization of structural failures in AD research.',
+      'The science, the system, and the search for a cure. Exploring barriers, theories, and breakthroughs in Alzheimer\'s research.',
     type: 'website',
   },
 };

@@ -5,8 +5,10 @@ import {
   Hero,
   InvestmentWaterfall,
   EvidenceGraveyard,
+  SidelinedResearchers,
   FailureCascade,
   CaseStudies,
+  MechanisticCascade,
   Stakes,
 } from '@/components/sections';
 
@@ -22,10 +24,14 @@ export default function Home() {
 
         {/* Act II: The System */}
         <EvidenceGraveyard />
+        <SidelinedResearchers />
         <FailureCascade />
         <CaseStudies />
 
-        {/* Act III: The Stakes */}
+        {/* Act III: The Science */}
+        <MechanisticCascade />
+
+        {/* Act IV: The Stakes */}
         <Stakes />
       </main>
       <Footer />

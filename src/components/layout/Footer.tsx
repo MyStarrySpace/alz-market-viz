@@ -10,7 +10,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
             <p className="text-slate-400 text-sm">
-              A visualization of market failures in Alzheimer&apos;s research
+              The science, the system, and the search for a cure
             </p>
             <p className="text-slate-500 text-xs mt-1">
               Concept by GoInvo Healthcare Design Studio

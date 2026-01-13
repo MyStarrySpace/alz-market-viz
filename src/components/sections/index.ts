@@ -4,3 +4,6 @@ export { EvidenceGraveyard } from './EvidenceGraveyard';
 export { FailureCascade } from './FailureCascade';
 export { CaseStudies } from './CaseStudies';
 export { Stakes } from './Stakes';
+export { SidelinedResearchers } from './SidelinedResearchers';
+export { MechanisticCascade } from './MechanisticCascade';
+export { EvidenceHierarchy } from './EvidenceHierarchy';
