@@ -1,10 +1,19 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Neuton, Encode_Sans, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const neuton = Neuton({
+  variable: '--font-neuton',
   subsets: ['latin'],
+  weight: ['400', '700', '800'],
+  display: 'swap',
+});
+
+const encodeSans = Encode_Sans({
+  variable: '--font-encode-sans',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
@@ -43,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-900 text-slate-100`}
+        className={`${neuton.variable} ${encodeSans.variable} ${geistMono.variable} antialiased bg-slate-900 text-slate-100`}
       >
         {children}
       </body>

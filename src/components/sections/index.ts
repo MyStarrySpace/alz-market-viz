@@ -1,5 +1,6 @@
 export { Hero } from './Hero';
-export { InvestmentWaterfall } from './InvestmentWaterfall';
+export { HistoricalTimeline } from './HistoricalTimeline';
+export { TrialBarriers } from './TrialBarriers';
 export { EvidenceGraveyard } from './EvidenceGraveyard';
 export { FailureCascade } from './FailureCascade';
 export { CaseStudies } from './CaseStudies';

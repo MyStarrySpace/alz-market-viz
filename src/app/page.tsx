@@ -3,7 +3,8 @@
 import { ScrollProgress, Header, Footer } from '@/components/layout';
 import {
   Hero,
-  InvestmentWaterfall,
+  HistoricalTimeline,
+  TrialBarriers,
   EvidenceGraveyard,
   SidelinedResearchers,
   FailureCascade,
@@ -20,7 +21,8 @@ export default function Home() {
       <main className="relative">
         {/* Act I: The Paradox */}
         <Hero />
-        <InvestmentWaterfall />
+        <HistoricalTimeline />
+        <TrialBarriers />
 
         {/* Act II: The System */}
         <EvidenceGraveyard />

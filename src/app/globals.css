@@ -27,7 +27,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-encode-sans);
+  --font-serif: var(--font-neuton);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -42,8 +43,13 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-encode-sans), system-ui, sans-serif;
   min-height: 100vh;
+}
+
+/* Headings use Neuton serif font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-neuton), Georgia, serif;
 }
 
 /* Custom scrollbar */

@@ -7,9 +7,9 @@ import { usePathname } from 'next/navigation';
 import { Container } from '@/components/ui';
 
 const navItems = [
-  { label: 'Paradox', href: '/#paradox' },
+  { label: 'Timeline', href: '/#timeline' },
+  { label: 'Trials', href: '/#trial-barriers' },
   { label: 'System', href: '/#system' },
-  { label: 'Cases', href: '/#cases' },
   { label: 'Science', href: '/#cascade' },
   { label: 'Stakes', href: '/#stakes' },
   { label: 'Methodology', href: '/methodology' },

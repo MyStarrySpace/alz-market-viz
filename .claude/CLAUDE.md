@@ -107,9 +107,9 @@ src/
 ```
 
 ### Typography
-- **Headings**: Geist Sans, bold weights
-- **Body**: Geist Sans, regular weight
-- **Data/Numbers**: Geist Mono for numerical emphasis
+- **Headings**: Neuton (serif), bold weights - for gravitas and authority
+- **Body**: Encode Sans, regular weight - clean, readable sans-serif
+- **Data/Numbers**: Encode Sans or monospace for numerical emphasis
 - **Scale**: Use Tailwind's default type scale (text-sm through text-6xl)
 
 ### Animation Guidelines
@@ -271,3 +271,9 @@ export function Component({ ...props }: ComponentProps) {
 - Lazy load below-fold sections
 - Use `viewport={{ once: true }}` for scroll animations
 - Keep bundle size minimal - import icons individually
+
+## Citation Standards
+- The `quote` field in bibliography.ts citations must contain **exact quotes** that can be found in the original source via Ctrl+F
+- Do NOT paraphrase or summarize in the quote field—use the exact text from the source
+- If the exact wording cannot be verified, mark the citation with a comment or use the `context` field for editorial notes
+- Each timeline event should reference specific `citationIds` that correspond to verifiable quotes in the bibliography
