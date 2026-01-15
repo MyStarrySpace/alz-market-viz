@@ -38,10 +38,10 @@ export function InvestmentWaterfall() {
 
                 {/* Big number */}
                 <div className="mb-4">
-                  <span className="text-4xl font-bold font-mono text-[#486393]">
+                  <span className="text-4xl font-bold font-serif text-[#486393]">
                     {formatCurrency(investmentData.patented.total, true)}
                   </span>
-                  <p className="text-sm text-[var(--text-muted)] mt-1">Total investment since 2000</p>
+                  <p className="text-sm text-[var(--text-muted)] mt-1">Private clinical R&D ({investmentData.patented.period})</p>
                 </div>
 
                 {/* Examples */}
@@ -83,10 +83,10 @@ export function InvestmentWaterfall() {
 
                 {/* Big number */}
                 <div className="mb-4">
-                  <span className="text-4xl font-bold font-mono text-[var(--success)]">
+                  <span className="text-4xl font-bold font-serif text-[var(--success)]">
                     {formatCurrency(investmentData.generic.total, true)}
                   </span>
-                  <p className="text-sm text-[var(--text-muted)] mt-1">Total investment since 2000</p>
+                  <p className="text-sm text-[var(--text-muted)] mt-1">{investmentData.generic.fundingNote}</p>
                 </div>
 
                 {/* Examples */}
@@ -118,7 +118,7 @@ export function InvestmentWaterfall() {
         >
           <div className="inline-flex items-center gap-4 px-8 py-4 bg-white border border-[var(--border)] shadow-sm">
             <div className="text-center">
-              <span className="text-5xl font-bold font-mono text-[var(--accent-orange)]">
+              <span className="text-5xl font-bold font-serif text-[var(--accent-orange)]">
                 {investmentData.ratio}:1
               </span>
               <p className="text-sm text-[var(--text-muted)] mt-1">Investment ratio</p>
@@ -163,7 +163,7 @@ export function InvestmentWaterfall() {
                         <td className="py-3 px-4 text-[var(--text-primary)] font-medium text-sm">{row.category}</td>
                         <td className="py-3 px-4 text-[var(--text-body)] text-sm">{row.patented}</td>
                         <td className="py-3 px-4 text-[var(--text-body)] text-sm">{row.generic}</td>
-                        <td className="py-3 px-4 text-[var(--accent-orange)] font-mono text-sm font-medium">{row.delta || '—'}</td>
+                        <td className="py-3 px-4 text-[var(--accent-orange)] text-sm font-semibold">{row.delta || '—'}</td>
                       </motion.tr>
                     ))}
                   </tbody>
@@ -175,8 +175,8 @@ export function InvestmentWaterfall() {
 
         {/* Insight callout */}
         <InsightCallout>
-          $50 billion could fund <span className="text-[var(--accent-orange)] font-semibold">1,000 generic drug trials</span>.
-          Instead, it funded one hypothesis.
+          $42.5 billion could have funded <span className="text-[var(--accent-orange)] font-semibold">92 Phase 3 trials</span> for repurposed drugs.
+          Instead, 57% went to late-stage failures targeting a single hypothesis.
         </InsightCallout>
       </Container>
     </Section>

@@ -5,6 +5,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'gv-971',
     title: 'The GV-971 Collapse',
     drug: 'GV-971 (Sodium Oligomannate)',
+    summary: 'China-approved drug abandoned due to funding, not science.',
     year: 2022,
     keyFinding:
       'Novel gut-brain mechanism, approved in China in 2019, showed cognitive improvement in Phase 3. 439 patients enrolled in global trial before termination.',
@@ -21,6 +22,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'tnf-inhibitors',
     title: 'The TNF Inhibitor Gap',
     drug: 'Etanercept (Enbrel)',
+    summary: '60-70% lower AD risk observed, but only one tiny trial ever run.',
     year: 2016,
     keyFinding:
       'Three large epidemiological studies found TNF inhibitor users had 60-70% lower odds of developing AD. Neuroinflammation is now recognized as a key disease driver.',
@@ -37,6 +39,7 @@ export const caseStudies: CaseStudy[] = [
     id: '40hz-gamma',
     title: 'The 40Hz Light Therapy Wait',
     drug: '40Hz Gamma Entrainment (GENUS)',
+    summary: 'A decade of MIT research stuck in trials—too cheap to fund.',
     year: 2025,
     keyFinding:
       'A decade of MIT research: 40Hz light/sound activates microglia, clears amyloid, reduces brain atrophy, improves memory in mice and early human trials. Cost: LED lights and speakers.',
@@ -53,6 +56,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'focused-ultrasound',
     title: 'The Blood-Brain Barrier Breakthrough',
     drug: 'Focused Ultrasound (FUS)',
+    summary: 'Could make AD drugs 5-8x more effective—no pharma interest.',
     year: 2024,
     keyFinding:
       'Non-invasively opens the BBB to enhance drug delivery 5-8x. In Phase 2a, reduced amyloid WITHOUT any drug co-administration. Could make existing treatments far more effective.',
@@ -69,6 +73,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'lesne-scandal',
     title: 'The Lesne Scandal',
     drug: 'Amyloid Oligomer (Aβ*56)',
+    summary: 'Fabricated paper directed $287M/year for 18 years.',
     year: 2024,
     keyFinding:
       'In 2006, a Nature paper claimed Aβ*56 was THE causative agent of AD memory loss. It became the 5th most-cited AD paper with 2,300+ citations. NIH funding for amyloid oligomer research rose from near zero to $287 million annually.',

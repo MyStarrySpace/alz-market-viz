@@ -62,7 +62,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="grid grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto"
           >
-            <StatCard value="55M+" label="People with dementia worldwide" />
+            <StatCard value="32M+" label="People with Alzheimer's worldwide" />
             <StatCard value="850:1" label="Novel vs. repurposed drug trials" />
             <StatCard value="$42.5B" label="Private R&D spent (1995-2021)" />
           </motion.div>

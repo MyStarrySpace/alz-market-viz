@@ -28,7 +28,7 @@ import {
   Pie,
   Legend,
 } from 'recharts';
-import { Container, Section, SectionHeader, Card, CardContent, TextWithAbbreviations, DataCard } from '@/components/ui';
+import { Container, Section, SectionHeader, Card, CardContent, TextWithAbbreviations, DataCard, InteractivePieBarChart } from '@/components/ui';
 import {
   trialRequirements,
   adTrialPhaseCosts,
@@ -43,6 +43,7 @@ import {
   grantCycleComparison,
   infrastructureComparison,
   diseaseComparisonChartData,
+  neuroDiseaseTrialComparison,
 } from '@/data/trialBarriers';
 
 // Theme-consistent chart colors
@@ -208,59 +209,48 @@ function RedirectedDrugsList({ drugs }: { drugs: typeof redirectedDrugs }) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      {/* Left: Drug list - full width when nothing selected, half when selected */}
-      <motion.div
-        layout
-        className={selected ? 'lg:w-1/2' : 'w-full'}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      >
-        <div className="bg-white border border-[var(--border)] divide-y divide-[var(--border)]">
-          {drugs.map((drug, index) => (
-            <motion.button
-              key={drug.id}
-              layout
-              className={`w-full flex items-center justify-between p-4 text-left transition-all hover:bg-[var(--bg-secondary)] ${
-                selectedDrug === drug.id ? 'bg-[var(--bg-secondary)] border-l-4 border-l-[var(--accent-orange)]' : ''
-              }`}
-              onClick={() => setSelectedDrug(selectedDrug === drug.id ? null : drug.id)}
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.03 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex-1 min-w-0">
-                <h4 className="text-[var(--text-primary)] font-semibold text-sm">{drug.name}</h4>
-                <p className="text-[var(--text-muted)] text-xs truncate">
-                  <TextWithAbbreviations text={drug.mechanism} />
-                </p>
-              </div>
-              <span
-                className={`text-xs px-2 py-1 font-medium shrink-0 ml-3 ${statusColors[drug.adTrialStatus]}`}
+      {/* Left: Drug list */}
+      <div className={`transition-all duration-300 ${selected ? 'lg:w-1/2' : 'w-full'}`}>
+        <div>
+          {drugs.map((drug, index) => {
+            const isSelected = selectedDrug === drug.id;
+            return (
+              <button
+                key={drug.id}
+                className={`w-full flex items-center justify-between p-4 text-left hover:bg-[var(--bg-secondary)] ${
+                  index > 0 ? 'border-t border-[var(--border)]' : ''
+                } ${isSelected ? 'bg-[var(--bg-secondary)]' : ''}`}
+                onClick={() => setSelectedDrug(isSelected ? null : drug.id)}
               >
-                {statusLabels[drug.adTrialStatus]}
-              </span>
-            </motion.button>
-          ))}
+                <div className="flex-1 min-w-0">
+                  <h4 className={`font-semibold text-sm ${isSelected ? 'text-[var(--accent-orange)]' : 'text-[var(--text-primary)]'}`}>{drug.name}</h4>
+                  <p className="text-[var(--text-muted)] text-xs truncate">
+                    <TextWithAbbreviations text={drug.mechanism} />
+                  </p>
+                </div>
+                <span
+                  className={`text-xs px-2 py-1 font-medium shrink-0 ml-3 ${statusColors[drug.adTrialStatus]}`}
+                >
+                  {statusLabels[drug.adTrialStatus]}
+                </span>
+              </button>
+            );
+          })}
         </div>
-      </motion.div>
+      </div>
 
       {/* Right: Details panel - only shows when item selected */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {selected && (
           <motion.div
+            key={selected.id}
             className="lg:w-1/2"
-            initial={{ opacity: 0, x: 50, width: 0 }}
-            animate={{ opacity: 1, x: 0, width: 'auto' }}
-            exit={{ opacity: 0, x: 50, width: 0 }}
-            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.25 }}
           >
-            <motion.div
-              key={selected.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="bg-white border border-[var(--border)] p-6 h-full"
-            >
+            <div className="bg-white border border-[var(--border)] p-6 h-full">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-[var(--text-primary)]">{selected.name}</h3>
@@ -277,7 +267,7 @@ function RedirectedDrugsList({ drugs }: { drugs: typeof redirectedDrugs }) {
 
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-xs font-semibold text-[var(--success)] uppercase tracking-wide mb-1">
+                  <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1">
                     AD Rationale
                   </h4>
                   <p className="text-sm text-[var(--text-body)]">
@@ -302,7 +292,7 @@ function RedirectedDrugsList({ drugs }: { drugs: typeof redirectedDrugs }) {
                     {selected.currentIndications.map((ind) => (
                       <span
                         key={ind}
-                        className="text-xs px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-body)] rounded"
+                        className="text-xs px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-body)]"
                       >
                         {ind}
                       </span>
@@ -310,7 +300,7 @@ function RedirectedDrugsList({ drugs }: { drugs: typeof redirectedDrugs }) {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -508,7 +498,7 @@ export function TrialBarriers() {
         >
           {/* 2x2 Grid of NIH constraint cards */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* 1. Amyloid Concentration - Pie Chart */}
+            {/* 1. Amyloid Concentration - Interactive Pie/Bar Chart */}
             <DataCard
               title="1. Amyloid Concentration"
               description="Nearly half of NIA's AD research budget is concentrated on amyloid-focused studies."
@@ -517,35 +507,7 @@ export function TrialBarriers() {
                 color: 'teal',
               }}
             >
-              <ResponsiveContainer width="100%" height={180}>
-                <PieChart>
-                  <Pie
-                    data={niaSpendingByFocus}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={70}
-                    paddingAngle={2}
-                    dataKey="amount"
-                    nameKey="name"
-                    label={({ percent }) => `${((percent || 0) * 100).toFixed(0)}%`}
-                    labelLine={false}
-                  >
-                    {niaSpendingByFocus.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value) => [`$${value}M`, 'Budget']}
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid var(--border)',
-                      borderRadius: '0',
-                      fontSize: '11px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <InteractivePieBarChart data={niaSpendingByFocus} height={180} />
             </DataCard>
 
             {/* 2. Basic vs Applied - Stacked Bar Chart */}
@@ -601,45 +563,79 @@ export function TrialBarriers() {
               </div>
             </DataCard>
 
-            {/* 3. Grant Cycles - Visual Comparison */}
+            {/* 3. Grant Cycles - Neurodegenerative Disease Comparison */}
             <DataCard
               title="3. Grant Cycles Don't Scale"
-              description="NIH grants are structured for academic timelines, not Phase 3 trials."
+              description="AD trials dwarf other neurodegenerative diseases in both duration and cost."
               callout={{
-                text: <><strong>{grantCycleComparison.gap.budgetMultiple}x gap:</strong> The non-amyloid trial budget covers just 37% of one Phase 3.</>,
+                text: <><strong>{grantCycleComparison.gap.budgetMultiple}x gap:</strong> A single Phase 3 costs as much as {grantCycleComparison.gap.budgetMultiple} R01 grants.</>,
                 color: 'warning',
               }}
             >
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 border border-[var(--border)] bg-[var(--bg-secondary)]">
-                  <h6 className="font-medium text-[var(--text-primary)] text-xs mb-2">
-                    {grantCycleComparison.nihGrant.label}
+              <div className="space-y-4">
+                {/* Duration comparison */}
+                <div>
+                  <h6 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
+                    Trial Duration (months)
                   </h6>
-                  <div className="space-y-1 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Duration:</span>
-                      <span>{grantCycleComparison.nihGrant.duration}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Budget:</span>
-                      <span className="font-mono">${grantCycleComparison.nihGrant.totalBudget}M</span>
-                    </div>
-                  </div>
+                  <ResponsiveContainer width="100%" height={100}>
+                    <BarChart
+                      data={neuroDiseaseTrialComparison.durationComparison}
+                      layout="vertical"
+                      margin={{ top: 0, right: 35, left: 55, bottom: 0 }}
+                    >
+                      <XAxis type="number" hide />
+                      <YAxis
+                        type="category"
+                        dataKey="disease"
+                        tick={{ fontSize: 9, fill: 'var(--text-body)' }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={55}
+                      />
+                      <Tooltip
+                        formatter={(value, name, props) => [`${value} months`, props.payload.disease]}
+                        contentStyle={{ fontSize: '11px', borderRadius: '0' }}
+                      />
+                      <Bar dataKey="duration" barSize={12}>
+                        {neuroDiseaseTrialComparison.durationComparison.map((entry, index) => (
+                          <Cell key={`dur-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <div className="p-3 border-2 border-[var(--danger)] bg-[var(--danger-light)]">
-                  <h6 className="font-medium text-[var(--text-primary)] text-xs mb-2">
-                    {grantCycleComparison.phase3Trial.label}
+                {/* Budget comparison */}
+                <div>
+                  <h6 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
+                    Phase 3 Budget ($M)
                   </h6>
-                  <div className="space-y-1 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Duration:</span>
-                      <span>{grantCycleComparison.phase3Trial.duration}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[var(--text-muted)]">Budget:</span>
-                      <span className="font-mono text-[var(--danger)] font-bold">${grantCycleComparison.phase3Trial.totalBudget}M</span>
-                    </div>
-                  </div>
+                  <ResponsiveContainer width="100%" height={100}>
+                    <BarChart
+                      data={neuroDiseaseTrialComparison.budgetComparison}
+                      layout="vertical"
+                      margin={{ top: 0, right: 35, left: 55, bottom: 0 }}
+                    >
+                      <XAxis type="number" hide />
+                      <YAxis
+                        type="category"
+                        dataKey="disease"
+                        tick={{ fontSize: 9, fill: 'var(--text-body)' }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={55}
+                      />
+                      <Tooltip
+                        formatter={(value, name, props) => [`$${value}M`, props.payload.disease]}
+                        contentStyle={{ fontSize: '11px', borderRadius: '0' }}
+                      />
+                      <Bar dataKey="budget" barSize={12}>
+                        {neuroDiseaseTrialComparison.budgetComparison.map((entry, index) => (
+                          <Cell key={`bud-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </DataCard>

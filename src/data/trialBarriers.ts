@@ -467,6 +467,35 @@ export const grantCycleComparison = {
   sourceIds: ['nih-r01-funding-levels-2024', 'cummings-ad-drug-development-2022'],
 };
 
+// Phase 3 Trial Comparison Across Neurodegenerative Diseases
+// Sources: Multiple industry analyses, ClinicalTrials.gov data
+export const neuroDiseaseTrialComparison = {
+  // Duration in months
+  durationComparison: [
+    { disease: "Alzheimer's", duration: 48, durationRange: '36-60', color: '#C9461D' },
+    { disease: "Parkinson's", duration: 30, durationRange: '24-36', color: '#E5AF19' },
+    { disease: 'ALS', duration: 18, durationRange: '12-24', color: '#007385' },
+    { disease: 'MS', duration: 24, durationRange: '18-30', color: '#486393' },
+    { disease: "Huntington's", duration: 30, durationRange: '24-36', color: '#C3577F' },
+  ],
+  // Budget in millions USD
+  budgetComparison: [
+    { disease: "Alzheimer's", budget: 462, budgetRange: '300-600', color: '#C9461D' },
+    { disease: "Parkinson's", budget: 150, budgetRange: '100-250', color: '#E5AF19' },
+    { disease: 'ALS', budget: 80, budgetRange: '50-150', color: '#007385' },
+    { disease: 'MS', budget: 200, budgetRange: '150-300', color: '#486393' },
+    { disease: "Huntington's", budget: 120, budgetRange: '80-180', color: '#C3577F' },
+  ],
+  // Why AD is different
+  keyFactors: [
+    { factor: 'Endpoint clarity', ad: 'Subjective cognitive tests', other: 'Clear biomarkers or motor function' },
+    { factor: 'Patient heterogeneity', ad: 'Multiple pathologies, APOE variants', other: 'More homogeneous populations' },
+    { factor: 'Trial duration', ad: '3-5 years typical', other: '1-2 years typical' },
+    { factor: 'Sample size', ad: '1,500-3,000 patients', other: '300-800 patients' },
+  ],
+  sourceIds: ['cummings-ad-drug-development-2022', 'clinicaltrials-gov-analysis-2024'],
+};
+
 // Academic vs Pharma infrastructure comparison
 // Sources: Getz & Campo 2017 (pharmaceutical-clinical-trial-infrastructure),
 //          Zarin et al. 2019 (academic-clinical-trial-challenges-2019)

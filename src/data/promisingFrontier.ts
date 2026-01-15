@@ -2,7 +2,7 @@ export interface PromisingDrug {
   id: string;
   drug: string;
   mechanism: string;
-  mechanismCategory: 'lysosomal' | 'tau' | 'inflammatory' | 'viral';
+  mechanismCategory: 'lysosomal' | 'tau' | 'inflammatory' | 'viral' | 'immune';
   evidenceStrength: 1 | 2 | 3 | 4 | 5;
   keyEvidence: string;
   quote: string;
@@ -99,5 +99,26 @@ export const promisingFrontierData: PromisingDrug[] = [
     decisiveTrial:
       'Prevention trial (if fundable): long-term antiviral after herpes infection to prevent AD onset. Economically brutal.',
     citationIds: ['columbia-valacyclovir-2024', 'beingpatient-valacyclovir'],
+  },
+  {
+    id: 'as01-vaccines',
+    drug: 'AS01-Adjuvanted Vaccines (Shingrix, Arexvy)',
+    mechanism: 'TLR4/immune modulation',
+    mechanismCategory: 'immune',
+    evidenceStrength: 3,
+    keyEvidence:
+      'Oxford 2025: In 436,788 propensity-matched individuals, AS01-adjuvanted vaccines (shingles + RSV) reduced 18-month dementia risk by 18-37%. Effect appears tied to the AS01 adjuvant itself, not the target pathogen.',
+    quote:
+      'No difference was observed between the two AS01-adjuvanted vaccines, suggesting that the AS01 adjuvant itself plays a direct role in lowering dementia risk.',
+    quoteSource: 'Taquet et al., npj Vaccines 2025',
+    whyItMatters:
+      'These are FDA-approved vaccines already given to millions. If AS01 adjuvant directly reduces neuroinflammation via TLR4/IFN-γ, this is an immediately actionable finding.',
+    keyCaveat:
+      'Observational data only—not an RCT. Effect could be healthy vaccinee bias or confounding. Shingrix is not approved for dementia prevention. Mechanism (MPL + QS-21 → IFN-γ → amyloid clearance?) speculative.',
+    status: 'Large observational study; FDA-approved for other indications',
+    costPerMonth: '~$150-200 (2-dose series)',
+    decisiveTrial:
+      'RCT of AS01 adjuvant alone (or Shingrix in dementia-enriched population) with CSF inflammatory markers and cognitive endpoints.',
+    citationIds: ['taquet-as01-2025'],
   },
 ];

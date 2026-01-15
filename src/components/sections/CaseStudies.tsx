@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Quote, Calendar, DollarSign, AlertCircle, ChevronRight } from 'lucide-react';
-import { Container, Section, SectionHeader, Card, CardContent, Button, TextWithAbbreviations } from '@/components/ui';
+import { Container, Section, SectionHeader, Card, CardContent, TextWithAbbreviations } from '@/components/ui';
 import { caseStudies } from '@/data';
 
 export function CaseStudies() {
@@ -45,14 +45,14 @@ export function CaseStudies() {
                         <DollarSign className="w-4 h-4" />
                         {currentCase.cost}
                       </span>
-                      <span className="px-2 py-1 rounded bg-[var(--bg-secondary)] text-xs capitalize">
+                      <span className="px-2 py-1 bg-[var(--bg-secondary)] text-xs capitalize">
                         {currentCase.patentStatus}
                       </span>
                     </div>
 
                     <div className="space-y-6">
                       <div>
-                        <h4 className="text-sm font-medium text-[var(--category-amyloid)] uppercase tracking-wide mb-2">
+                        <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-2">
                           Key Finding
                         </h4>
                         <p className="text-[var(--text-body)] text-lg">
@@ -61,30 +61,30 @@ export function CaseStudies() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 rounded bg-[var(--success-light)] border border-[var(--success)]">
-                          <h4 className="text-sm font-medium text-[var(--success)] mb-2 flex items-center gap-2">
+                        <div className="p-4 bg-[var(--success-light)] border-l-4 border-[var(--success)]">
+                          <h4 className="text-sm font-semibold text-[var(--success)] mb-2 flex items-center gap-2">
                             <ChevronRight className="w-4 h-4" />
                             What Should Happen
                           </h4>
-                          <p className="text-[var(--text-body)]">
+                          <p className="text-[var(--text-body)] text-sm">
                             <TextWithAbbreviations text={currentCase.whatShouldHappen} />
                           </p>
                         </div>
-                        <div className="p-4 rounded bg-[var(--danger-light)] border border-[var(--danger)]">
-                          <h4 className="text-sm font-medium text-[var(--danger)] mb-2 flex items-center gap-2">
+                        <div className="p-4 bg-[var(--danger-light)] border-l-4 border-[var(--danger)]">
+                          <h4 className="text-sm font-semibold text-[var(--danger)] mb-2 flex items-center gap-2">
                             <AlertCircle className="w-4 h-4" />
                             What Actually Happened
                           </h4>
-                          <p className="text-[var(--text-body)]">
+                          <p className="text-[var(--text-body)] text-sm">
                             <TextWithAbbreviations text={currentCase.whatActuallyHappened} />
                           </p>
                         </div>
                       </div>
 
                       {currentCase.quote && (
-                        <div className="mt-6 p-6 rounded bg-[var(--accent-orange-light)] border-l-4 border-[var(--accent-orange)]">
-                          <Quote className="w-6 h-6 text-[var(--accent-orange)] mb-2" />
-                          <blockquote className="text-[var(--text-body)] italic text-lg">
+                        <div className="mt-6 p-6 bg-[var(--accent-orange-light)] border-l-4 border-[var(--accent-orange)]">
+                          <Quote className="w-5 h-5 text-[var(--accent-orange)] mb-2" />
+                          <blockquote className="text-[var(--text-body)] italic">
                             &ldquo;{currentCase.quote}&rdquo;
                           </blockquote>
                           {currentCase.quoteSource && (
@@ -99,27 +99,31 @@ export function CaseStudies() {
                 </Card>
               </div>
 
-              {/* Sidebar with other cases */}
+              {/* Sidebar with all cases */}
               <div>
-                <h4 className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wide mb-4">
-                  Other Cases
+                <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-4">
+                  Case Studies
                 </h4>
-                <div className="divide-y divide-[var(--border)]">
-                  {caseStudies
-                    .filter((c) => c.id !== currentCase.id)
-                    .map((study) => (
-                      <motion.button
+                <div>
+                  {caseStudies.map((study, index) => {
+                    const isActive = study.id === currentCase.id;
+                    return (
+                      <button
                         key={study.id}
-                        className="w-full text-left py-4 hover:bg-[var(--bg-primary)] transition-colors"
+                        className={`w-full text-left p-4 transition-colors ${
+                          index > 0 ? 'border-t border-[var(--border)]' : ''
+                        } ${isActive ? 'bg-[var(--bg-secondary)]' : 'hover:bg-[var(--bg-secondary)]'}`}
                         onClick={() => setActiveCase(study.id)}
-                        whileHover={{ x: 4 }}
                       >
-                        <h5 className="font-medium text-[var(--text-primary)] mb-1">{study.drug}</h5>
-                        <p className="text-sm text-[var(--text-muted)] line-clamp-2">
-                          <TextWithAbbreviations text={study.keyFinding} />
+                        <h5 className={`font-medium mb-0.5 ${isActive ? 'text-[var(--accent-orange)]' : 'text-[var(--text-primary)]'}`}>
+                          {study.drug}
+                        </h5>
+                        <p className="text-xs text-[var(--text-muted)]">
+                          {study.summary}
                         </p>
-                      </motion.button>
-                    ))}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

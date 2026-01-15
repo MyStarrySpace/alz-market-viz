@@ -29,6 +29,7 @@ export interface CaseStudy {
   id: string;
   title: string;
   drug: string;
+  summary: string;
   year: number;
   keyFinding: string;
   whatShouldHappen: string;
