@@ -57,19 +57,6 @@ export const genericDrugs: Drug[] = [
     keyEvidence: 'Nature 2025: Complete reversal of memory deficits without toxicity',
   },
   {
-    id: 'tnf-inhibitors',
-    name: 'TNF Inhibitors (Etanercept, Adalimumab)',
-    type: 'biosimilar',
-    investment: 10,
-    annualCost: 3000, // Biosimilar pricing
-    fdaStatus: 'no-pathway',
-    evidenceStrength: 5,
-    outcome: '50-70% reduction in AD incidence',
-    mechanism: 'TNF-α inhibition prevents lysosomal dysfunction',
-    keyStudyYear: 2022,
-    keyEvidence: 'Multiple cohort studies in RA/psoriasis patients',
-  },
-  {
     id: 'nebivolol',
     name: 'Nebivolol',
     type: 'generic',
@@ -122,12 +109,12 @@ export const comparisonData: ComparisonRow[] = [
   {
     category: 'Example Drugs',
     patented: 'Lecanemab, Donanemab, Aduhelm',
-    generic: 'Lithium orotate, TNF inhibitors, Nebivolol, Metformin',
+    generic: 'Lithium orotate, Nebivolol, Metformin, GV-971',
   },
   {
     category: 'Best Outcome',
     patented: '27-35% slowing of decline',
-    generic: '50-70% prevention (TNFi); Reversed memory loss (lithium)',
+    generic: 'Reversed memory loss (lithium); Approved in China (GV-971)',
     delta: 'Generics outperform',
   },
   {
@@ -152,7 +139,7 @@ export const investmentData = {
   generic: {
     total: 50000000, // $50 million
     label: 'Generic/Supplements',
-    examples: ['Lithium', 'TNF inhibitors', 'Metformin'],
+    examples: ['Lithium', 'GV-971', 'Metformin'],
   },
   ratio: 1000,
 };

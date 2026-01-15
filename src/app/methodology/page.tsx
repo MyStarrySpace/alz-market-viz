@@ -7,14 +7,24 @@ import { ScrollProgress, Header, Footer } from '@/components/layout';
 import { Container, Section, SectionHeader, Card, CardContent } from '@/components/ui';
 import { EvidenceHierarchy } from '@/components/sections';
 
+// Methodology page sections
+const methodologySections = [
+  { id: 'methodology-hero', label: 'Overview' },
+  { id: 'statistics', label: 'Key Statistics' },
+  { id: 'evidence', label: 'Evidence Hierarchy' },
+  { id: 'sources', label: 'Research Sources' },
+  { id: 'works-cited', label: 'Works Cited' },
+  { id: 'principles', label: 'Principles' },
+];
+
 export default function MethodologyPage() {
   return (
     <>
       <ScrollProgress />
       <Header />
-      <main className="relative pt-16">
+      <main className="relative pt-16 mt-14 lg:mt-0">
         {/* Hero */}
-        <Section id="methodology-hero" fullHeight={false} className="py-16">
+        <Section id="methodology-hero" fullHeight={false} className="py-16 bg-[var(--bg-secondary)]">
           <Container>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -23,16 +33,16 @@ export default function MethodologyPage() {
             >
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8"
+                className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors mb-8"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to main visualization
               </Link>
 
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+              <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-4 font-serif">
                 Research Methodology
               </h1>
-              <p className="text-xl text-slate-400 max-w-3xl">
+              <p className="text-xl text-[var(--text-body)] max-w-3xl">
                 How we evaluate evidence for causality in Alzheimer&apos;s disease research.
                 Most biological evidence is correlational—this framework helps distinguish
                 strong causal evidence from mere association.
@@ -42,7 +52,7 @@ export default function MethodologyPage() {
         </Section>
 
         {/* Key Statistics */}
-        <Section id="statistics" fullHeight={false} className="bg-slate-950/50">
+        <Section id="statistics" fullHeight={false} className="bg-[var(--bg-primary)]">
           <Container>
             <SectionHeader
               title="Key Statistics"
@@ -94,21 +104,19 @@ export default function MethodologyPage() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card variant="warning" hover={false}>
-                <CardContent>
-                  <h3 className="text-lg font-bold text-white mb-3">The Funding Structure Problem</h3>
-                  <p className="text-slate-300 mb-4">
-                    The disparity between novel molecule and repurposed drug investment reflects a structural problem:
-                    pharmaceutical companies fund trials that can generate patent-protected returns, while generic
-                    drugs with promising evidence languish in early-stage academic research.
-                  </p>
-                  <p className="text-sm text-slate-400">
-                    As Cummings et al. (2021) note: &quot;The limited patent and intellectual property opportunities
-                    for repurposed agents make them less attractive candidates for development by biopharmaceutical
-                    companies whose business model requires a substantial return on investment.&quot;
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="p-6 rounded-lg bg-[var(--accent-orange-light)] border border-[var(--accent-orange)]">
+                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3 font-serif">The Funding Structure Problem</h3>
+                <p className="text-[var(--text-body)] mb-4">
+                  The disparity between novel molecule and repurposed drug investment reflects a structural problem:
+                  pharmaceutical companies fund trials that can generate patent-protected returns, while generic
+                  drugs with promising evidence languish in early-stage academic research.
+                </p>
+                <p className="text-sm text-[var(--text-muted)]">
+                  As Cummings et al. (2021) note: &quot;The limited patent and intellectual property opportunities
+                  for repurposed agents make them less attractive candidates for development by biopharmaceutical
+                  companies whose business model requires a substantial return on investment.&quot;
+                </p>
+              </div>
             </motion.div>
           </Container>
         </Section>
@@ -117,7 +125,7 @@ export default function MethodologyPage() {
         <EvidenceHierarchy />
 
         {/* Research Foundation */}
-        <Section id="sources" fullHeight={false} className="bg-slate-950/50">
+        <Section id="sources" fullHeight={false} className="bg-[var(--bg-secondary)]">
           <Container>
             <SectionHeader
               title="Research Foundation"
@@ -165,7 +173,7 @@ export default function MethodologyPage() {
         </Section>
 
         {/* Works Cited */}
-        <Section id="works-cited" fullHeight={false}>
+        <Section id="works-cited" fullHeight={false} className="bg-[var(--bg-primary)]">
           <Container size="md">
             <SectionHeader
               title="Works Cited"
@@ -214,7 +222,7 @@ export default function MethodologyPage() {
         </Section>
 
         {/* Principles */}
-        <Section id="principles" fullHeight={false} className="bg-slate-950/50">
+        <Section id="principles" fullHeight={false} className="bg-[var(--bg-secondary)]">
           <Container size="md">
             <SectionHeader
               title="Guiding Principles"
@@ -271,26 +279,26 @@ function StatisticCard({ icon, stat, label, source, sourceUrl, note }: Statistic
       <Card variant="highlighted" className="h-full">
         <CardContent>
           <div className="flex items-start gap-4 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-blue-900/50 flex items-center justify-center text-blue-400 flex-shrink-0">
+            <div className="w-12 h-12 rounded-lg bg-[var(--accent-orange-light)] flex items-center justify-center text-[var(--accent-orange)] flex-shrink-0">
               {icon}
             </div>
             <div>
-              <div className="text-3xl font-bold text-white font-mono">{stat}</div>
-              <div className="text-slate-300">{label}</div>
+              <div className="text-3xl font-bold text-[var(--text-primary)] font-mono">{stat}</div>
+              <div className="text-[var(--text-body)]">{label}</div>
             </div>
           </div>
           {note && (
-            <p className="text-sm text-slate-400 mb-4 pl-4 border-l-2 border-blue-500/50">
+            <p className="text-sm text-[var(--text-muted)] mb-4 pl-4 border-l-2 border-[var(--accent-orange)]">
               {note}
             </p>
           )}
-          <div className="pt-4 border-t border-slate-700">
-            <p className="text-xs text-slate-500 mb-1">Source:</p>
+          <div className="pt-4 border-t border-[var(--border)]">
+            <p className="text-xs text-[var(--text-muted)] mb-1">Source:</p>
             <a
               href={sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-blue-400 hover:text-blue-300 transition-colors break-words"
+              className="text-xs text-[var(--accent-orange)] hover:underline transition-colors break-words"
             >
               {source}
             </a>
@@ -318,14 +326,14 @@ function SourceCard({ icon, title, sources }: SourceCardProps) {
       <Card variant="default" className="h-full">
         <CardContent>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-900/30 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-lg bg-[var(--accent-orange-light)] flex items-center justify-center text-[var(--accent-orange)]">
               {icon}
             </div>
-            <h3 className="font-bold text-white">{title}</h3>
+            <h3 className="font-bold text-[var(--text-primary)] font-serif">{title}</h3>
           </div>
           <ul className="space-y-2">
             {sources.map((source, i) => (
-              <li key={i} className="text-sm text-slate-400 pl-3 border-l-2 border-slate-700">
+              <li key={i} className="text-sm text-[var(--text-muted)] pl-3 border-l-2 border-[var(--border)]">
                 {source}
               </li>
             ))}
@@ -353,12 +361,12 @@ function PrincipleCard({ number, title, description }: PrincipleCardProps) {
       <Card variant="default">
         <CardContent>
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[var(--accent-orange)] flex items-center justify-center text-white font-bold flex-shrink-0">
               {number}
             </div>
             <div>
-              <h3 className="font-bold text-white mb-2">{title}</h3>
-              <p className="text-slate-400">{description}</p>
+              <h3 className="font-bold text-[var(--text-primary)] mb-2 font-serif">{title}</h3>
+              <p className="text-[var(--text-muted)]">{description}</p>
             </div>
           </div>
         </CardContent>
@@ -369,7 +377,7 @@ function PrincipleCard({ number, title, description }: PrincipleCardProps) {
 
 function Citation({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-sm text-slate-300 pl-8 -indent-8 leading-relaxed">
+    <p className="text-sm text-[var(--text-body)] pl-8 -indent-8 leading-relaxed">
       {children}
     </p>
   );

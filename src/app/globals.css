@@ -32,6 +32,10 @@
   /* Borders */
   --border: #e5e2dd;
 
+  /* Chapter break backgrounds */
+  --bg-chapter: #f0ebe5;
+  --bg-chapter-dark: #2d2d2d;
+
   /* Legacy mappings for Tailwind */
   --background: var(--bg-primary);
   --foreground: var(--text-body);

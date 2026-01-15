@@ -45,16 +45,29 @@ export function Heading({ children, as = 'h2', className, animate = true }: Head
 interface SectionHeaderProps {
   title: string;
   subtitle?: string;
+  /** Optional chapter/act label displayed above title */
+  actLabel?: string;
   className?: string;
 }
 
-export function SectionHeader({ title, subtitle, className }: SectionHeaderProps) {
+export function SectionHeader({ title, subtitle, actLabel, className }: SectionHeaderProps) {
   return (
     <div className={cn('mb-12 text-center', className)}>
+      {actLabel && (
+        <motion.span
+          className="inline-block text-xs sm:text-sm font-medium uppercase tracking-widest text-[var(--accent-orange)] mb-4"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          {actLabel}
+        </motion.span>
+      )}
       <Heading as="h2">{title}</Heading>
       {subtitle && (
         <motion.p
-          className="mt-4 text-lg text-[var(--text-muted)] max-w-3xl mx-auto"
+          className="mt-4 text-lg sm:text-xl text-[var(--text-muted)] max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}

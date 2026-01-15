@@ -11,7 +11,7 @@ export function EvidenceGraveyard() {
       <Container>
         <SectionHeader
           title="The Evidence Graveyard"
-          subtitle="Promising interventions with substantial evidence—abandoned because they cannot generate profit."
+          subtitle="Promising interventions with substantial evidence, abandoned because they cannot generate profit."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -35,7 +35,7 @@ export function EvidenceGraveyard() {
           transition={{ delay: 0.5, duration: 0.6 }}
           viewport={{ once: true }}
         >
-          Each of these interventions has evidence suggesting benefit—yet lacks
+          Each of these interventions has evidence suggesting benefit, yet lacks
           the funding infrastructure needed for confirmatory trials.
         </motion.p>
       </Container>

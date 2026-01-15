@@ -1,6 +1,10 @@
 export { Abbreviation, TextWithAbbreviations, abbreviations, type AbbreviationKey } from './Abbreviation';
 export { Button } from './Button';
-export { Card, CardHeader, CardContent } from './Card';
+export { Card, CardHeader, CardContent, DataCard } from './Card';
+export { ChapterBreak, SectionDivider } from './ChapterBreak';
 export { Container } from './Container';
 export { Heading, SectionHeader } from './Heading';
+export { HeroStat } from './HeroStat';
+export { PullQuote, InsightCallout } from './PullQuote';
 export { Section } from './Section';
+export { ShoutoutBox } from './ShoutoutBox';

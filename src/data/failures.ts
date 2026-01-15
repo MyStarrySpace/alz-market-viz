@@ -6,6 +6,7 @@ import {
   Users,
   UserX,
   Timer,
+  Globe,
 } from 'lucide-react';
 import type { MarketFailure } from '@/types';
 
@@ -15,7 +16,7 @@ export const marketFailures: MarketFailure[] = [
     title: 'The Patent System',
     shortTitle: 'Patents',
     description:
-      'Only novel molecules generate return on investment. Generic drugs and supplements—regardless of evidence—cannot recoup clinical trial costs.',
+      'Only novel molecules generate return on investment. Generic drugs and supplements, regardless of evidence, cannot recoup clinical trial costs.',
     impact:
       '$50 billion investment in patented drugs vs. ~$50 million in generics (1000:1 ratio)',
     connections: ['trial-economics', 'fda-structure'],
@@ -75,12 +76,24 @@ export const marketFailures: MarketFailure[] = [
     title: 'Sex Difference Erasure',
     shortTitle: 'Sex Bias',
     description:
-      'Women represent 2/3 of AD patients but are underrepresented in trials. Many drugs show sex-specific effects.',
+      'Females represent 2/3 of AD patients but are underrepresented in trials. Many drugs show sex-specific effects.',
     impact:
-      'This may explain why some "failed" drugs actually worked—in half the population',
-    connections: ['subtype-blindness'],
+      'This may explain why some "failed" drugs actually worked, in half the population',
+    connections: ['subtype-blindness', 'ancestry-gap'],
     icon: UserX,
     order: 6,
+  },
+  {
+    id: 'ancestry-gap',
+    title: 'Ancestry Gap',
+    shortTitle: 'Ancestry',
+    description:
+      'AD risk varies 2-4x by ancestry, yet trials are 85%+ white. APOE4 effects differ dramatically across populations.',
+    impact:
+      'Drugs that work in one population may fail in mixed trials, or vice versa. We may be missing ancestry-specific treatments.',
+    connections: ['sex-difference', 'subtype-blindness'],
+    icon: Globe,
+    order: 7,
   },
   {
     id: 'timing-catastrophe',
@@ -89,10 +102,10 @@ export const marketFailures: MarketFailure[] = [
     description:
       'All drugs are tested in established disease, after neuronal death. Drugs that might prevent the disease are declared "failed" because they cannot reverse existing damage.',
     impact:
-      'The nebivolol study exemplifies this: it reduced amyloid pathology but didn\'t improve cognition in mice with established disease—exactly what a prevention drug would do',
+      'The nebivolol study exemplifies this: it reduced amyloid pathology but didn\'t improve cognition in mice with established disease, exactly what a prevention drug would do',
     connections: ['fda-structure', 'subtype-blindness'],
     icon: Timer,
-    order: 7,
+    order: 8,
   },
 ];
 

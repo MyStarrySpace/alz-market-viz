@@ -8,16 +8,13 @@ import {
   Heart,
   Activity,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
   CheckCircle2,
   Clock,
   FlaskConical,
   AlertTriangle,
 } from 'lucide-react';
-import { Container, Section, SectionHeader, Card, CardContent, TextWithAbbreviations } from '@/components/ui';
+import { Container, Section, SectionHeader, TextWithAbbreviations } from '@/components/ui';
 import {
-  hopefulDevelopments,
   getApprovedTreatments,
   getPipelineDrugs,
   getLifestyleInterventions,
@@ -26,183 +23,201 @@ import {
   type DevelopmentCategory,
 } from '@/data/hopefulDevelopments';
 
-// Status badge colors
+// Status badge colors - using theme colors
 const statusStyles: Record<string, { bg: string; text: string; label: string }> = {
-  fda_approved: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'FDA Approved' },
-  phase_3: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Phase 3' },
-  phase_2: { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Phase 2' },
-  preclinical: { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Preclinical' },
-  evidence_based: { bg: 'bg-teal-100', text: 'text-teal-700', label: 'Evidence-Based' },
+  fda_approved: { bg: 'bg-[var(--success-light)]', text: 'text-[var(--success)]', label: 'FDA Approved' },
+  phase_3: { bg: 'bg-[#486393]/10', text: 'text-[#486393]', label: 'Phase 3' },
+  phase_2: { bg: 'bg-[#C3577F]/10', text: 'text-[#C3577F]', label: 'Phase 2' },
+  preclinical: { bg: 'bg-[#E5AF19]/10', text: 'text-[#b38600]', label: 'Preclinical' },
+  evidence_based: { bg: 'bg-[#007385]/10', text: 'text-[#007385]', label: 'Evidence-Based' },
 };
 
 // Category icons
 function getCategoryIcon(category: DevelopmentCategory) {
   switch (category) {
     case 'approved_drug':
-      return <Pill className="w-5 h-5" />;
+      return <Pill className="w-4 h-4" />;
     case 'pipeline_drug':
-      return <FlaskConical className="w-5 h-5" />;
+      return <FlaskConical className="w-4 h-4" />;
     case 'device_therapy':
-      return <Activity className="w-5 h-5" />;
+      return <Activity className="w-4 h-4" />;
     case 'lifestyle':
-      return <Heart className="w-5 h-5" />;
+      return <Heart className="w-4 h-4" />;
     case 'supplement':
-      return <Sparkles className="w-5 h-5" />;
+      return <Sparkles className="w-4 h-4" />;
     case 'research_tool':
-      return <Lightbulb className="w-5 h-5" />;
+      return <Lightbulb className="w-4 h-4" />;
     default:
-      return <Pill className="w-5 h-5" />;
+      return <Pill className="w-4 h-4" />;
   }
 }
 
-// Development card component
-function DevelopmentCard({ development }: { development: HopefulDevelopment }) {
-  const [expanded, setExpanded] = useState(false);
-  const status = statusStyles[development.status];
+// Two-panel list component for developments
+function DevelopmentsList({ developments, emptyMessage }: { developments: HopefulDevelopment[]; emptyMessage: string }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = developments.find((d) => d.id === selectedId);
+
+  if (developments.length === 0) {
+    return <p className="text-center text-[var(--text-muted)] py-8">{emptyMessage}</p>;
+  }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      viewport={{ once: true }}
-    >
-      <Card variant="default" hover={false} className="overflow-hidden">
-        <CardContent className="p-0">
-          {/* Header */}
-          <div
-            className="p-5 cursor-pointer hover:bg-[var(--bg-secondary)] transition-colors"
-            onClick={() => setExpanded(!expanded)}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-[var(--bg-secondary)] text-[var(--accent-orange)]">
-                  {getCategoryIcon(development.category)}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-[var(--text-primary)]">{development.name}</h3>
-                  <p className="text-sm text-[var(--text-muted)] mt-1">
-                    <TextWithAbbreviations text={development.description} />
+    <div className="flex flex-col lg:flex-row gap-6">
+      {/* Left: Development list - full width when nothing selected, half when selected */}
+      <motion.div
+        layout
+        className={selected ? 'lg:w-1/2' : 'w-full'}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <div className="bg-white border border-[var(--border)] divide-y divide-[var(--border)]">
+          {developments.map((dev, index) => {
+            const status = statusStyles[dev.status];
+            return (
+              <motion.button
+                key={dev.id}
+                layout
+                className={`w-full flex items-center justify-between p-4 text-left transition-all hover:bg-[var(--bg-secondary)] ${
+                  selectedId === dev.id ? 'bg-[var(--bg-secondary)] border-l-4 border-l-[var(--success)]' : ''
+                }`}
+                onClick={() => setSelectedId(selectedId === dev.id ? null : dev.id)}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.03 }}
+                viewport={{ once: true }}
+              >
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[var(--text-primary)] font-semibold text-sm">{dev.name}</h4>
+                  <p className="text-[var(--text-muted)] text-xs truncate">
+                    <TextWithAbbreviations text={dev.description} />
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.text}`}>
+                <span className={`text-xs px-2 py-1 font-medium shrink-0 ml-3 ${status.bg} ${status.text}`}>
                   {status.label}
                 </span>
-                {expanded ? (
-                  <ChevronUp className="w-5 h-5 text-[var(--text-muted)]" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-[var(--text-muted)]" />
+              </motion.button>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Right: Details panel - only shows when item selected */}
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            className="lg:w-1/2"
+            initial={{ opacity: 0, x: 50, width: 0 }}
+            animate={{ opacity: 1, x: 0, width: 'auto' }}
+            exit={{ opacity: 0, x: 50, width: 0 }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          >
+            <motion.div
+              key={selected.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="bg-white border border-[var(--border)] p-6 h-full"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">{selected.name}</h3>
+                  <p className="text-sm text-[var(--text-muted)]">
+                    <TextWithAbbreviations text={selected.description} />
+                  </p>
+                </div>
+                <span className={`text-xs px-2 py-1 font-medium shrink-0 ${statusStyles[selected.status].bg} ${statusStyles[selected.status].text}`}>
+                  {statusStyles[selected.status].label}
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {/* Why it matters */}
+                <div>
+                  <h4 className="text-xs font-semibold text-[var(--success)] uppercase tracking-wide mb-1">
+                    Why It Matters
+                  </h4>
+                  <p className="text-sm text-[var(--text-body)]">
+                    <TextWithAbbreviations text={selected.whyHopeful} />
+                  </p>
+                </div>
+
+                {/* Mechanism */}
+                <div>
+                  <h4 className="text-xs font-semibold text-[#007385] uppercase tracking-wide mb-1">
+                    How It Works
+                  </h4>
+                  <p className="text-sm text-[var(--text-body)]">
+                    <TextWithAbbreviations text={selected.mechanism} />
+                  </p>
+                </div>
+
+                {/* Evidence summary */}
+                {selected.evidence.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-[#486393] uppercase tracking-wide mb-2">
+                      Key Evidence
+                    </h4>
+                    <div className="space-y-2">
+                      {selected.evidence.slice(0, 2).map((ev, idx) => (
+                        <div key={idx} className="p-2 bg-[var(--bg-secondary)] text-xs">
+                          {ev.trialName && (
+                            <span className="font-medium text-[var(--text-primary)]">{ev.trialName}: </span>
+                          )}
+                          <span className="text-[var(--text-body)]">
+                            <TextWithAbbreviations text={ev.result} />
+                          </span>
+                          {ev.limitation && (
+                            <p className="text-[#b38600] mt-1 flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3" />
+                              <TextWithAbbreviations text={ev.limitation} />
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Cost & Availability */}
+                {(selected.cost || selected.availability) && (
+                  <div className="flex flex-wrap gap-4 text-xs">
+                    {selected.cost && (
+                      <div>
+                        <span className="font-medium text-[var(--text-muted)]">Cost:</span>{' '}
+                        <span className="text-[var(--text-body)]">{selected.cost}</span>
+                      </div>
+                    )}
+                    {selected.availability && (
+                      <div>
+                        <span className="font-medium text-[var(--text-muted)]">Availability:</span>{' '}
+                        <span className="text-[var(--text-body)]">{selected.availability}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Caveats */}
+                {selected.caveats && selected.caveats.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-[#b38600] uppercase tracking-wide mb-1">
+                      Important Caveats
+                    </h4>
+                    <ul className="space-y-1">
+                      {selected.caveats.map((caveat, idx) => (
+                        <li key={idx} className="text-xs text-[var(--text-muted)] flex items-start gap-1">
+                          <span className="text-[#E5AF19]">•</span>
+                          <TextWithAbbreviations text={caveat} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
               </div>
-            </div>
-
-            {/* Why Hopeful - always visible */}
-            <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-100">
-              <p className="text-sm text-emerald-800">
-                <span className="font-medium">Why it matters:</span>{' '}
-                <TextWithAbbreviations text={development.whyHopeful} />
-              </p>
-            </div>
-          </div>
-
-          {/* Expanded content */}
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="px-5 pb-5 border-t border-[var(--border)]">
-                  {/* Mechanism */}
-                  <div className="mt-4">
-                    <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2">How it works</h4>
-                    <p className="text-sm text-[var(--text-body)]">
-                      <TextWithAbbreviations text={development.mechanism} />
-                    </p>
-                  </div>
-
-                  {/* Evidence */}
-                  {development.evidence.length > 0 && (
-                    <div className="mt-4">
-                      <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Evidence</h4>
-                      <div className="space-y-3">
-                        {development.evidence.map((ev, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-[var(--bg-secondary)]">
-                            <div className="flex items-center gap-2 mb-1">
-                              {ev.trialName && (
-                                <span className="font-medium text-sm text-[var(--text-primary)]">
-                                  {ev.trialName}
-                                </span>
-                              )}
-                              {ev.trialPhase && (
-                                <span className="text-xs px-2 py-0.5 rounded bg-[var(--bg-card)] text-[var(--text-muted)]">
-                                  {ev.trialPhase}
-                                </span>
-                              )}
-                            </div>
-                            {ev.primaryOutcome && (
-                              <p className="text-xs text-[var(--text-muted)] mb-2 italic">
-                                <span className="font-medium">Outcome measure:</span>{' '}
-                                <TextWithAbbreviations text={ev.primaryOutcome} />
-                              </p>
-                            )}
-                            <p className="text-sm text-[var(--text-body)]">
-                              <TextWithAbbreviations text={ev.result} />
-                            </p>
-                            {ev.limitation && (
-                              <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
-                                <AlertTriangle className="w-3 h-3" />
-                                <TextWithAbbreviations text={ev.limitation} />
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Cost & Availability */}
-                  <div className="mt-4 flex flex-wrap gap-4">
-                    {development.cost && (
-                      <div className="text-sm">
-                        <span className="font-medium text-[var(--text-primary)]">Cost:</span>{' '}
-                        <span className="text-[var(--text-body)]">{development.cost}</span>
-                      </div>
-                    )}
-                    {development.availability && (
-                      <div className="text-sm">
-                        <span className="font-medium text-[var(--text-primary)]">Availability:</span>{' '}
-                        <span className="text-[var(--text-body)]">{development.availability}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Caveats */}
-                  {development.caveats && development.caveats.length > 0 && (
-                    <div className="mt-4">
-                      <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Important caveats</h4>
-                      <ul className="space-y-1">
-                        {development.caveats.map((caveat, idx) => (
-                          <li key={idx} className="text-sm text-[var(--text-muted)] flex items-start gap-2">
-                            <span className="text-amber-500 mt-0.5">•</span>
-                            <TextWithAbbreviations text={caveat} />
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </CardContent>
-      </Card>
-    </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -219,10 +234,10 @@ function SummaryStat({
   color: 'emerald' | 'blue' | 'purple' | 'amber';
 }) {
   const colorClasses = {
-    emerald: 'bg-emerald-100 text-emerald-600',
-    blue: 'bg-blue-100 text-blue-600',
-    purple: 'bg-purple-100 text-purple-600',
-    amber: 'bg-amber-100 text-amber-600',
+    emerald: 'bg-[var(--success-light)] text-[var(--success)]',
+    blue: 'bg-[#486393]/10 text-[#486393]',
+    purple: 'bg-[#C3577F]/10 text-[#C3577F]',
+    amber: 'bg-[#E5AF19]/10 text-[#b38600]',
   };
 
   return (
@@ -236,7 +251,7 @@ function SummaryStat({
       <div className={`w-16 h-16 mx-auto rounded-full ${colorClasses[color]} flex items-center justify-center mb-3`}>
         {icon}
       </div>
-      <div className="text-3xl font-bold text-[var(--text-primary)]">{value}</div>
+      <div className="text-3xl font-bold font-serif text-[var(--text-primary)]">{value}</div>
       <div className="text-sm text-[var(--text-muted)] mt-1">{label}</div>
     </motion.div>
   );
@@ -261,7 +276,7 @@ export function HopefulDevelopments() {
       <Container>
         <SectionHeader
           title="Reasons for Hope"
-          subtitle="For the first time in history, we have treatments that slow cognitive decline—and evidence-based interventions available to everyone today."
+          subtitle="For the first time in history, we have treatments that slow cognitive decline, plus evidence-based interventions available to everyone today."
         />
 
         {/* Summary stats */}
@@ -294,7 +309,7 @@ export function HopefulDevelopments() {
 
         {/* Tab navigation */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex rounded-lg bg-[var(--bg-secondary)] p-1">
+          <div className="inline-flex rounded bg-[var(--bg-secondary)] p-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -324,38 +339,41 @@ export function HopefulDevelopments() {
             transition={{ duration: 0.3 }}
           >
             {activeTab === 'approved' && (
-              <div className="space-y-4">
+              <div>
                 <p className="text-center text-[var(--text-body)] mb-6 max-w-2xl mx-auto">
-                  These are the first treatments ever shown to slow Alzheimer's progression in clinical trials.
+                  These are the first treatments ever shown to slow Alzheimer&apos;s progression in clinical trials.
                   While benefits are modest, they represent a historic milestone.
                 </p>
-                {approvedTreatments.map((dev) => (
-                  <DevelopmentCard key={dev.id} development={dev} />
-                ))}
+                <DevelopmentsList
+                  developments={approvedTreatments}
+                  emptyMessage="No approved treatments to display."
+                />
               </div>
             )}
 
             {activeTab === 'pipeline' && (
-              <div className="space-y-4">
+              <div>
                 <p className="text-center text-[var(--text-body)] mb-6 max-w-2xl mx-auto">
                   Beyond amyloid-targeting drugs, researchers are pursuing approaches based on
-                  alternative hypotheses—many addressing upstream causes.
+                  alternative hypotheses, many addressing upstream causes.
                 </p>
-                {[...pipelineDrugs, ...supplements].map((dev) => (
-                  <DevelopmentCard key={dev.id} development={dev} />
-                ))}
+                <DevelopmentsList
+                  developments={[...pipelineDrugs, ...supplements]}
+                  emptyMessage="No pipeline developments to display."
+                />
               </div>
             )}
 
             {activeTab === 'lifestyle' && (
-              <div className="space-y-4">
+              <div>
                 <p className="text-center text-[var(--text-body)] mb-6 max-w-2xl mx-auto">
-                  You don't need to wait for a drug. Evidence-based lifestyle interventions can reduce
-                  dementia risk by 30-50%—and they're available today.
+                  You don&apos;t need to wait for a drug. Evidence-based lifestyle interventions can reduce
+                  dementia risk by 30-50%, and they&apos;re available today.
                 </p>
-                {lifestyleInterventions.map((dev) => (
-                  <DevelopmentCard key={dev.id} development={dev} />
-                ))}
+                <DevelopmentsList
+                  developments={lifestyleInterventions}
+                  emptyMessage="No lifestyle interventions to display."
+                />
               </div>
             )}
           </motion.div>
@@ -367,20 +385,24 @@ export function HopefulDevelopments() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mt-12 text-center"
+          className="mt-16 text-center max-w-3xl mx-auto"
         >
-          <Card variant="highlighted" hover={false} className="inline-block max-w-2xl">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
-                The Best Time to Act is Now
-              </h3>
-              <p className="text-[var(--text-body)]">
-                While we wait for better treatments, the evidence is clear: exercise, diet, sleep,
-                and cognitive engagement can meaningfully reduce your risk. These interventions
-                address the same upstream mechanisms that sidelined researchers identified decades ago.
-              </p>
-            </CardContent>
-          </Card>
+          <h3 className="text-3xl md:text-4xl font-bold font-serif text-[var(--text-primary)] mb-6">
+            The Best Time to Act is <span className="text-[var(--accent-orange)]">Now.</span>
+          </h3>
+          <p className="text-lg text-[var(--text-body)] leading-relaxed mb-4">
+            While we wait for better treatments, the evidence is clear:
+          </p>
+          <p className="text-xl md:text-2xl font-medium text-[var(--text-primary)] mb-6">
+            <span className="text-[var(--success)]">Exercise</span>,{' '}
+            <span className="text-[#486393]">diet</span>,{' '}
+            <span className="text-[#C3577F]">sleep</span>, and{' '}
+            <span className="text-[#007385]">cognitive engagement</span>{' '}
+            can reduce your risk by <span className="font-bold text-[var(--accent-orange)]">30–50%</span>.
+          </p>
+          <p className="text-[var(--text-muted)]">
+            These interventions address the same upstream mechanisms that sidelined researchers identified decades ago.
+          </p>
         </motion.div>
       </Container>
     </Section>

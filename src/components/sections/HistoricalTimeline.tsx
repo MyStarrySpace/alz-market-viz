@@ -9,7 +9,6 @@ import {
   User,
   Building2,
   Expand,
-  Minimize2,
 } from 'lucide-react';
 import { Container, Section, SectionHeader, TextWithAbbreviations } from '@/components/ui';
 import { getTimelineEras, TimelineEvent, FrameworkId } from '@/data';
@@ -117,89 +116,81 @@ function EventCard({
 
   return (
     <motion.div
-      className="mb-4"
+      className="mb-3 flex gap-4"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
       viewport={{ once: true, margin: '-50px' }}
       data-year={event.year}
     >
+      {/* Year - outside the card for better alignment */}
+      <div className="flex-shrink-0 w-14 text-right pt-4">
+        <span className="text-lg font-serif font-bold text-[var(--text-primary)]">
+          {event.year}
+        </span>
+      </div>
+
       {/* Event card */}
       <div
-        className={`border border-l-4 ${info.borderColor} rounded-r-lg p-4 cursor-pointer transition-all ${info.bgHover}
+        className={`flex-1 border border-l-4 ${info.borderColor} p-4 cursor-pointer transition-all ${info.bgHover}
           ${hasResearcher
             ? 'bg-gradient-to-r from-amber-50 to-white border-amber-200 shadow-md ring-1 ring-amber-100'
             : 'bg-white border-[var(--border)]'}`}
         onClick={() => setExpanded(!expanded)}
       >
-        {/* Main content row - horizontal on desktop */}
-        <div className="flex flex-col md:flex-row md:items-start md:gap-6">
-          {/* Left: Year and title */}
-          <div className="flex-shrink-0 md:w-64">
-            <div className="flex items-center gap-3 mb-1">
-              <span className="text-xl font-serif font-bold text-[var(--text-primary)]">
-                {event.year}
-              </span>
-              {event.expandedDescription && (
-                <button className="text-[var(--text-muted)] hover:text-[var(--text-primary)] md:hidden">
-                  {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </button>
-              )}
-            </div>
-            <h4 className="text-[var(--text-primary)] font-semibold text-sm">
-              <TextWithAbbreviations text={event.title} />
-            </h4>
-          </div>
-
-          {/* Right: Description */}
-          <div className="flex-1 mt-2 md:mt-0">
-            <AnimatePresence mode="wait">
-              {expanded && event.expandedDescription ? (
-                <motion.p
-                  key="expanded"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="text-[var(--text-body)] text-sm leading-relaxed"
-                >
-                  <TextWithAbbreviations text={event.expandedDescription} />
-                </motion.p>
-              ) : (
-                <motion.p
-                  key="short"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-[var(--text-muted)] text-sm"
-                >
-                  <TextWithAbbreviations text={event.description} />
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Expand button - desktop only */}
+        {/* Title row with expand button */}
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h4 className="text-[var(--text-primary)] font-semibold text-sm leading-snug">
+            <TextWithAbbreviations text={event.title} />
+          </h4>
           {event.expandedDescription && (
-            <button className="hidden md:block text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0">
+            <button className="text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0 mt-0.5">
               {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
           )}
         </div>
 
-        {/* Researcher callout */}
+        {/* Description */}
+        <AnimatePresence mode="wait">
+          {expanded && event.expandedDescription ? (
+            <motion.p
+              key="expanded"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="text-[var(--text-body)] text-sm leading-relaxed"
+            >
+              <TextWithAbbreviations text={event.expandedDescription} />
+            </motion.p>
+          ) : (
+            <motion.p
+              key="short"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-[var(--text-muted)] text-sm leading-relaxed"
+            >
+              <TextWithAbbreviations text={event.description} />
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        {/* Researcher callout - inline with content */}
         {hasResearcher && (
           <div className="mt-3 pt-3 border-t border-amber-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
-                <User className="w-4 h-4 text-amber-600" />
+              <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <User className="w-3.5 h-3.5 text-amber-600" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold text-[var(--text-primary)]">
                   {event.researcher!.name}
                 </p>
-                <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                  <Building2 className="w-3 h-3" />
-                  <span>{event.researcher!.institution}</span>
-                  <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--text-muted)]">
+                  <span className="flex items-center gap-1">
+                    <Building2 className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">{event.researcher!.institution}</span>
+                  </span>
+                  <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 rounded-full whitespace-nowrap">
                     {event.researcher!.hypothesis}
                   </span>
                 </div>
@@ -298,10 +289,12 @@ export function HistoricalTimeline() {
   const [isFilterSticky, setIsFilterSticky] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isYearPickerSticky, setIsYearPickerSticky] = useState(false);
+  const [isYearPickerAtBottom, setIsYearPickerAtBottom] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const yearPickerRef = useRef<HTMLDivElement>(null);
+  const yearPickerContentRef = useRef<HTMLDivElement>(null);
   const storedScrollPosition = useRef<number | null>(null);
 
   // Extract all unique years from events for year picker
@@ -337,12 +330,35 @@ export function HistoricalTimeline() {
       setIsFilterSticky(shouldStick);
 
       // Year picker sticky logic (only when expanded)
-      if (isExpanded && timelineRef.current) {
+      if (isExpanded && timelineRef.current && yearPickerRef.current && yearPickerContentRef.current) {
         const timelineRect = timelineRef.current.getBoundingClientRect();
-        const shouldYearPickerStick = timelineRect.top < 120 && timelineRect.bottom > 300;
-        setIsYearPickerSticky(shouldYearPickerStick);
+        const yearPickerContentHeight = yearPickerContentRef.current.offsetHeight;
+        const stickyTop = 128; // top-32 = 8rem = 128px
+        const bottomPadding = 48; // Extra padding at bottom
+
+        // Calculate if we've scrolled past the start (should start sticking)
+        const pastStart = timelineRect.top < stickyTop;
+
+        // Calculate if the year picker would overflow past the timeline bottom
+        const yearPickerBottomIfSticky = stickyTop + yearPickerContentHeight + bottomPadding;
+        const wouldOverflow = timelineRect.bottom < yearPickerBottomIfSticky;
+
+        if (!pastStart) {
+          // Haven't scrolled to sticky zone yet - relative positioning
+          setIsYearPickerSticky(false);
+          setIsYearPickerAtBottom(false);
+        } else if (wouldOverflow) {
+          // Would overflow - pin to bottom
+          setIsYearPickerSticky(false);
+          setIsYearPickerAtBottom(true);
+        } else {
+          // In the sticky zone
+          setIsYearPickerSticky(true);
+          setIsYearPickerAtBottom(false);
+        }
       } else {
         setIsYearPickerSticky(false);
+        setIsYearPickerAtBottom(false);
       }
     };
 
@@ -358,11 +374,33 @@ export function HistoricalTimeline() {
     }
   };
 
-  // Scroll to a specific year
+  // Scroll to a specific year (or nearest visible year before it)
   const scrollToYear = (year: number) => {
-    const yearElement = document.querySelector(`[data-year="${year}"]`);
+    // First try to find the exact year
+    let yearElement = document.querySelector(`[data-year="${year}"]`);
+
+    // If not found (filtered out), find the nearest visible year before it
+    if (!yearElement) {
+      const allVisibleYearElements = Array.from(document.querySelectorAll('[data-year]'));
+      const visibleYears = allVisibleYearElements
+        .map(el => parseInt(el.getAttribute('data-year') || '0', 10))
+        .filter(y => y > 0);
+
+      // Find years before or equal to the selected year
+      const yearsBefore = visibleYears.filter(y => y <= year).sort((a, b) => b - a);
+
+      if (yearsBefore.length > 0) {
+        // Scroll to the nearest year before the selected one
+        yearElement = document.querySelector(`[data-year="${yearsBefore[0]}"]`);
+      } else if (visibleYears.length > 0) {
+        // If no years before, scroll to the first visible year (earliest)
+        const sortedYears = visibleYears.sort((a, b) => a - b);
+        yearElement = document.querySelector(`[data-year="${sortedYears[0]}"]`);
+      }
+    }
+
     if (yearElement) {
-      const offset = 140; // Account for sticky headers
+      const offset = 160; // Account for sticky headers with padding
       const elementPosition = yearElement.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
     }
@@ -454,7 +492,7 @@ export function HistoricalTimeline() {
       <Container>
         <SectionHeader
           title="A Century of Search"
-          subtitle="From the first case in 1906 to today's controversies—the long road that led us here."
+          subtitle="From the first case in 1906 to today's controversies: the long road that led us here."
         />
 
         {/* Sticky Filter Bar */}
@@ -549,9 +587,18 @@ export function HistoricalTimeline() {
                 </div>
               </div>
 
-              {/* Skip to next section button */}
+              {/* Skip/Collapse button */}
               <button
-                onClick={skipToNextSection}
+                onClick={() => {
+                  if (isExpanded) {
+                    // If expanded, collapse and skip
+                    setIsExpanded(false);
+                    skipToNextSection();
+                  } else {
+                    // If collapsed, just skip
+                    skipToNextSection();
+                  }
+                }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-[var(--text-muted)]
                   hover:text-[var(--accent-orange)] hover:bg-[var(--bg-secondary)] rounded transition-all duration-200
                   whitespace-nowrap shrink-0"
@@ -567,9 +614,14 @@ export function HistoricalTimeline() {
         {isFilterSticky && <div className="h-12" />}
 
         {/* Timeline with year picker layout */}
-        <div className="relative flex gap-8" ref={timelineRef}>
-          {/* Main timeline content */}
-          <div className="flex-1 relative">
+        <div className="relative flex justify-center gap-8" ref={timelineRef}>
+          {/* Main timeline content - full width and centered when collapsed, shrinks when expanded */}
+          <motion.div
+            layout
+            className="relative w-full"
+            style={{ maxWidth: isExpanded ? '100%' : '900px' }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          >
             {/* Collapsed container with fade */}
             <div
               className={`relative transition-all duration-500 ${
@@ -609,85 +661,72 @@ export function HistoricalTimeline() {
               )}
             </div>
 
-            {/* Expand/Collapse button */}
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={toggleExpand}
-                className="flex items-center gap-2 px-6 py-3 bg-white border border-[var(--border)]
-                  rounded-full shadow-sm hover:shadow-md hover:border-[var(--accent-orange)]
-                  text-[var(--text-body)] hover:text-[var(--accent-orange)] transition-all duration-200"
+            {/* Expand button (only shown when collapsed) */}
+            {!isExpanded && (
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={toggleExpand}
+                  className="flex items-center gap-2 px-6 py-3 bg-white border border-[var(--border)]
+                    rounded-full shadow-sm hover:shadow-md hover:border-[var(--accent-orange)]
+                    text-[var(--text-body)] hover:text-[var(--accent-orange)] transition-all duration-200"
+                >
+                  <Expand className="w-4 h-4" />
+                  <span>Expand Full Timeline</span>
+                </button>
+              </div>
+            )}
+          </motion.div>
+
+          {/* Year picker sidebar - desktop only, animates in from right */}
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                ref={yearPickerRef}
+                className="hidden lg:block shrink-0 relative"
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 96, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
               >
-                {isExpanded ? (
-                  <>
-                    <Minimize2 className="w-4 h-4" />
-                    <span>Collapse Timeline</span>
-                  </>
-                ) : (
-                  <>
-                    <Expand className="w-4 h-4" />
-                    <span>Expand Full Timeline</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Year picker sidebar - desktop only */}
-          <div
-            ref={yearPickerRef}
-            className={`hidden lg:block w-24 shrink-0 ${
-              isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            } transition-opacity duration-300`}
-          >
-            <div
-              className={`${
-                isYearPickerSticky
-                  ? 'fixed top-32 w-24'
-                  : 'relative'
-              } transition-all duration-200`}
-            >
-              <div className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)] mb-3">
-                Jump to Year
-              </div>
-              <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 scrollbar-thin">
-                {Object.entries(yearsByDecade).map(([decade, years]) => (
-                  <div key={decade}>
-                    <div className="text-xs font-semibold text-[var(--text-muted)] mb-1">
-                      {decade}
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {years.map(year => (
-                        <button
-                          key={year}
-                          onClick={() => scrollToYear(year)}
-                          className="text-xs px-1.5 py-0.5 rounded hover:bg-[var(--accent-orange-light)]
-                            hover:text-[var(--accent-orange)] text-[var(--text-muted)] transition-colors"
-                        >
-                          {year}
-                        </button>
-                      ))}
-                    </div>
+                <div
+                  ref={yearPickerContentRef}
+                  className={`w-24 ${
+                    isYearPickerSticky
+                      ? 'fixed top-32 pt-4'
+                      : isYearPickerAtBottom
+                        ? 'absolute bottom-0'
+                        : 'relative'
+                  } transition-all duration-200`}
+                >
+                  <div className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)] mb-3">
+                    Jump to Year
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                  <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 scrollbar-thin">
+                    {Object.entries(yearsByDecade).map(([decade, years]) => (
+                      <div key={decade}>
+                        <div className="text-xs font-semibold text-[var(--text-muted)] mb-1">
+                          {decade}
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {years.map(year => (
+                            <button
+                              key={year}
+                              onClick={() => scrollToYear(year)}
+                              className="text-xs px-1.5 py-0.5 rounded hover:bg-[var(--accent-orange-light)]
+                                hover:text-[var(--accent-orange)] text-[var(--text-muted)] transition-colors"
+                            >
+                              {year}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
-        {/* Summary insight */}
-        <motion.div
-          className="mt-12 p-6 rounded-lg bg-[var(--accent-orange-light)] border border-[var(--accent-orange)] text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-[var(--accent-orange)] text-lg font-medium">
-            Over 100 years of research. Billions of dollars invested. And a
-            hypothesis that dominated for 30 years despite mounting evidence it
-            was incomplete.
-          </p>
-        </motion.div>
       </Container>
     </Section>
   );

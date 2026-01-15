@@ -1,11 +1,25 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowDown, AlertTriangle } from 'lucide-react';
-import { Container, Section, SectionHeader, Card, CardContent } from '@/components/ui';
+import { AlertTriangle } from 'lucide-react';
+import { Container, Section, SectionHeader } from '@/components/ui';
 import { marketFailures, failureCascadeNarrative } from '@/data';
 
+// Color palette for cards - cycling through theme colors
+const cardColors = [
+  { bg: 'bg-[#486393]/10', border: 'border-[#486393]/30', icon: 'text-[#486393]', accent: '#486393' },
+  { bg: 'bg-[#007385]/10', border: 'border-[#007385]/30', icon: 'text-[#007385]', accent: '#007385' },
+  { bg: 'bg-[#C9461D]/10', border: 'border-[#C9461D]/30', icon: 'text-[#C9461D]', accent: '#C9461D' },
+  { bg: 'bg-[#E5AF19]/10', border: 'border-[#E5AF19]/30', icon: 'text-[#b38600]', accent: '#b38600' },
+  { bg: 'bg-[#C3577F]/10', border: 'border-[#C3577F]/30', icon: 'text-[#C3577F]', accent: '#C3577F' },
+  { bg: 'bg-[#486393]/10', border: 'border-[#486393]/30', icon: 'text-[#486393]', accent: '#486393' },
+  { bg: 'bg-[#007385]/10', border: 'border-[#007385]/30', icon: 'text-[#007385]', accent: '#007385' },
+  { bg: 'bg-[#C9461D]/10', border: 'border-[#C9461D]/30', icon: 'text-[#C9461D]', accent: '#C9461D' },
+];
+
 export function FailureCascade() {
+  const sortedFailures = marketFailures.sort((a, b) => a.order - b.order);
+
   return (
     <Section id="system">
       <Container>
@@ -14,109 +28,132 @@ export function FailureCascade() {
           subtitle="Each market failure reinforces the others, creating a system that systematically excludes the most promising interventions."
         />
 
-        {/* Narrative intro */}
+        {/* Narrative intro - compact */}
         <motion.div
-          className="max-w-3xl mx-auto mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          className="max-w-2xl mx-auto mb-10 flex items-start gap-3 p-4 border border-[var(--accent-orange)] bg-[var(--accent-orange-light)]"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <Card variant="highlighted" hover={false}>
-            <CardContent>
-              <div className="flex gap-4">
-                <AlertTriangle className="w-6 h-6 text-[var(--accent-orange)] flex-shrink-0 mt-1" />
-                <div className="space-y-4 text-[var(--text-body)]">
-                  {failureCascadeNarrative.split('\n\n').map((paragraph, i) => (
-                    <p key={i}>{paragraph}</p>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <AlertTriangle className="w-5 h-5 text-[var(--accent-orange)] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[var(--accent-orange)]">{failureCascadeNarrative}</p>
         </motion.div>
 
-        {/* Failure cascade - vertically stacked list */}
-        <div className="max-w-2xl mx-auto space-y-4">
-          {marketFailures
-            .sort((a, b) => a.order - b.order)
-            .map((failure, index) => (
-              <FailureItem key={failure.id} failure={failure} index={index} isLast={index === marketFailures.length - 1} />
-            ))}
+        {/* Descending Stairs Layout - 4 columns */}
+        <div className="max-w-6xl mx-auto">
+          {/* Row 1: Items 1-4 descending like stairs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {sortedFailures.slice(0, 4).map((failure, index) => {
+              const colors = cardColors[index];
+              // Each card steps down progressively
+              const stepDown = index * 24; // 24px step per card
+              return (
+                <div key={failure.id} style={{ marginTop: stepDown }}>
+                  <FailureCard
+                    failure={failure}
+                    index={index}
+                    colors={colors}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Row 2: Items 5-8 (if they exist) positioned below 1-4 */}
+          {sortedFailures.length > 4 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
+              {sortedFailures.slice(4, 8).map((failure, index) => {
+                const colors = cardColors[index + 4];
+                // Continue the stair pattern from row 1
+                const stepDown = index * 24;
+                return (
+                  <div key={failure.id} style={{ marginTop: stepDown }}>
+                    <FailureCard
+                      failure={failure}
+                      index={index + 4}
+                      colors={colors}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* The result */}
         <motion.div
-          className="mt-12 text-center"
+          className="mt-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--danger-light)] border border-[var(--danger)]">
-            <span className="text-[var(--danger)] font-mono text-lg">Result:</span>
-            <span className="text-[var(--text-primary)] font-bold text-lg">99% Trial Failure Rate</span>
-          </div>
+          <p className="text-sm uppercase tracking-widest text-[var(--text-muted)] mb-2">
+            The Result
+          </p>
+          <p className="text-5xl md:text-6xl font-serif font-bold text-[var(--danger)]">
+            99%
+          </p>
+          <p className="text-xl md:text-2xl font-serif text-[var(--text-primary)] mt-1">
+            Trial Failure Rate
+          </p>
         </motion.div>
       </Container>
     </Section>
   );
 }
 
-interface FailureItemProps {
+interface FailureCardProps {
   failure: (typeof marketFailures)[0];
   index: number;
-  isLast: boolean;
+  colors: typeof cardColors[0];
 }
 
-function FailureItem({ failure, index, isLast }: FailureItemProps) {
+function FailureCard({ failure, index, colors }: FailureCardProps) {
   const Icon = failure.icon;
 
   return (
-    <div className="flex flex-col items-center">
-      <motion.div
-        className="w-full"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: index * 0.08 }}
-        viewport={{ once: true }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.06 }}
+      viewport={{ once: true, margin: '-50px' }}
+    >
+      <div
+        className={`p-3 border ${colors.bg} ${colors.border} transition-all duration-200 hover:shadow-md h-full`}
       >
-        <Card variant="default" hover={false}>
-          <CardContent className="p-4">
-            <div className="flex items-start gap-4">
-              {/* Number and icon */}
-              <div className="flex-shrink-0 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center text-sm font-bold text-[var(--text-muted)]">
-                  {failure.order}
-                </span>
-                <div className="w-10 h-10 rounded-lg bg-[var(--category-amyloid)]/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-[var(--category-amyloid)]" />
-                </div>
-              </div>
+        {/* Header row */}
+        <div className="flex items-center gap-3 mb-2">
+          <div className={`w-8 h-8 flex items-center justify-center ${colors.bg}`}>
+            <Icon className={`w-4 h-4 ${colors.icon}`} />
+          </div>
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <span
+              className="text-xs font-bold px-1.5 py-0.5"
+              style={{ backgroundColor: colors.accent, color: 'white' }}
+            >
+              {failure.order}
+            </span>
+            <h3 className="text-sm font-bold text-[var(--text-primary)] truncate">
+              {failure.title}
+            </h3>
+          </div>
+        </div>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-[var(--text-primary)] mb-1">{failure.title}</h3>
-                <p className="text-sm text-[var(--text-body)] mb-2">{failure.description}</p>
-                <p className="text-xs text-[var(--accent-orange)] italic">{failure.impact}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+        {/* Description */}
+        <p className="text-xs text-[var(--text-body)] mb-2 leading-relaxed">
+          {failure.description}
+        </p>
 
-      {/* Arrow between items */}
-      {!isLast && (
-        <motion.div
-          className="py-2"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: index * 0.08 + 0.2 }}
-          viewport={{ once: true }}
+        {/* Impact - styled as a quote */}
+        <p
+          className="text-xs italic pl-3 border-l-2"
+          style={{ borderColor: colors.accent, color: colors.accent }}
         >
-          <ArrowDown className="w-5 h-5 text-[var(--text-muted)]" />
-        </motion.div>
-      )}
-    </div>
+          {failure.impact}
+        </p>
+      </div>
+    </motion.div>
   );
 }

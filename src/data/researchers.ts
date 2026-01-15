@@ -93,7 +93,7 @@ export const evidenceHierarchy: EvidenceLevel[] = [
     type: 'Natural Experiment',
     description: 'Time-locked events create before/after comparisons with natural counterfactuals',
     examples: [
-      'Menopause: abrupt estrogen loss leads to accelerated tau in APOE4+ women',
+      'Menopause: abrupt estrogen loss leads to accelerated tau in APOE4+ females',
       'HZ vaccine eligibility cutoff: 20% lower dementia (Eyting 2024 Nature)',
     ],
   },
@@ -142,7 +142,7 @@ export const mechanisticCascade: CascadeStage[] = [
     stage: 1,
     title: 'Initiating Factors',
     shortTitle: 'Entry Points',
-    description: 'Different patients enter the cascade at different points—this is why AD is heterogeneous.',
+    description: 'Different patients enter the cascade at different points. This is why AD is heterogeneous.',
     mechanisms: [
       'Gut dysbiosis: increased LPS, Phe/Ile leads to systemic inflammation',
       'Vascular: Hypoperfusion leads to BBB breakdown',

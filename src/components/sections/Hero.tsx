@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { HeroStat } from '@/components/ui';
 
 export function Hero() {
   const scrollToContent = () => {
@@ -33,34 +34,37 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-6 text-lg text-[var(--text-muted)] max-w-2xl mx-auto"
+            className="mt-6 text-lg sm:text-xl text-[var(--text-muted)] max-w-2xl mx-auto"
           >
             The science, the system, and the search for a cure
           </motion.p>
 
-          {/* Key stats */}
+          {/* Hero stat - the most impactful number */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="mt-16 mb-12"
+          >
+            <HeroStat
+              value={99}
+              suffix="%"
+              label="Clinical trial failure rate"
+              sublabel="Over 400 trials failed between 2002-2012"
+              color="danger"
+            />
+          </motion.div>
+
+          {/* Supporting stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto"
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="grid grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto"
           >
-            <StatCard
-              value="55 million+"
-              label="People living with dementia worldwide (2020)"
-            />
-            <StatCard
-              value="99%"
-              label="Clinical trial failure rate (2002-2012)"
-            />
-            <StatCard
-              value="~850:1"
-              label="Novel molecule vs. repurposed drug trial ratio"
-            />
-            <StatCard
-              value="$42.5 Billion"
-              label="Cumulative private R&D expenditure (1995 - 2001)"
-            />
+            <StatCard value="55M+" label="People with dementia worldwide" />
+            <StatCard value="850:1" label="Novel vs. repurposed drug trials" />
+            <StatCard value="$42.5B" label="Private R&D spent (1995-2021)" />
           </motion.div>
         </div>
       </div>
@@ -92,7 +96,7 @@ interface StatCardProps {
 
 function StatCard({ value, label }: StatCardProps) {
   return (
-    <div className="bg-[var(--bg-secondary)] rounded-lg p-6 text-center">
+    <div className="bg-[var(--bg-secondary)] rounded border border-[var(--border)] p-6 text-center">
       <span className="text-2xl sm:text-3xl font-bold font-serif text-[var(--accent-orange)] block">
         {value}
       </span>

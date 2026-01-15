@@ -19,37 +19,50 @@ src/
 │   ├── layout.tsx          # Root layout
 │   ├── page.tsx            # Main scrollytelling page
 │   ├── globals.css         # Global styles
+│   ├── methodology/        # Methodology & sources page
+│   │   └── page.tsx
 │   └── showcase/           # Component library showcase
 │       └── page.tsx        # /showcase - visual component reference
 ├── components/
 │   ├── ui/                 # Reusable UI primitives
+│   │   ├── Abbreviation.tsx
 │   │   ├── Button.tsx
 │   │   ├── Card.tsx
 │   │   ├── Container.tsx
 │   │   ├── Heading.tsx
 │   │   ├── Section.tsx
+│   │   ├── ShoutoutBox.tsx
 │   │   └── index.ts
 │   ├── sections/           # Page sections (scrollytelling acts)
 │   │   ├── Hero.tsx
-│   │   ├── InvestmentWaterfall.tsx
+│   │   ├── HistoricalTimeline.tsx
+│   │   ├── TrialBarriers.tsx
 │   │   ├── EvidenceGraveyard.tsx
-│   │   ├── SidelinedResearchers.tsx
 │   │   ├── FailureCascade.tsx
 │   │   ├── CaseStudies.tsx
+│   │   ├── HopefulDevelopments.tsx
+│   │   ├── SexAncestryEffects.tsx
 │   │   ├── EvidenceHierarchy.tsx
-│   │   ├── MechanisticCascade.tsx
-│   │   ├── Stakes.tsx
 │   │   └── index.ts
 │   └── layout/             # Layout components
 │       ├── Header.tsx
 │       ├── Footer.tsx
 │       ├── ScrollProgress.tsx
+│       ├── SectionNav.tsx
 │       └── index.ts
 ├── data/                   # Data structures and constants
-│   ├── drugs.ts            # Drug comparison data
+│   ├── bibliography/       # Modular citation database
+│   │   ├── types.ts
+│   │   ├── foundational.ts
+│   │   ├── hypotheses.ts
+│   │   ├── trials.ts
+│   │   └── index.ts
+│   ├── timeline.ts         # Historical timeline events
+│   ├── trialBarriers.ts    # Trial cost/funding data
+│   ├── hopefulDevelopments.ts
+│   ├── sexAncestryEffects.ts
 │   ├── failures.ts         # Market failure definitions
-│   ├── caseStudies.ts      # Case study narratives + Lesne scandal
-│   ├── researchers.ts      # Sidelined researchers, cascade, evidence hierarchy
+│   ├── caseStudies.ts      # Case study narratives
 │   └── index.ts
 ├── hooks/                  # Custom React hooks
 │   ├── useScrollProgress.ts
@@ -84,7 +97,7 @@ src/
 
 **IMPORTANT**: Always refer to the component library at `/showcase` for visual reference when building new components or modifying existing ones. The showcase demonstrates proper usage of colors, typography, buttons, cards, badges, alerts, and tables.
 
-### Color Palette (GoInvo-inspired Light Theme)
+### Color Palette (Light Theme)
 ```css
 /* Backgrounds - Warm off-whites */
 --bg-primary: #faf9f7;      /* Main background - warm off-white */
@@ -96,9 +109,19 @@ src/
 --text-body: #4a4a4a;       /* Body text - dark gray */
 --text-muted: #7a7a7a;      /* Secondary text - muted gray */
 
-/* Accent - GoInvo signature orange */
+/* Accent - Signature orange */
 --accent-orange: #e36216;
 --accent-orange-light: #f8e8de;
+
+/* Chart Colors - Used in data visualizations */
+--chart-primary: #486393;     /* Primary blue */
+--chart-secondary: #007385;   /* Teal */
+--chart-accent: #C9461D;      /* Accent orange (darker) */
+--chart-warning: #E5AF19;     /* Warning yellow / Amerindian */
+--chart-pink: #C3577F;        /* Nigerian pink */
+--chart-muted: #787473;       /* Muted gray */
+--chart-light-blue: #7ED3FF;  /* Sky blue */
+--chart-light-orange: #FFA380;/* Light orange */
 
 /* Category Colors - Soft pastels for hypothesis coding */
 --category-amyloid: #60a5fa;    /* Soft blue */
@@ -116,6 +139,23 @@ src/
 
 /* Borders */
 --border: #e5e2dd;          /* Warm gray border */
+```
+
+### Chart Colors (For Recharts/Data Viz)
+When using Recharts or any data visualization, use these consistent colors:
+```typescript
+const chartColors = {
+  primary: '#e36216',      // orange - primary for takeaways/highlights
+  secondary: '#007385',    // teal - secondary data
+  tertiary: '#486393',     // blue - supporting data
+  accent: '#C9461D',       // darker orange - AD-specific data
+  warning: '#E5AF19',      // yellow - warnings/Amerindian
+  pink: '#C3577F',         // pink - Nigerian
+  muted: '#787473',        // gray - less important data
+  lightBlue: '#7ED3FF',    // sky blue
+  lightOrange: '#FFA380',  // light orange
+  dark: '#263238',         // dark
+};
 ```
 
 ### Typography
@@ -144,11 +184,20 @@ See `/showcase` for live examples of all components.
 ```
 
 #### Cards
+Cards use rectangular corners (`rounded` not `rounded-lg`):
 ```tsx
 <Card variant="default | highlighted | success | danger">
   <CardHeader>...</CardHeader>
   <CardContent>...</CardContent>
 </Card>
+```
+
+#### ShoutoutBox
+Theme-consistent callout boxes for important information:
+```tsx
+<ShoutoutBox variant="default | primary | secondary | warning | danger | success">
+  Important information here...
+</ShoutoutBox>
 ```
 
 #### Badges
@@ -300,6 +349,13 @@ export function Component({ ...props }: ComponentProps) {
 - Data files: camelCase (`caseStudies.ts`)
 - Types: PascalCase (`CascadeStage`)
 - CSS classes: Use Tailwind utilities, avoid custom CSS
+
+### Styling Consistency
+- **Always use CSS variables** for colors (e.g., `text-[var(--text-primary)]` not `text-slate-900`)
+- **Use `rounded` not `rounded-lg`** for rectangular corners on cards and boxes
+- **Avoid Tailwind color classes** like `bg-blue-50`, `text-emerald-600` - use theme colors instead
+- **Use chartColors constant** for all data visualizations (see Chart Colors section above)
+- **Status badges** should use theme-consistent background/text color pairs
 
 ## Accessibility
 - All interactive elements must be keyboard accessible

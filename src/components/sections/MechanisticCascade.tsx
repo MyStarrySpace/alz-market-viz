@@ -54,8 +54,8 @@ export function MechanisticCascade() {
             <CardContent>
               <p className="text-[var(--text-body)]">
                 A key insight from recent research is that Aβ deposition appears to be a{' '}
-                <span className="text-[var(--accent-orange)] font-semibold">consequence</span>—not a cause—of
-                upstream dysfunction. The &quot;sidelined researchers&quot; weren&apos;t wrong—they were each
+                <span className="text-[var(--accent-orange)] font-semibold">consequence</span> of
+                upstream dysfunction, rather than a cause. The &quot;sidelined researchers&quot; weren&apos;t wrong: they were each
                 describing different stages of the same cascade.
               </p>
             </CardContent>

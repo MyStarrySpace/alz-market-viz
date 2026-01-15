@@ -95,7 +95,7 @@ export const failedApproaches: FailedApproach[] = [
     trialName: 'EXPEDITION 1/2/3',
     participants: 4100,
     trialResult:
-      'EXPEDITION 1 & 2 failed in mild-to-moderate AD. EXPEDITION 3 focused on mild AD only—still failed to meet primary endpoint.',
+      'EXPEDITION 1 & 2 failed in mild-to-moderate AD. EXPEDITION 3 focused on mild AD only, but still failed to meet primary endpoint.',
     yearFailed: 2016,
     failureReasons: ['no_efficacy'],
     lesson:
@@ -215,7 +215,7 @@ export const failedApproaches: FailedApproach[] = [
     yearFailed: 2018,
     failureReasons: ['futility', 'no_efficacy'],
     lesson:
-      'The entire BACE inhibitor class failed. Reducing amyloid production—like removing plaques—does not slow disease.',
+      'The entire BACE inhibitor class failed. Reducing amyloid production, like removing plaques, does not slow disease.',
     sourceIds: ['lanabecestat-2018'],
   },
 

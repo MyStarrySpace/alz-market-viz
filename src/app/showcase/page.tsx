@@ -1,27 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
 import {
-  ChevronRight,
   Download,
   ExternalLink,
   ArrowRight,
   Check,
   AlertCircle,
-  Info
+  Info,
 } from 'lucide-react';
-import { Container, Section, Card, CardContent, CardHeader, Button, Heading } from '@/components/ui';
+import { Container, Section, Card, CardContent, CardHeader, Button, Heading, DataCard } from '@/components/ui';
+import { MenopauseComparison, AncestryRiskChart, FatDistributionChart, InterventionsTable } from '@/components/sections';
+
+// Section definitions for navigation
+const sections = [
+  { id: 'showcase-hero', label: 'Overview' },
+  { id: 'typography', label: 'Typography' },
+  { id: 'colors', label: 'Colors' },
+  { id: 'buttons', label: 'Buttons' },
+  { id: 'cards', label: 'Cards' },
+  { id: 'data-cards', label: 'Data Cards' },
+  { id: 'badges', label: 'Badges' },
+  { id: 'alerts', label: 'Alerts' },
+  { id: 'stats', label: 'Stats' },
+  { id: 'tables', label: 'Tables' },
+  { id: 'sex-ancestry-viz', label: 'Sex & Ancestry' },
+];
 
 export default function ShowcasePage() {
   return (
     <main className="min-h-screen bg-[var(--bg-primary)]">
-      <Section id="showcase-hero" className="pt-24">
+      {/* Add padding on mobile for the sticky nav */}
+      <Section id="showcase-hero" className="pt-24 lg:pt-24 mt-14 lg:mt-0">
         <Container>
           <Heading as="h1" className="mb-4">Component Library</Heading>
           <p className="text-[var(--text-muted)] text-lg max-w-2xl">
-            A collection of reusable components for the Untangling Alzheimer&apos;s project,
-            following GoInvo design principles.
+            A collection of reusable components for the Untangling Alzheimer&apos;s project.
           </p>
         </Container>
       </Section>
@@ -196,6 +209,65 @@ export default function ShowcasePage() {
         </Container>
       </Section>
 
+      {/* Data Cards */}
+      <Section id="data-cards">
+        <Container>
+          <SectionTitle>Data Cards</SectionTitle>
+          <p className="text-[var(--text-muted)] mb-6">
+            Consistent cards for data visualizations, charts, and metrics. No rounded corners, compact padding, with optional colored callout boxes.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <DataCard
+              title="1. With Teal Callout"
+              description="Default callout color for highlighting key insights from the data."
+              callout={{
+                text: <><strong>Key insight:</strong> This is how callouts appear with the default teal color.</>,
+                color: 'teal',
+              }}
+            >
+              <div className="h-32 bg-[var(--bg-secondary)] flex items-center justify-center text-[var(--text-muted)] text-sm">
+                Chart or visualization goes here
+              </div>
+            </DataCard>
+
+            <DataCard
+              title="2. With Warning Callout"
+              description="Yellow/amber callout for warnings or important caveats."
+              callout={{
+                text: <><strong>2.7x gap:</strong> Warning callouts draw attention to concerning data points.</>,
+                color: 'warning',
+              }}
+            >
+              <div className="h-32 bg-[var(--bg-secondary)] flex items-center justify-center text-[var(--text-muted)] text-sm">
+                Chart or visualization goes here
+              </div>
+            </DataCard>
+
+            <DataCard
+              title="3. With Pink Callout"
+              description="Pink callout for concluding statements or results."
+              callout={{
+                text: <><strong>Result:</strong> Pink callouts work well for summarizing outcomes.</>,
+                color: 'pink',
+              }}
+            >
+              <div className="h-32 bg-[var(--bg-secondary)] flex items-center justify-center text-[var(--text-muted)] text-sm">
+                Chart or visualization goes here
+              </div>
+            </DataCard>
+
+            <DataCard
+              title="4. No Callout"
+              description="Data cards can also be used without a callout for simpler presentations."
+            >
+              <div className="h-32 bg-[var(--bg-secondary)] flex items-center justify-center text-[var(--text-muted)] text-sm">
+                Chart or visualization goes here
+              </div>
+            </DataCard>
+          </div>
+        </Container>
+      </Section>
+
       {/* Badges/Tags */}
       <Section id="badges">
         <Container>
@@ -298,9 +370,9 @@ export default function ShowcasePage() {
                       <td className="py-3 px-4 text-[var(--success)] font-mono">$50</td>
                     </tr>
                     <tr>
-                      <td className="py-3 px-4 text-[var(--text-primary)] font-medium">TNF Inhibitors</td>
-                      <td className="py-3 px-4 text-[var(--text-body)]">Biosimilar</td>
-                      <td className="py-3 px-4"><Badge variant="danger">Abandoned</Badge></td>
+                      <td className="py-3 px-4 text-[var(--text-primary)] font-medium">GV-971</td>
+                      <td className="py-3 px-4 text-[var(--text-body)]">Generic</td>
+                      <td className="py-3 px-4"><Badge variant="warning">China Only</Badge></td>
                       <td className="py-3 px-4 text-[var(--success)] font-mono">$200</td>
                     </tr>
                   </tbody>
@@ -308,6 +380,42 @@ export default function ShowcasePage() {
               </div>
             </CardContent>
           </Card>
+        </Container>
+      </Section>
+
+      {/* Sex & Ancestry Visualizations */}
+      <Section id="sex-ancestry-viz">
+        <Container>
+          <SectionTitle>Sex &amp; Ancestry Visualizations</SectionTitle>
+          <p className="text-[var(--text-muted)] mb-8">
+            Visualizations showing how biological sex and genetic ancestry modify AD risk through specific molecular pathways.
+          </p>
+
+          <div className="space-y-8">
+            {/* Menopause Comparison */}
+            <div>
+              <p className="text-sm text-[var(--text-muted)] mb-4 font-medium">Menopause Transition Comparison</p>
+              <MenopauseComparison />
+            </div>
+
+            {/* Two-column layout for charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <p className="text-sm text-[var(--text-muted)] mb-4 font-medium">APOE4 Risk by Ancestry</p>
+                <AncestryRiskChart />
+              </div>
+              <div>
+                <p className="text-sm text-[var(--text-muted)] mb-4 font-medium">Fat Distribution by Ancestry</p>
+                <FatDistributionChart />
+              </div>
+            </div>
+
+            {/* Interventions Table */}
+            <div>
+              <p className="text-sm text-[var(--text-muted)] mb-4 font-medium">Mechanism-Matched Interventions</p>
+              <InterventionsTable />
+            </div>
+          </div>
         </Container>
       </Section>
     </main>

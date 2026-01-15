@@ -3,7 +3,7 @@ export * from './drugs';
 export * from './failures';
 export * from './caseStudies';
 export * from './researchers';
-export * from './bibliography';
+export * from './bibliography/index';
 export * from './timeline';
 export * from './frameworks';
 export * from './sectionCopy';

@@ -61,7 +61,7 @@ export function CaseStudies() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 rounded-lg bg-[var(--success-light)] border border-[var(--success)]">
+                        <div className="p-4 rounded bg-[var(--success-light)] border border-[var(--success)]">
                           <h4 className="text-sm font-medium text-[var(--success)] mb-2 flex items-center gap-2">
                             <ChevronRight className="w-4 h-4" />
                             What Should Happen
@@ -70,7 +70,7 @@ export function CaseStudies() {
                             <TextWithAbbreviations text={currentCase.whatShouldHappen} />
                           </p>
                         </div>
-                        <div className="p-4 rounded-lg bg-[var(--danger-light)] border border-[var(--danger)]">
+                        <div className="p-4 rounded bg-[var(--danger-light)] border border-[var(--danger)]">
                           <h4 className="text-sm font-medium text-[var(--danger)] mb-2 flex items-center gap-2">
                             <AlertCircle className="w-4 h-4" />
                             What Actually Happened
@@ -82,7 +82,7 @@ export function CaseStudies() {
                       </div>
 
                       {currentCase.quote && (
-                        <div className="mt-6 p-6 rounded-lg bg-[var(--accent-orange-light)] border-l-4 border-[var(--accent-orange)]">
+                        <div className="mt-6 p-6 rounded bg-[var(--accent-orange-light)] border-l-4 border-[var(--accent-orange)]">
                           <Quote className="w-6 h-6 text-[var(--accent-orange)] mb-2" />
                           <blockquote className="text-[var(--text-body)] italic text-lg">
                             &ldquo;{currentCase.quote}&rdquo;

@@ -82,11 +82,11 @@ export function Stakes() {
                   <ul className="space-y-3 text-[var(--text-body)]">
                     <li className="flex items-start gap-3">
                       <span className="text-[var(--success)] mt-1">+</span>
-                      <span>Trials for TNF inhibitors, lithium, nebivolol</span>
+                      <span>Trials for lithium, nebivolol, GV-971</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-[var(--success)] mt-1">+</span>
-                      <span>50-70% prevention potential (TNF data)</span>
+                      <span>Reversal potential (lithium data)</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-[var(--success)] mt-1">+</span>
@@ -112,8 +112,8 @@ export function Stakes() {
           viewport={{ once: true }}
         >
           <p className="text-xl text-[var(--text-body)] max-w-3xl mx-auto mb-8">
-            The goal is not to argue for any specific treatment, but to make visible
-            the structural forces that shape—and distort—Alzheimer&apos;s research.
+            The goal is to make visible the structural forces that shape, and sometimes distort, Alzheimer&apos;s research,
+            rather than to argue for any specific treatment.
           </p>
           <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
             Understanding the system is the first step toward changing it.

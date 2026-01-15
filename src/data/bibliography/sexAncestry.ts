@@ -1,0 +1,210 @@
+// Sex and Ancestry in AD Sources
+// Includes: SEX AND ANCESTRY IN AD
+
+import { Source } from './types';
+
+export const sexAncestrySources: Source[] = [
+  // ============================================
+  // SEX AND ANCESTRY IN AD
+  // ============================================
+  {
+    id: 'belloy-slc9a7-2024',
+    type: 'journal',
+    authors: ['Michael E. Belloy', 'Yann Le Guen', 'Ilaria Stewart', 'et al.'],
+    title: 'X-Chromosome-Wide Association Study for Alzheimer Disease',
+    publication: 'JAMA Neurology',
+    year: 2024,
+    doi: '10.1001/jamaneurol.2024.2843',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/39250132/',
+    citations: [
+      {
+        id: 'belloy-2024-slc9a7',
+        quote: 'SLC9A7, encoding a sodium-hydrogen exchanger localized to the trans-Golgi network and recycling endosomes, was the most significant X chromosome-wide association with Alzheimer disease.',
+        usedIn: ['sexAncestry'],
+        context: '#1 X-linked AD risk locus in 1.15 million participants—encodes pH regulation machinery.',
+      },
+    ],
+  },
+  {
+    id: 'xiong-fsh-2022',
+    type: 'journal',
+    authors: ['Keqiang Ye', 'Zaidi M.', 'et al.'],
+    title: 'FSH blockade improves cognition in mice with Alzheimer\'s disease',
+    publication: 'Nature',
+    year: 2022,
+    volume: '603',
+    pages: '470-476',
+    doi: '10.1038/s41586-022-04463-0',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/35236988/',
+    citations: [
+      {
+        id: 'xiong-2022-fsh-neurons',
+        quote: 'FSH acts directly on hippocampal and cortical neurons through FSHR to induce C/EBPβ-dependent δ-secretase expression, which cleaves both APP and Tau, accelerating Alzheimer\'s disease pathology.',
+        usedIn: ['sexAncestry'],
+        context: 'FSH (which rises during menopause) acts DIRECTLY on neurons to accelerate AD—not just a hormonal effect.',
+      },
+      {
+        id: 'xiong-2022-fsh-blockade',
+        quote: 'Blocking FSH with an antibody reduces Aβ and Tau pathology and reverses cognitive impairment in mice.',
+        usedIn: ['sexAncestry'],
+        context: 'A single FSH-blocking agent could potentially treat AD + obesity + osteoporosis + dyslipidemia.',
+      },
+    ],
+  },
+  {
+    id: 'prakash-ldam-2025',
+    type: 'journal',
+    authors: ['Priya Prakash', 'Javier A. Vilalta', 'et al.'],
+    title: 'DGAT2 links lipid droplet accumulation to inflammatory microglia in Alzheimer\'s disease',
+    publication: 'Immunity',
+    year: 2025,
+    doi: '10.1016/j.immuni.2024.12.007',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/39778563/',
+    citations: [
+      {
+        id: 'prakash-2025-female-ldam',
+        quote: 'Female microglia showed significantly higher lipid droplet accumulation and LDAM phenotype compared to male microglia, mediated through DGAT2-dependent pathways.',
+        usedIn: ['sexAncestry'],
+        context: 'Female-biased LDAM formation—DGAT2 inhibitors may preferentially benefit females.',
+      },
+    ],
+  },
+  {
+    id: 'griswold-apoe-expression-2021',
+    type: 'journal',
+    authors: ['Anthony J. Griswold', 'Larry D. Adams', 'et al.'],
+    title: 'Increased APOE ε4 expression is associated with the difference in Alzheimer\'s disease risk from diverse ancestral backgrounds',
+    publication: 'Alzheimer\'s & Dementia',
+    year: 2021,
+    volume: '17',
+    pages: '1179-1188',
+    doi: '10.1002/alz.12287',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/33619396/',
+    citations: [
+      {
+        id: 'griswold-2021-expression',
+        quote: 'European ancestry APOE ε4 carriers had significantly higher brain APOE ε4 protein expression compared to African ancestry carriers with the same genotype.',
+        usedIn: ['sexAncestry'],
+        context: 'It\'s not just having APOE4—it\'s how much you express. This may explain ancestry differences in risk.',
+      },
+    ],
+  },
+  {
+    id: 'rajabli-protective-variant-2022',
+    type: 'journal',
+    authors: ['Farid Rajabli', 'Takiyah D. Starks', 'et al.'],
+    title: 'A locus at 19q13.31 significantly reduces the ApoE ε4 risk for Alzheimer\'s disease in African ancestry',
+    publication: 'PLOS Genetics',
+    year: 2022,
+    volume: '18',
+    pages: 'e1009977',
+    doi: '10.1371/journal.pgen.1009977',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/35788729/',
+    citations: [
+      {
+        id: 'rajabli-2022-protective',
+        quote: 'The rs10423769 A allele reduces APOE ε4-associated AD risk from OR 7.2 to OR 2.1 in individuals of African ancestry.',
+        usedIn: ['sexAncestry'],
+        context: 'African-specific protective variant explains part of the attenuated APOE4 risk.',
+      },
+    ],
+  },
+  {
+    id: 'naslavsky-local-ancestry-2022',
+    type: 'journal',
+    authors: ['Michel S. Naslavsky', 'Marilia O. Scliar', 'et al.'],
+    title: 'Local ancestry modulates the association between APOE and Alzheimer\'s disease pathology',
+    publication: 'Molecular Psychiatry',
+    year: 2022,
+    volume: '27',
+    pages: '4426-4434',
+    doi: '10.1038/s41380-022-01758-2',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/36071110/',
+    citations: [
+      {
+        id: 'naslavsky-2022-local',
+        quote: 'Local ancestry at the APOE locus, rather than global ancestry, modulates the relationship between APOE ε4 and Alzheimer\'s disease neuropathology.',
+        usedIn: ['sexAncestry'],
+        context: 'APOE4-neuropathology link is weak in African ancestry—different disease mechanism?',
+      },
+    ],
+  },
+  {
+    id: 'heid-fat-distribution-2010',
+    type: 'journal',
+    authors: ['Iris M. Heid', 'Anne U. Jackson', 'et al.'],
+    title: 'Meta-analysis identifies 13 new loci associated with waist-hip ratio and reveals sexual dimorphism in the genetic basis of fat distribution',
+    publication: 'Nature Genetics',
+    year: 2010,
+    volume: '42',
+    pages: '949-960',
+    doi: '10.1038/ng.685',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/20935630/',
+    citations: [
+      {
+        id: 'heid-2010-sexual-dimorphism',
+        quote: 'Seven of the 14 loci showed significant sexual dimorphism, with effects being stronger in women than in men.',
+        usedIn: ['sexAncestry'],
+        context: 'Fat distribution genes show sex-specific effects—relevant to metabolic AD pathways.',
+      },
+    ],
+  },
+  {
+    id: 'du-testosterone-2025',
+    type: 'journal',
+    authors: ['Qiwei Du', 'Lin Ding', 'et al.'],
+    title: 'Testosterone promotes autophagy in microglia through GPRC6A-ERK-mTOR inhibition',
+    publication: 'Advanced Science',
+    year: 2025,
+    doi: '10.1002/advs.202305653',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/39108157/',
+    citations: [
+      {
+        id: 'du-2025-testosterone',
+        quote: 'Testosterone enhances microglial autophagy through GPRC6A receptor activation, which inhibits mTOR via ERK signaling, promoting clearance of protein aggregates.',
+        usedIn: ['sexAncestry'],
+        context: 'Testosterone → autophagy enhancement; orchiectomy → Aβ accumulation.',
+      },
+    ],
+  },
+  {
+    id: 'guillot-sestier-microglia-2021',
+    type: 'journal',
+    authors: ['Marie-Victoire Guillot-Sestier', 'Karine Arauz', 'et al.'],
+    title: 'Sex-specific microglial responses to metabolic stress in Alzheimer\'s disease',
+    publication: 'Communications Biology',
+    year: 2021,
+    volume: '4',
+    pages: '199',
+    doi: '10.1038/s42003-021-01713-4',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/33622217/',
+    citations: [
+      {
+        id: 'guillot-sestier-2021-paradox',
+        quote: 'Female microglia expressed higher levels of lysosomal genes (Lamp1, Lamp2, CD68) but showed impaired phagocytic function compared to male microglia.',
+        usedIn: ['sexAncestry'],
+        context: 'The estrogen paradox: more lysosomal genes ≠ better clearance. The bottleneck is acidification.',
+      },
+    ],
+  },
+  {
+    id: 'camilleri-fat-ancestry-2021',
+    type: 'journal',
+    authors: ['Geoffrey Camilleri', 'et al.'],
+    title: 'Ethnic differences in adipose tissue distribution: Systematic review and meta-analysis',
+    publication: 'Genes',
+    year: 2021,
+    volume: '12',
+    pages: '686',
+    doi: '10.3390/genes12050686',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/34072523/',
+    citations: [
+      {
+        id: 'camilleri-2021-vat',
+        quote: 'Individuals of African ancestry have lower visceral adipose tissue and higher subcutaneous adipose tissue compared to European ancestry at the same BMI, while Asian ancestry shows the opposite pattern.',
+        usedIn: ['sexAncestry'],
+        context: 'Africans have genetically lower VAT → lower baseline systemic inflammation → may explain attenuated APOE4 risk.',
+      },
+    ],
+  },
+];

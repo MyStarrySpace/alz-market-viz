@@ -76,7 +76,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     cost: '~$26,500/year',
     availability: 'FDA approved January 2023 (accelerated), July 2024 (traditional)',
     caveats: [
-      '27% slowing is modest—patients still decline',
+      '27% slowing is modest,patients still decline',
       'Requires regular MRI monitoring for ARIA',
       'Only for early-stage AD with confirmed amyloid',
       'High cost limits accessibility',
@@ -94,7 +94,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     mechanism:
       'Targets pyroglutamate Aβ, a modified form found primarily in plaques. Designed for time-limited treatment.',
     whyHopeful:
-      'Showed 35% slowing of decline—the best result for any amyloid-targeting drug. Unique "treat to clear" approach may allow stopping therapy.',
+      'Showed 35% slowing of decline,the best result for any amyloid-targeting drug. Unique "treat to clear" approach may allow stopping therapy.',
     evidence: [
       {
         trialName: 'TRAILBLAZER-ALZ 2',
@@ -142,7 +142,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     cost: '<$20/month (generic)',
     availability: 'FDA approved 1996; generic available',
     caveats: [
-      'Symptomatic only—does not slow underlying disease',
+      'Symptomatic only,does not slow underlying disease',
       'Benefits typically last 6-12 months before decline resumes',
       'GI side effects (nausea, diarrhea) in some patients',
     ],
@@ -222,7 +222,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
       {
         trialName: 'Phase 3 trials',
         trialPhase: 'Phase 3',
-        primaryOutcome: 'SIB (Severe Impairment Battery): 40 simple tasks for patients with advanced dementia—naming colors, counting fingers, following one-step commands (0-100 scale, higher = better). ADCS-ADL (Activities of Daily Living): 23 items rating ability to eat, dress, use telephone, manage money (0-54 scale, higher = more independent)',
+        primaryOutcome: 'SIB (Severe Impairment Battery): 40 simple tasks for patients with advanced dementia,naming colors, counting fingers, following one-step commands (0-100 scale, higher = better). ADCS-ADL (Activities of Daily Living): 23 items rating ability to eat, dress, use telephone, manage money (0-54 scale, higher = more independent)',
         result: 'Modest improvement: ~3 points on 100-point SIB and ~1.5 points on 54-point ADCS-ADL',
         limitation: 'Smaller effect size than cholinesterase inhibitors in mild AD',
       },
@@ -274,9 +274,9 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     cost: 'Varies by formulation',
     availability: 'Next-generation trials ongoing (tirzepatide, CNS-optimized formulations)',
     caveats: [
-      'Previous GLP-1 trials failed—hypothesis may be wrong OR drug delivery was inadequate',
+      'Previous GLP-1 trials failed,hypothesis may be wrong OR drug delivery was inadequate',
       'Blood-brain barrier penetration is the key limitation',
-      'Tirzepatide (GLP-1/GIP dual agonist) trials ongoing—may have better CNS effects',
+      'Tirzepatide (GLP-1/GIP dual agonist) trials ongoing,may have better CNS effects',
       'Need drugs specifically designed for brain penetration',
     ],
     sourceIds: ['liraglutide-elad-2025', 'semaglutide-evoke-2024'],
@@ -395,8 +395,8 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     cost: 'Unknown (early stage)',
     availability: 'Phase 1 clinical trials planned',
     caveats: [
-      'Still in preclinical stage—human data not yet available',
-      'Novel mechanism—long-term effects of blocking peripheral immune cells unknown',
+      'Still in preclinical stage,human data not yet available',
+      'Novel mechanism,long-term effects of blocking peripheral immune cells unknown',
       'Neuroinflammation hypothesis still being validated',
     ],
     sourceIds: ['mindimmune-2025'],
@@ -445,7 +445,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     caveats: [
       'Human clinical trials not yet completed',
       'Optimal dose for humans unknown',
-      'Do not self-treat—wait for clinical trial results',
+      'Do not self-treat,wait for clinical trial results',
       'Supplement quality varies',
     ],
     sourceIds: ['lithium-orotate-2025'],
@@ -476,7 +476,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     ],
     availability: 'Available to researchers; widely adopted since 2014',
     caveats: [
-      'Still a mouse model—may not translate to humans',
+      'Still a mouse model,may not translate to humans',
       'Only models amyloid pathology, not full AD complexity',
     ],
     sourceIds: ['appnlgf-saido-2014'],
@@ -609,7 +609,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     cost: 'Free (behavior change); varies for sleep disorder treatment',
     availability: 'Available to everyone',
     caveats: [
-      'Glymphatic theory recently debated—mechanisms may be more complex',
+      'Glymphatic theory recently debated,mechanisms may be more complex',
       'Causation vs correlation unclear',
       'Sleep disorders may be early AD symptom, not cause',
     ],
@@ -624,7 +624,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     description:
       'Maintaining cognitive stimulation through learning, puzzles, social interaction, and mentally engaging activities.',
     mechanism:
-      'Builds cognitive reserve—the brain\'s resilience to pathology. Social engagement may reduce stress and inflammation.',
+      'Builds cognitive reserve,the brain\'s resilience to pathology. Social engagement may reduce stress and inflammation.',
     whyHopeful:
       'Part of successful FINGER intervention. Large observational evidence. Addresses the "use it or lose it" principle.',
     evidence: [

@@ -1,5 +1,5 @@
 // Sex and Ancestry Effects in Alzheimer's Disease
-// These are not statistical covariates—they are mechanistic drivers that determine
+// These are not statistical covariates: they are mechanistic drivers that determine
 // who gets AD and who responds to treatment.
 
 export interface XLinkedGene {
@@ -102,7 +102,7 @@ export const hormoneEffects: HormoneEffect[] = [
   {
     hormone: 'Estrogen',
     effectOnLysosomes: '↑ Lysosomal gene expression (Lamp1, Lamp2, CD68) but NOT function',
-    adImplication: 'Paradox: Female microglia express MORE lysosomal genes but have WORSE phagocytic function—the bottleneck is acidification, not gene expression',
+    adImplication: 'Paradox: Female microglia express MORE lysosomal genes but have WORSE phagocytic function. The bottleneck is acidification, not gene expression.',
   },
   {
     hormone: 'Estrogen withdrawal',
@@ -207,7 +207,7 @@ export const ancestryAPOE4Risks: AncestryAPOE4Risk[] = [
     ancestry: 'Nigerian',
     apoe4OddsRatio: 'No association',
     vsEuropean: 'VERY PROTECTED',
-    notes: '"Nigerian Paradox"—APOE4 shows NO association with AD despite high allele frequency',
+    notes: '"Nigerian Paradox": APOE4 shows NO association with AD despite high allele frequency',
   },
 ];
 
@@ -224,7 +224,7 @@ export const ancestryAPOE4Expression = {
     protectiveVariants: 'rs10423769_A reduces OR from 7.2 → 2.1',
     neuropathologyLink: 'Weak (Naslavsky 2022)',
   },
-  criticalInsight: 'It\'s not just having APOE4—it\'s how much you express and in what genetic context.',
+  criticalInsight: 'It\'s not just having APOE4: it\'s how much you express and in what genetic context.',
 };
 
 // Fat distribution by ancestry
@@ -252,7 +252,7 @@ export const ancestryFatDistribution: AncestryFatDistribution[] = [
 export const fatDistributionADRelevance = {
   mechanism: 'Visceral adipose tissue (VAT) secretes pro-inflammatory adipokines (IL-6, TNF-α, leptin) into portal circulation → cross BBB → neuroinflammation',
   genesWith7of14SexualDimorphism: ['RSPO3', 'TBX15', 'LYPLAL1', 'VEGFA', 'GRB14', 'LY86', 'ADAMTS9'],
-  note: '7 of 14 fat distribution loci show sexual dimorphism (all stronger in women)',
+  note: '7 of 14 fat distribution loci show sexual dimorphism (all stronger in females)',
 };
 
 // Nigerian Paradox explanations
@@ -262,7 +262,7 @@ export const nigerianParadox = {
     { factor: 'Dietary', explanation: 'Traditional low-fat, high-fiber diet' },
     { factor: 'Genetic', explanation: 'Different local haplotype/protective variants in APOE region' },
     { factor: 'Metabolic', explanation: 'Lower VAT, different lipid handling' },
-    { factor: 'Infectious', explanation: 'Possible past selection for APOE4 (malaria, other pathogens)—APOE4 may be beneficial in some contexts' },
+    { factor: 'Infectious', explanation: 'Possible past selection for APOE4 (malaria, other pathogens). APOE4 may be beneficial in some contexts.' },
   ],
 };
 
@@ -275,7 +275,7 @@ export const currentTrialProblems = [
   'Don\'t stratify by ancestry (or are >90% European)',
   'Use APOE4 status without considering ancestry context',
   'Ignore metabolic phenotype (VAT, insulin resistance)',
-  'Donanemab point estimate favored placebo in Black subgroup—anti-amyloid may not work (or harm?) in this population',
+  'Donanemab point estimate favored placebo in Black subgroup. Anti-amyloid may not work (or harm?) in this population.',
 ];
 
 export const recommendedStratification = [
@@ -301,7 +301,7 @@ export const recommendedStratification = [
   },
   {
     factor: 'FSH levels',
-    why: 'Direct neuronal effects in post-menopausal women',
+    why: 'Direct neuronal effects in post-menopausal females',
     how: 'Blood test at baseline',
   },
 ];
@@ -310,8 +310,8 @@ export const recommendedStratification = [
 export const mechanismMatchedInterventions: MechanismMatchedIntervention[] = [
   {
     intervention: 'Lysosomal acidifiers (β2-agonists)',
-    bestCandidates: 'Post-menopausal women',
-    worstCandidates: 'Pre-menopausal women, males (already have functional acidification)',
+    bestCandidates: 'Post-menopausal females',
+    worstCandidates: 'Pre-menopausal females, males (already have functional acidification)',
     rationale: 'Addresses the specific lysosomal alkalinization that occurs after menopause',
   },
   {
@@ -328,8 +328,8 @@ export const mechanismMatchedInterventions: MechanismMatchedIntervention[] = [
   },
   {
     intervention: 'Anti-FSH antibodies',
-    bestCandidates: 'Perimenopausal/early postmenopausal women',
-    worstCandidates: 'Males, late postmenopausal women',
+    bestCandidates: 'Perimenopausal/early postmenopausal females',
+    worstCandidates: 'Males, late postmenopausal females',
     rationale: 'FSH rises during menopause transition and acts directly on neurons',
   },
   {
@@ -341,7 +341,7 @@ export const mechanismMatchedInterventions: MechanismMatchedIntervention[] = [
   {
     intervention: 'Anti-amyloid (lecanemab, donanemab)',
     bestCandidates: 'European APOE4 carriers',
-    worstCandidates: 'African ancestry—may be harmful? (Donanemab favored placebo in Black subgroup)',
+    worstCandidates: 'African ancestry: may be harmful? (Donanemab favored placebo in Black subgroup)',
     rationale: 'African ancestry shows weak APOE4-neuropathology link; different disease mechanism?',
   },
 ];
@@ -350,7 +350,7 @@ export const mechanismMatchedInterventions: MechanismMatchedIntervention[] = [
 // KEY STATISTICS
 // ============================================
 
-export const keyStatistics = {
+export const sexAncestryKeyStatistics = {
   femaleToMaleRatio: '2:1',
   apoe4RiskVariationAcrossAncestries: '3-5×',
   postMenopausalAccelerationWindow: '5-10 years after menopause',

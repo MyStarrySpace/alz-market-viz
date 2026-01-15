@@ -1,5 +1,5 @@
 // Why Companies Test AD Drugs in Other Conditions First
-// AD trials are exceptionally expensive, long, and risky—so companies often
+// AD trials are exceptionally expensive, long, and risky, so companies often
 // pursue faster, cheaper indications first (Parkinson's, ALS, diabetes, etc.)
 
 export interface TrialRequirement {
@@ -274,7 +274,7 @@ export const fundingSources: FundingSource[] = [
     annualBudget: 15, // Estimated based on portfolio; venture philanthropy model
     budgetYear: 2024,
     description:
-      'Venture philanthropy model—invests in drug development, returns go back to mission. Has invested $65M+ in 450 programs.',
+      'Venture philanthropy model that invests in drug development with returns going back to mission. Has invested $65M+ in 450 programs.',
     fundingFocus: [
       'Drug development',
       'Clinical trials',
@@ -384,7 +384,7 @@ export const nihLimitations = {
     },
     {
       problem: 'Grant Cycles',
-      detail: 'NIH grants are structured for academic timelines, not commercial drug development—making large, sustained Phase 3 investments structurally difficult.',
+      detail: 'NIH grants are structured for academic timelines rather than commercial drug development, making large, sustained Phase 3 investments structurally difficult.',
     },
     {
       problem: 'Academic Infrastructure',
@@ -408,14 +408,14 @@ export const nihLimitations = {
 // NIA spending by research focus area (for pie/bar chart)
 // Source: NIH Reporter analysis (nih-reporter-ad-portfolio-2024)
 export const niaSpendingByFocus = [
-  { name: 'Amyloid-focused', amount: 1140, percentage: 30, color: '#60a5fa' },
-  { name: 'Tau-focused', amount: 380, percentage: 10, color: '#f59e0b' },
-  { name: 'Neuroinflammation', amount: 228, percentage: 6, color: '#ec4899' },
-  { name: 'Vascular/Metabolic', amount: 190, percentage: 5, color: '#a78bfa' },
-  { name: 'Care & Caregiving', amount: 380, percentage: 10, color: '#10b981' },
-  { name: 'Basic Neuroscience', amount: 760, percentage: 20, color: '#6b7280' },
-  { name: 'Infrastructure/Training', amount: 342, percentage: 9, color: '#94a3b8' },
-  { name: 'Other', amount: 380, percentage: 10, color: '#cbd5e1' },
+  { name: 'Amyloid-focused', amount: 1140, percentage: 30, color: '#486393' }, // primary blue
+  { name: 'Tau-focused', amount: 380, percentage: 10, color: '#E5AF19' }, // warning yellow
+  { name: 'Neuroinflammation', amount: 228, percentage: 6, color: '#C3577F' }, // pink
+  { name: 'Vascular/Metabolic', amount: 190, percentage: 5, color: '#007385' }, // teal
+  { name: 'Care & Caregiving', amount: 380, percentage: 10, color: '#7ED3FF' }, // sky blue
+  { name: 'Basic Neuroscience', amount: 760, percentage: 20, color: '#787473' }, // muted
+  { name: 'Infrastructure/Training', amount: 342, percentage: 9, color: '#FFA380' }, // light orange
+  { name: 'Other', amount: 380, percentage: 10, color: '#C9461D' }, // accent orange
 ];
 export const niaSpendingSourceId = 'nih-reporter-ad-portfolio-2024';
 
@@ -450,7 +450,7 @@ export const grantCycleComparison = {
     totalBudget: 2.5, // $2.5M over 5 years
     annualBudget: 0.5, // $500K/year
     renewalRequired: true,
-    renewalUncertainty: 'High—must compete for renewal',
+    renewalUncertainty: 'High, must compete for renewal',
   },
   phase3Trial: {
     label: 'AD Phase 3 Trial',
@@ -462,7 +462,7 @@ export const grantCycleComparison = {
   },
   gap: {
     budgetMultiple: 185, // Phase 3 costs 185x more than an R01
-    insight: 'A single Phase 3 trial costs as much as 185 R01 grants. NIH would need to consolidate nearly 200 grants to fund one trial—something the grant system isn\'t designed to do.',
+    insight: 'A single Phase 3 trial costs as much as 185 R01 grants. NIH would need to consolidate nearly 200 grants to fund one trial, something the grant system isn\'t designed to do.',
   },
   sourceIds: ['nih-r01-funding-levels-2024', 'cummings-ad-drug-development-2022'],
 };
@@ -583,7 +583,7 @@ export function getFundingGapAnalysis() {
     ),
     nihCouldFundTrials: Math.floor(nihBudget / phase3Cost),
     keyInsight:
-      'All major AD nonprofits combined (~$173M/year) cannot fund a single Phase 3 trial ($462M). NIH could theoretically fund ~8 trials/year, but most funding goes to basic research. This leaves Phase 3 trials almost entirely dependent on industry—which prioritizes patentable compounds.',
+      'All major AD nonprofits combined (~$173M/year) cannot fund a single Phase 3 trial ($462M). NIH could theoretically fund ~8 trials/year, but most funding goes to basic research. This leaves Phase 3 trials almost entirely dependent on industry, which prioritizes patentable compounds.',
   };
 }
 
@@ -610,7 +610,7 @@ export const redirectedDrugs: RedirectedDrug[] = [
     name: 'β2-Adrenergic Agonists (Lysosome Acidifiers)',
     mechanism: 'Restore lysosomal acidification via β2-AR/PKA/ClC-7 pathway; rescues autophagy function',
     originalTarget: 'Asthma, COPD (existing β2 agonists like isoproterenol)',
-    adRationale: 'Nixon lab showed lysosome acidification failure is the earliest pathology in AD—before amyloid plaques. Restoring lysosomal pH reverses autophagy dysfunction, reduces intraneuronal amyloid >50%, and improves memory in AD mice.',
+    adRationale: 'Nixon lab showed lysosome acidification failure is the earliest pathology in AD, occurring before amyloid plaques. Restoring lysosomal pH reverses autophagy dysfunction, reduces intraneuronal amyloid >50%, and improves memory in AD mice.',
     currentIndications: ['β2 agonists approved for respiratory conditions; novel derivatives in preclinical development'],
     adTrialStatus: 'preclinical',
     whyNotAD: 'This is a paradigm shift from anti-amyloid approaches: "One has to now attack the process inside the cell... to cure the cell from inside rather than by removing amyloid." Novel brain-penetrant derivatives are being developed but lack pharma investment despite strong preclinical data.',
@@ -626,7 +626,7 @@ export const redirectedDrugs: RedirectedDrug[] = [
     adTrialStatus: 'phase_2',
     whyNotAD: 'Cancer trials have short durations (months) and clear response criteria (tumor shrinkage). AD senolytic trials are exploratory, require years of follow-up, and the mechanism is speculative. Small pilot studies ongoing but no pharma investment.',
     potentialConcerns: [
-      'Dasatinib inhibits Src family kinases required for DAP12 phosphorylation, potentially blocking TREM2-mediated DAM transition and phagocytosis—uncleared debris may activate TLR4',
+      'Dasatinib inhibits Src family kinases required for DAP12 phosphorylation, potentially blocking TREM2-mediated DAM transition and phagocytosis. Uncleared debris may activate TLR4.',
       'Rapid death of senescent glia may release iron, triggering ferroptosis in neighboring cells',
       'Quercetin is a flavonoid iron chelator that may strip bioavailable iron from cytoplasm, starving mitochondria of Fe-S clusters and worsening metabolic failure even as inflammation drops',
     ],
@@ -637,12 +637,12 @@ export const redirectedDrugs: RedirectedDrug[] = [
     name: 'Rapamycin (Sirolimus)',
     mechanism: 'mTOR inhibitor; enhances autophagy, reduces inflammation',
     originalTarget: 'Organ transplant rejection',
-    adRationale: 'mTOR inhibition restores autophagy—critical for clearing protein aggregates. Extends lifespan in multiple species.',
+    adRationale: 'mTOR inhibition restores autophagy, critical for clearing protein aggregates. Extends lifespan in multiple species.',
     currentIndications: ['Transplant rejection', 'Certain cancers', 'LAM'],
     adTrialStatus: 'phase_1',
     whyNotAD: 'Transplant trials are well-defined with clear endpoints. AD trials for an autophagy mechanism would need to prove cognitive benefit over years. No major pharma investment; only academic studies.',
     potentialConcerns: [
-      'Increases autophagosome input without guaranteeing lysosomal output—if lysosomal pH > 5.5 or lipofuscin load is high, autolysosomes may accumulate with undegraded mtDNA, risking LMP and cGAS-STING activation',
+      'Increases autophagosome input without guaranteeing lysosomal output. If lysosomal pH > 5.5 or lipofuscin load is high, autolysosomes may accumulate with undegraded mtDNA, risking LMP and cGAS-STING activation.',
       'Potent immunosuppressant that inhibits translation of cytokines and receptors needed for DAM transition, potentially impairing microglial protective functions',
     ],
     sourceIds: ['rapamycin-autophagy-2016'],
@@ -677,7 +677,7 @@ export const redirectedDrugs: RedirectedDrug[] = [
     adRationale: 'Brain insulin resistance is implicated in AD ("Type 3 diabetes" hypothesis); GLP-1 agonists may reduce neuroinflammation. As a small molecule, orforglipron may have better blood-brain barrier penetration than injectable peptides like semaglutide (which failed EVOKE).',
     currentIndications: ['Phase 3 for diabetes/obesity (not yet approved)'],
     adTrialStatus: 'none',
-    whyNotAD: 'Eli Lilly is prioritizing Phase 3 diabetes/obesity trials first—faster endpoints, higher success rates. If approved, physicians could prescribe off-label for AD patients while the company decides whether to run formal AD trials. This is the "test elsewhere first" strategy in action.',
+    whyNotAD: 'Eli Lilly is prioritizing Phase 3 diabetes/obesity trials first due to faster endpoints and higher success rates. If approved, physicians could prescribe off-label for AD patients while the company decides whether to run formal AD trials. This is the "test elsewhere first" strategy in action.',
     potentialConcerns: [
       'GFAP increases may cause myelin damage and white matter degeneration',
       'mTORC1 activation could inhibit autophagy, preventing clearance of protein aggregates',
@@ -691,35 +691,35 @@ export const redirectedDrugs: RedirectedDrug[] = [
 export const diseaseComparisonChartData = {
   // Phase 3 costs by disease
   costComparison: [
-    { disease: "Alzheimer's", cost: 462, color: '#ef4444' },
-    { disease: "Parkinson's", cost: 150, color: '#f59e0b' },
-    { disease: 'Diabetes', cost: 120, color: '#3b82f6' },
-    { disease: 'ALS', cost: 80, color: '#10b981' },
-    { disease: 'Oncology', cost: 100, color: '#8b5cf6' },
+    { disease: "Alzheimer's", cost: 462, color: '#C9461D' }, // accent orange
+    { disease: "Parkinson's", cost: 150, color: '#E5AF19' }, // warning yellow
+    { disease: 'Diabetes', cost: 120, color: '#486393' }, // primary blue
+    { disease: 'ALS', cost: 80, color: '#007385' }, // teal
+    { disease: 'Oncology', cost: 100, color: '#C3577F' }, // pink
   ],
   // Trial duration by disease (months)
   durationComparison: [
-    { disease: "Alzheimer's", duration: 48, color: '#ef4444' },
-    { disease: "Parkinson's", duration: 30, color: '#f59e0b' },
-    { disease: 'Diabetes', cost: 18, duration: 18, color: '#3b82f6' },
-    { disease: 'ALS', duration: 18, color: '#10b981' },
-    { disease: 'Oncology', duration: 24, color: '#8b5cf6' },
+    { disease: "Alzheimer's", duration: 48, color: '#C9461D' },
+    { disease: "Parkinson's", duration: 30, color: '#E5AF19' },
+    { disease: 'Diabetes', cost: 18, duration: 18, color: '#486393' },
+    { disease: 'ALS', duration: 18, color: '#007385' },
+    { disease: 'Oncology', duration: 24, color: '#C3577F' },
   ],
   // Patients required by disease
   patientsComparison: [
-    { disease: "Alzheimer's", patients: 2250, color: '#ef4444' },
-    { disease: "Parkinson's", patients: 600, color: '#f59e0b' },
-    { disease: 'Diabetes', patients: 1000, color: '#3b82f6' },
-    { disease: 'ALS', patients: 450, color: '#10b981' },
-    { disease: 'Oncology', patients: 500, color: '#8b5cf6' },
+    { disease: "Alzheimer's", patients: 2250, color: '#C9461D' },
+    { disease: "Parkinson's", patients: 600, color: '#E5AF19' },
+    { disease: 'Diabetes', patients: 1000, color: '#486393' },
+    { disease: 'ALS', patients: 450, color: '#007385' },
+    { disease: 'Oncology', patients: 500, color: '#C3577F' },
   ],
   // Failure rates by disease
   failureRateComparison: [
-    { disease: "Alzheimer's", rate: 99, color: '#ef4444' },
-    { disease: "Parkinson's", rate: 92, color: '#f59e0b' },
-    { disease: 'Diabetes', rate: 70, color: '#3b82f6' },
-    { disease: 'ALS', rate: 95, color: '#10b981' },
-    { disease: 'Oncology', rate: 95, color: '#8b5cf6' },
+    { disease: "Alzheimer's", rate: 99, color: '#C9461D' },
+    { disease: "Parkinson's", rate: 92, color: '#E5AF19' },
+    { disease: 'Diabetes', rate: 70, color: '#486393' },
+    { disease: 'ALS', rate: 95, color: '#007385' },
+    { disease: 'Oncology', rate: 95, color: '#C3577F' },
   ],
 };
 

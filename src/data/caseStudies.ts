@@ -2,62 +2,68 @@ import type { CaseStudy, TimelineEvent } from '@/types';
 
 export const caseStudies: CaseStudy[] = [
   {
-    id: 'lithium-orotate',
-    title: 'The Lithium Orotate Story',
-    drug: 'Lithium Orotate',
-    year: 2025,
-    keyFinding:
-      'Completely reversed memory loss in Alzheimer\'s mice at 1/1000th the dose used for bipolar disorder, without kidney or thyroid toxicity.',
-    whatShouldHappen: 'Large prevention trial to confirm human dosing',
-    whatActuallyHappened:
-      'Available now as supplement (~$10/month); clinical trial "planning to begin soon"',
-    quote:
-      'We are planning a clinical trial that will hopefully begin in the near future.',
-    quoteSource: 'Lead author, Harvard team',
-    cost: '$10/month supplement',
-    patentStatus: 'supplement',
-  },
-  {
     id: 'gv-971',
     title: 'The GV-971 Collapse',
     drug: 'GV-971 (Sodium Oligomannate)',
     year: 2022,
     keyFinding:
-      'Novel gut-brain mechanism, approved in China in 2019, showed cognitive improvement in Phase 3.',
-    whatShouldHappen: 'Global Phase 3 confirmation',
+      'Novel gut-brain mechanism, approved in China in 2019, showed cognitive improvement in Phase 3. 439 patients enrolled in global trial before termination.',
+    whatShouldHappen: 'Global Phase 3 confirmation to validate gut-brain axis approach',
     whatActuallyHappened:
-      'US trial terminated May 2022—not for safety or efficacy concerns, but because they couldn\'t raise additional funds',
+      'US trial terminated May 2022 after screening 1,308 patients. Company cited "global geopolitical situation" and funding collapse—NOT safety or efficacy concerns. Drug remains unavailable outside China.',
     quote:
       'The company cited "the global geopolitical situation" and a "gloomy biotech capital market."',
     quoteSource: 'Green Valley Pharmaceuticals',
-    cost: '$200/month',
-    patentStatus: 'generic',
+    cost: '$200/month (China only)',
+    patentStatus: 'unavailable',
   },
   {
     id: 'tnf-inhibitors',
-    title: 'The TNF Inhibitor Paradox',
-    drug: 'TNF Inhibitors (Etanercept, Adalimumab)',
-    year: 2022,
+    title: 'The TNF Inhibitor Gap',
+    drug: 'Etanercept (Enbrel)',
+    year: 2016,
     keyFinding:
-      'Patients taking TNF inhibitors for rheumatoid arthritis or psoriasis have 50-70% lower rates of Alzheimer\'s disease. This is among the strongest preventive signals in the entire AD literature.',
-    whatShouldHappen: 'Prevention trial in high-risk groups',
+      'Three large epidemiological studies found TNF inhibitor users had 60-70% lower odds of developing AD. Neuroinflammation is now recognized as a key disease driver.',
+    whatShouldHappen: 'Large Phase 3 trial testing etanercept or newer TNF inhibitors for AD prevention',
     whatActuallyHappened:
-      'Zero prevention trials initiated. TNF inhibitors are now biosimilar (off-patent). A prevention trial would cost $50-100 million with no possibility of profit.',
-    cost: '$250/month (biosimilar)',
-    patentStatus: 'biosimilar',
+      'Only one small Phase 2 trial ever conducted (41 patients, 24 weeks). Failed to show benefit with standard dosing. Perispinal administration showed rapid improvement but was never validated in RCTs. The drug is generic for arthritis but no company will fund AD trials.',
+    quote:
+      'The current study should not be seen to support the use of unlicensed subcutaneous etanercept for the treatment of AD dementia.',
+    quoteSource: 'Phase 2 trial conclusion, 2015',
+    cost: '$4,000/month (for arthritis)',
+    patentStatus: 'generic',
   },
   {
-    id: 'nebivolol',
-    title: 'The Nebivolol Silence',
-    drug: 'Nebivolol',
-    year: 2013,
+    id: '40hz-gamma',
+    title: 'The 40Hz Light Therapy Wait',
+    drug: '40Hz Gamma Entrainment (GENUS)',
+    year: 2025,
     keyFinding:
-      'Reduced amyloid pathology in mice, brain-bioavailable, superior to metoprolol for SIRT1 pathway activation.',
-    whatShouldHappen: 'Head-to-head cognitive trial vs metoprolol',
+      'A decade of MIT research: 40Hz light/sound activates microglia, clears amyloid, reduces brain atrophy, improves memory in mice and early human trials. Cost: LED lights and speakers.',
+    whatShouldHappen: 'Fast-track trials given low cost and safety profile',
     whatActuallyHappened:
-      'Nothing for 12+ years. Meanwhile, metoprolol (which may worsen dementia via NADPH oxidase) remains widely prescribed.',
-    cost: '$4/month',
-    patentStatus: 'generic',
+      'Still in Phase 3 after 10+ years of promising preclinical data. Only 15 patients in Phase 2a. FDA Breakthrough Device designation but no accelerated pathway. If it works, the intervention could cost under $100—but that means no blockbuster revenue to fund trials.',
+    quote:
+      'Safe; late-onset AD patients showed better cognitive scores than matched controls.',
+    quoteSource: 'MIT long-term pilot study',
+    cost: '<$100 (if proven)',
+    patentStatus: 'device',
+  },
+  {
+    id: 'focused-ultrasound',
+    title: 'The Blood-Brain Barrier Breakthrough',
+    drug: 'Focused Ultrasound (FUS)',
+    year: 2024,
+    keyFinding:
+      'Non-invasively opens the BBB to enhance drug delivery 5-8x. In Phase 2a, reduced amyloid WITHOUT any drug co-administration. Could make existing treatments far more effective.',
+    whatShouldHappen: 'Rapid combination trials with approved antibodies, standalone studies',
+    whatActuallyHappened:
+      'FDA Breakthrough Device designation, but progress remains slow. Only ~30 patients in Phase 2a. Could transform efficacy of lecanemab/donanemab but no pharma company is racing to prove their expensive drugs work better at lower doses.',
+    quote:
+      'FUS enhanced antibody delivery to targeted brain regions by 5-8x.',
+    quoteSource: 'FUS + Aducanumab combination trial',
+    cost: 'High (specialized equipment)',
+    patentStatus: 'device',
   },
   {
     id: 'lesne-scandal',
@@ -79,16 +85,6 @@ export const caseStudies: CaseStudy[] = [
 
 export const evidenceGraveyardData = [
   {
-    id: 'tnf-inhibitors',
-    drug: 'TNF Inhibitors',
-    evidence: '50-70% reduction in AD incidence in RA/psoriasis patients',
-    year: 2022,
-    source: 'Multiple cohort studies',
-    shouldHappen: 'Prevention trial in high-risk groups',
-    actuallyHappened: 'Zero trials initiated',
-    whyNotFunded: 'Off-patent biologics with no commercial sponsor. Prevention trials require large cohorts over many years—pharma won\'t fund trials for drugs they can\'t sell exclusively.',
-  },
-  {
     id: 'nebivolol',
     drug: 'Nebivolol',
     evidence: 'Reduced amyloid pathology, brain-bioavailable, superior SIRT1 activation',
@@ -96,7 +92,7 @@ export const evidenceGraveyardData = [
     source: 'J Alzheimers Dis',
     shouldHappen: 'Head-to-head cognitive trial vs metoprolol',
     actuallyHappened: 'Nothing for 12+ years',
-    whyNotFunded: 'Generic beta-blocker ($4/month). No company can recoup trial costs. NIH prioritizes novel mechanisms over repurposed generics.',
+    whyNotFunded: 'Benefits are likely preventive, vascular, and slow—but AD trial designs favor symptomatic treatments with rapid, measurable cognitive changes. A drug that works over decades doesn\'t fit the 18-month trial paradigm, so nebivolol was never seriously evaluated against the right criteria.',
   },
   {
     id: 'gv-971',
@@ -134,13 +130,6 @@ export const timeline: TimelineEvent[] = [
     description: 'Novel gut-brain mechanism shows promise. Global trial planned.',
     type: 'approval',
     drug: 'GV-971',
-  },
-  {
-    year: 2020,
-    title: 'TNF Inhibitor Data Published',
-    description: '50-70% AD risk reduction in RA patients documented.',
-    type: 'discovery',
-    drug: 'TNF Inhibitors',
   },
   {
     year: 2021,

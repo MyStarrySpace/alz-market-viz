@@ -36,7 +36,7 @@ export interface CaseStudy {
   quote?: string;
   quoteSource?: string;
   cost: string;
-  patentStatus: 'patented' | 'generic' | 'supplement' | 'biosimilar';
+  patentStatus: 'patented' | 'generic' | 'supplement' | 'biosimilar' | 'device' | 'unavailable';
 }
 
 export interface ComparisonRow {

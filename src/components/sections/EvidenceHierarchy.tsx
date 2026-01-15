@@ -39,7 +39,7 @@ interface EvidenceLevelCardProps {
 function EvidenceLevelCard({ level }: EvidenceLevelCardProps) {
   const getColorClasses = (stars: number) => {
     if (stars >= 5) return 'border-[var(--success)] bg-[var(--success-light)]';
-    if (stars >= 4) return 'border-[var(--category-amyloid)] bg-blue-50';
+    if (stars >= 4) return 'border-[var(--category-amyloid)] bg-[#486393]/10';
     if (stars >= 3) return 'border-[var(--accent-orange)] bg-[var(--accent-orange-light)]';
     return 'border-[var(--border)] bg-[var(--bg-secondary)]';
   };

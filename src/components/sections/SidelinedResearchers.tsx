@@ -11,7 +11,7 @@ export function SidelinedResearchers() {
       <Container>
         <SectionHeader
           title="The Sidelined Researchers"
-          subtitle="Behind each alternative hypothesis is a researcher who built their career on a theory that challenged amyloid primacy—and paid the price in marginalized funding."
+          subtitle="Behind each alternative hypothesis is a researcher who built their career on a theory that challenged amyloid primacy, and paid the price in marginalized funding."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -39,9 +39,9 @@ export function SidelinedResearchers() {
             <CardContent>
               <p className="text-[var(--text-body)] text-lg">
                 Each of these researchers proposed that amyloid was a{' '}
-                <span className="text-[var(--accent-orange)] font-semibold">consequence</span>—not a{' '}
-                <span className="text-[var(--accent-orange)] font-semibold">cause</span>—of upstream
-                dysfunction. Each was marginalized as the field consolidated around the
+                <span className="text-[var(--accent-orange)] font-semibold">consequence</span> of upstream
+                dysfunction, rather than a <span className="text-[var(--accent-orange)] font-semibold">cause</span>.
+                Each was marginalized as the field consolidated around the
                 amyloid cascade hypothesis.{' '}
                 <span className="text-[var(--text-primary)] font-semibold">Each may have been right.</span>
               </p>
