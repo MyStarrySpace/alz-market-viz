@@ -23,6 +23,7 @@ export interface MarketFailure {
   connections: string[]; // IDs of related failures
   icon: LucideIcon;
   order: number;
+  citationIds?: string[]; // References to bibliography citations
 }
 
 export interface CaseStudy {
@@ -53,4 +54,71 @@ export interface TimelineEvent {
   description: string;
   type: 'discovery' | 'trial' | 'failure' | 'approval' | 'funding';
   drug?: string;
+}
+
+// ============================================================================
+// TRANSLATIONAL FAILURES / ANIMAL MODELS
+// ============================================================================
+
+export type OrganismType =
+  | 'transgenic_mouse'
+  | 'knockin_mouse'
+  | 'rat'
+  | 'dog'
+  | 'degu'
+  | 'non_human_primate'
+  | 'simple_organism';
+
+export type PathologyFeature =
+  | 'amyloid_plaques'
+  | 'tau_tangles'
+  | 'neuronal_loss'
+  | 'synaptic_dysfunction'
+  | 'neuroinflammation'
+  | 'cognitive_decline'
+  | 'natural_aging'
+  | 'bbb_dysfunction'
+  | 'cholinergic_deficit';
+
+export interface PathologyPresence {
+  feature: PathologyFeature;
+  present: boolean | 'partial';
+  notes?: string;
+  humanRelevance: 'high' | 'moderate' | 'low' | 'debated';
+}
+
+export interface FailedTranslation {
+  drugName: string;
+  modelResult: string;
+  humanResult: string;
+  trialName?: string;
+  year: number;
+}
+
+export interface AnimalModel {
+  id: string;
+  name: string;
+  commonName: string;
+  organismType: OrganismType;
+  species: string;
+  yearDeveloped?: number;
+  geneticBasis: string;
+  primaryUseCase: string;
+  pathologyFeatures: PathologyPresence[];
+  strengths: string[];
+  limitations: string[];
+  failedTranslations: FailedTranslation[];
+  keyInsight?: {
+    title: string;
+    description: string;
+    implication: string;
+  };
+  citationIds?: string[];
+}
+
+export interface TranslationalInsight {
+  id: string;
+  title: string;
+  description: string;
+  implication: string;
 }

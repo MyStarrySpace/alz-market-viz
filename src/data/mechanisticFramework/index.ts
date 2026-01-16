@@ -104,20 +104,19 @@ export const mechanisticFramework: MechanisticFramework = {
   // System boundaries
   inputBoundaries: [
     'aging',
-    'APOE_genotype',
-    'TREM2_variants',
-    'familial_AD_mutations',
+    'apoe_genotype',
+    'trem2_variants',
+    'familial_ad_mutations',
     'sex',
     'sleep_disruption',
   ],
   outputBoundaries: [
-    'cognitive_function',
     'mortality',
     'cognitive_score',
     'synapses',
     'neuronal_count',
     'brain_volume',
-    'CSF_biomarkers',
+    'csf_biomarkers',
   ],
 };
 

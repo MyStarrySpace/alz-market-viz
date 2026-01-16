@@ -1,6 +1,6 @@
 'use client';
 
-import { ScrollProgress, Header, Footer } from '@/components/layout';
+import { Header, Footer } from '@/components/layout';
 import { ChapterBreak, SectionDivider, PauseCard } from '@/components/ui';
 import {
   Hero,
@@ -9,6 +9,7 @@ import {
   TrialBarriers,
   PromisingFrontier,
   FailureCascade,
+  TranslationalFailures,
   CaseStudies,
   HopefulDevelopments,
 } from '@/components/sections';
@@ -77,20 +78,20 @@ const actIIIPauseContent = {
       evidence: 'Phase 2/3 trials underway for ISRIB-like compounds, GLP-1 agonists, and multi-target approaches.',
     },
   ],
-  lookAhead: 'The best time to act is now—whether through available interventions or by advocating for research funding reform.',
+  lookAhead: 'The best time to act is now-whether through available interventions or by advocating for research funding reform.',
 };
 
 export default function Home() {
   return (
     <>
-      <ScrollProgress />
       <Header />
       <main className="relative mt-14 lg:mt-0">
+        <Hero />
+
         {/* Act I: The Paradox */}
         <ChapterBreak label="Act I" variant="default">
           The paradox of Alzheimer&apos;s research.
         </ChapterBreak>
-        <Hero />
         <SectionDivider variant="tick" />
         <InvestmentWaterfall />
         <SectionDivider variant="tick" />
@@ -108,6 +109,8 @@ export default function Home() {
 
         {/* Act II: The System */}
         <FailureCascade />
+        <SectionDivider variant="tick" />
+        <TranslationalFailures />
         <SectionDivider variant="tick" />
         <CaseStudies />
 

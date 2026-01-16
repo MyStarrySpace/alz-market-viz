@@ -100,7 +100,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .react-flow__minimap-mask {
-  fill: rgba(250, 249, 247, 0.75);
+  fill: rgba(250, 249, 247, 0.5) !important;
 }
 
 /* Add a visible border around the viewport area */
@@ -112,11 +112,18 @@ h1, h2, h3, h4, h5, h6 {
   stroke-width: 0;
 }
 
-/* Style the viewport indicator rectangle */
-.react-flow__minimap rect:not(.react-flow__minimap-mask) {
-  stroke: var(--accent-orange);
-  stroke-width: 2px;
-  fill: transparent;
+/* Style the viewport indicator - the visible area rectangle */
+.react-flow__minimap .react-flow__minimap-viewport {
+  stroke: var(--accent-orange) !important;
+  stroke-width: 2px !important;
+  fill: rgba(227, 98, 22, 0.08) !important;
+}
+
+/* Alternative selector for viewport */
+.react-flow__minimap-viewport {
+  stroke: var(--accent-orange) !important;
+  stroke-width: 2px !important;
+  fill: rgba(227, 98, 22, 0.08) !important;
 }
 
 /* Reduced motion */

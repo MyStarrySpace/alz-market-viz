@@ -19,6 +19,7 @@ export const boundaryNodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'Lifestyle',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'input',
     description: 'Chronological age; drives multiple pathways',
     mechanism: 'Drives C1q↑, iron accumulation, DIM infiltration, meningeal lymphatic decline',
     defaultVariant: 'age_65_74',
@@ -62,18 +63,19 @@ export const boundaryNodes: MechanisticNode[] = [
     ],
   },
   {
-    id: 'APOE_genotype',
+    id: 'apoe_genotype',
     label: 'APOE Genotype',
     category: 'BOUNDARY',
     subtype: 'GeneticVariant',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'input',
     references: { gene: 'HGNC:613' },
     description: 'Apolipoprotein E genetic variants',
     mechanism: 'Major genetic risk factor for late-onset AD',
-    defaultVariant: 'APOE3',
+    defaultVariant: 'apoe3',
     variants: [
       {
-        id: 'APOE2',
+        id: 'apoe2',
         label: 'APOE ε2',
         frequency: 0.08,
         effectDirection: 'protective',
@@ -90,7 +92,7 @@ export const boundaryNodes: MechanisticNode[] = [
         ],
       },
       {
-        id: 'APOE3',
+        id: 'apoe3',
         label: 'APOE ε3',
         frequency: 0.78,
         effectDirection: 'neutral',
@@ -106,7 +108,7 @@ export const boundaryNodes: MechanisticNode[] = [
         ],
       },
       {
-        id: 'APOE4_het',
+        id: 'apoe4_het',
         label: 'APOE ε4 (1 copy)',
         frequency: 0.14,
         effectDirection: 'risk',
@@ -123,7 +125,7 @@ export const boundaryNodes: MechanisticNode[] = [
         ],
       },
       {
-        id: 'APOE4_hom',
+        id: 'apoe4_hom',
         label: 'APOE ε4/ε4',
         frequency: 0.02,
         effectDirection: 'risk',
@@ -142,18 +144,19 @@ export const boundaryNodes: MechanisticNode[] = [
     ],
   },
   {
-    id: 'TREM2_variants',
+    id: 'trem2_variants',
     label: 'TREM2 Variants',
     category: 'BOUNDARY',
     subtype: 'GeneticVariant',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'input',
     references: { gene: 'HGNC:17760' },
     description: 'R47H, R62H, other risk variants',
     mechanism: '~3x AD risk; hypomorphic function',
-    defaultVariant: 'TREM2_common',
+    defaultVariant: 'trem2_common',
     variants: [
       {
-        id: 'TREM2_common',
+        id: 'trem2_common',
         label: 'Common (WT)',
         frequency: 0.98,
         effectDirection: 'neutral',
@@ -163,7 +166,7 @@ export const boundaryNodes: MechanisticNode[] = [
         evidence: [{ pmid: '23150908', oddsRatio: 1.0, population: 'European' }],
       },
       {
-        id: 'TREM2_R47H',
+        id: 'trem2_r47h',
         label: 'R47H',
         frequency: 0.003,
         effectDirection: 'risk',
@@ -175,7 +178,7 @@ export const boundaryNodes: MechanisticNode[] = [
         ],
       },
       {
-        id: 'TREM2_R62H',
+        id: 'trem2_r62h',
         label: 'R62H',
         frequency: 0.01,
         effectDirection: 'risk',
@@ -187,7 +190,7 @@ export const boundaryNodes: MechanisticNode[] = [
         ],
       },
       {
-        id: 'TREM2_H157Y',
+        id: 'trem2_h157y',
         label: 'H157Y',
         frequency: 0.002,
         effectDirection: 'risk',
@@ -201,11 +204,12 @@ export const boundaryNodes: MechanisticNode[] = [
     ],
   },
   {
-    id: 'familial_AD_mutations',
+    id: 'familial_ad_mutations',
     label: 'Familial AD Mutations',
     category: 'BOUNDARY',
     subtype: 'GeneticVariant',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'input',
     description: 'APP, PSEN1, PSEN2 mutations',
     mechanism: 'Autosomal dominant mutations; deterministic early-onset AD',
   },
@@ -215,6 +219,7 @@ export const boundaryNodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'GeneticVariant',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'input',
     description: 'XX vs XY chromosomes',
     mechanism: 'Affects iron metabolism, immune responses, hormone levels',
   },
@@ -224,27 +229,19 @@ export const boundaryNodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'Lifestyle',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'input',
     description: 'Chronic sleep disturbance',
     mechanism: 'Reduces glymphatic clearance 50%+',
   },
 
   // Output Boundaries (Terminal Outcomes)
   {
-    id: 'cognitive_function',
-    label: 'Cognitive Function',
-    category: 'BOUNDARY',
-    subtype: 'CognitiveScore',
-    moduleId: 'BOUNDARY',
-    references: { phenotype: 'HP:0100543' },
-    description: 'Clinical outcome; dementia severity, functional status',
-    units: 'MMSE (0-30), CDR-SB (0-18)',
-  },
-  {
     id: 'mortality',
     label: 'Mortality',
     category: 'BOUNDARY',
     subtype: 'Diagnosis',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'output',
     description: 'Death; ultimate endpoint',
   },
 
@@ -295,7 +292,7 @@ export const boundaryNodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'CSF_biomarkers',
+    id: 'csf_biomarkers',
     label: 'CSF Biomarkers',
     category: 'STOCK',
     subtype: 'MetaboliteSignal',
@@ -326,7 +323,7 @@ export const module1Nodes: MechanisticNode[] = [
     roles: ['LEVERAGE_POINT'],
   },
   {
-    id: 'mTORC1_hyperactive',
+    id: 'mtorc1_hyperactive',
     label: 'mTORC1 Hyperactive',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Kinase',
@@ -341,7 +338,7 @@ export const module1Nodes: MechanisticNode[] = [
     roles: ['REGULATOR', 'THERAPEUTIC_TARGET', 'RATE_LIMITER'],
   },
   {
-    id: 'TFEB_phosphorylated',
+    id: 'tfeb_phosphorylated',
     label: 'TFEB Phosphorylated',
     category: 'STATE',
     subtype: 'Phosphorylated',
@@ -355,7 +352,7 @@ export const module1Nodes: MechanisticNode[] = [
     ],
   },
   {
-    id: 'AMPK_phosphorylated',
+    id: 'ampk_phosphorylated',
     label: 'AMPK Phosphorylated (Inhibited)',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Kinase',
@@ -369,7 +366,7 @@ export const module1Nodes: MechanisticNode[] = [
     roles: ['REGULATOR'],
   },
   {
-    id: 'ULK1_phosphorylated',
+    id: 'ulk1_phosphorylated',
     label: 'ULK1 Phosphorylated (Inhibited)',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Kinase',
@@ -399,7 +396,7 @@ export const module1Nodes: MechanisticNode[] = [
     label: 'Lysosomal Dysfunction',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
-    moduleId: 'M01',
+    moduleId: 'M02',  // Moved from M01 - this node belongs in Lysosomal module
     references: {
       phenotype: 'HP:0003236',
       process: 'GO:0005764',
@@ -420,7 +417,7 @@ export const module1Nodes: MechanisticNode[] = [
   },
   // S6K1-IRS1 feedback loop nodes
   {
-    id: 'S6K1_active',
+    id: 's6k1_active',
     label: 'S6K1 Active',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Kinase',
@@ -434,7 +431,7 @@ export const module1Nodes: MechanisticNode[] = [
     roles: ['REGULATOR'],
   },
   {
-    id: 'IRS1_serine_phosphorylated',
+    id: 'irs1_serine_phosphorylated',
     label: 'IRS-1 Serine Phosphorylated',
     category: 'STATE',
     subtype: 'Phosphorylated',
@@ -453,6 +450,20 @@ export const module1Nodes: MechanisticNode[] = [
 // ============================================================================
 
 export const module2Nodes: MechanisticNode[] = [
+  {
+    id: 'lysosome_pool',
+    label: 'Lysosome Pool',
+    category: 'STOCK',
+    subtype: 'OrganellePool',
+    moduleId: 'M02',
+    references: {
+      process: 'GO:0005764', // lysosome
+    },
+    description: 'Functional lysosome organelle pool; depleted by reduced biogenesis',
+    mechanism: 'TFEB drives lysosomal biogenesis; reduced TFEB nuclear activity → fewer functional lysosomes',
+    units: 'LAMP1+ puncta per cell',
+    roles: ['RATE_LIMITER'],
+  },
   {
     id: 'damaged_mito_pool',
     label: 'Damaged Mitochondria Pool',
@@ -485,7 +496,21 @@ export const module2Nodes: MechanisticNode[] = [
     timescale: 'years',
   },
   {
-    id: 'LMP',
+    id: 'bmp_lysosomal',
+    label: 'BMP (Bis(monoacylglycero)phosphate)',
+    category: 'STOCK',
+    subtype: 'MetabolitePool',
+    moduleId: 'M02',
+    references: {
+      drug: 'CHEBI:73497', // bis(monoacylglycero)phosphate
+    },
+    description: 'Lysosome-specific lipid; biomarker for lysosomal stress/storage disorders',
+    mechanism: 'BMP is enriched in late endosomes/lysosomes; facilitates lipid degradation by activating acid sphingomyelinase. ↑BMP indicates lysosomal stress, ↓BMP impairs lipid catabolism. In AD: elevated BMP(22:6-22:6) suggests compensatory response to lysosomal dysfunction. Key evidence: Nguyen 2024 showed BMP(22:6-22:6) significantly elevated in AD brains; Raben 2013 (PMID:23670896) showed BMP correlates with lysosomal storage disease severity',
+    units: 'nmol/mg protein',
+    roles: ['BIOMARKER'],
+  },
+  {
+    id: 'lmp',
     label: 'Lysosomal Membrane Permeabilization',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -495,7 +520,7 @@ export const module2Nodes: MechanisticNode[] = [
     mechanism: 'Releases cathepsins and other DAMPs to cytosol',
   },
   {
-    id: 'cathepsin_B_cytosolic',
+    id: 'cathepsin_b_cytosolic',
     label: 'Cytosolic Cathepsin B',
     category: 'STOCK',
     subtype: 'ActiveProteinPool',
@@ -530,7 +555,7 @@ export const module2Nodes: MechanisticNode[] = [
     mechanism: 'Where degradation should occur (but may fail)',
   },
   {
-    id: 'mtDNA_undegraded',
+    id: 'mtdna_undegraded',
     label: 'Undegraded mtDNA (Lysosomal)',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -539,7 +564,7 @@ export const module2Nodes: MechanisticNode[] = [
     mechanism: 'Accumulates in autolysosome due to pH failure',
   },
   {
-    id: 'mtDNA_from_lysosome',
+    id: 'mtdna_from_lysosome',
     label: 'mtDNA Escaped from Lysosome',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -555,7 +580,7 @@ export const module2Nodes: MechanisticNode[] = [
 
 export const module3Nodes: MechanisticNode[] = [
   {
-    id: 'mito_ROS',
+    id: 'mito_ros',
     label: 'Mitochondrial ROS',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -567,7 +592,7 @@ export const module3Nodes: MechanisticNode[] = [
     units: 'MitoSOX fluorescence',
   },
   {
-    id: 'mtDNA_oxidized',
+    id: 'mtdna_oxidized',
     label: 'Oxidized mtDNA',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -578,7 +603,7 @@ export const module3Nodes: MechanisticNode[] = [
     mechanism: 'ROS oxidizes guanine bases → 8-oxo-deoxyguanosine',
   },
   {
-    id: 'Ca_overload',
+    id: 'ca_overload',
     label: 'Mitochondrial Ca²⁺ Overload',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -589,7 +614,7 @@ export const module3Nodes: MechanisticNode[] = [
     mechanism: 'ROS damages Ca²⁺ handling → impaired efflux + sustained MCU uptake',
   },
   {
-    id: 'mPTP_open',
+    id: 'mptp_open',
     label: 'mPTP Open',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -600,7 +625,7 @@ export const module3Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'VDAC_oligomer',
+    id: 'vdac_oligomer',
     label: 'VDAC Oligomers',
     category: 'STOCK',
     subtype: 'ComplexPool',
@@ -611,7 +636,7 @@ export const module3Nodes: MechanisticNode[] = [
     mechanism: 'Allow mtDNA fragment exit',
   },
   {
-    id: 'ox_mtDNA_cytosolic',
+    id: 'ox_mtdna_cytosolic',
     label: 'Cytosolic Oxidized mtDNA',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -621,7 +646,7 @@ export const module3Nodes: MechanisticNode[] = [
     mechanism: 'Route 2: exits via mPTP/VDAC → activates NLRP3',
   },
   {
-    id: 'mtDNA_cytosolic',
+    id: 'mtdna_cytosolic',
     label: 'Cytosolic mtDNA (Non-oxidized)',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -631,7 +656,7 @@ export const module3Nodes: MechanisticNode[] = [
     mechanism: 'Route 2: exits via VDAC → activates cGAS-STING',
   },
   {
-    id: 'PINK1_Parkin',
+    id: 'pink1_parkin',
     label: 'PINK1/Parkin Mitophagy',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'MasterRegulator',
@@ -652,7 +677,7 @@ export const module3Nodes: MechanisticNode[] = [
 export const module4Nodes: MechanisticNode[] = [
   // Inflammasome components
   {
-    id: 'NLRP3_active',
+    id: 'nlrp3_active',
     label: 'NLRP3 Inflammasome Active',
     category: 'STOCK',
     subtype: 'ComplexPool',
@@ -681,7 +706,7 @@ export const module4Nodes: MechanisticNode[] = [
     timescale: 'hours',
   },
   {
-    id: 'IL1B',
+    id: 'il1b',
     label: 'IL-1β',
     category: 'STOCK',
     subtype: 'CytokineLevel',
@@ -694,7 +719,7 @@ export const module4Nodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'IL18',
+    id: 'il18',
     label: 'IL-18',
     category: 'STOCK',
     subtype: 'CytokineLevel',
@@ -707,7 +732,7 @@ export const module4Nodes: MechanisticNode[] = [
 
   // cGAS-STING components
   {
-    id: 'cGAS_active',
+    id: 'cgas_active',
     label: 'cGAS Active',
     category: 'STOCK',
     subtype: 'ActiveProteinPool',
@@ -719,7 +744,7 @@ export const module4Nodes: MechanisticNode[] = [
     timescale: 'minutes',
   },
   {
-    id: 'STING_active',
+    id: 'sting_active',
     label: 'STING Active',
     category: 'STOCK',
     subtype: 'ActiveProteinPool',
@@ -733,7 +758,7 @@ export const module4Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'type_I_IFN',
+    id: 'type_i_ifn',
     label: 'Type I Interferon',
     category: 'STOCK',
     subtype: 'CytokineLevel',
@@ -744,7 +769,7 @@ export const module4Nodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'ISG_expression',
+    id: 'isg_expression',
     label: 'ISG Expression',
     category: 'STOCK',
     subtype: 'RNAPool',
@@ -757,7 +782,7 @@ export const module4Nodes: MechanisticNode[] = [
 
   // Tau kinase/phosphatase effectors
   {
-    id: 'GSK3B_active',
+    id: 'gsk3b_active',
     label: 'GSK-3β Active',
     category: 'STOCK',
     subtype: 'ActiveProteinPool',
@@ -770,7 +795,7 @@ export const module4Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'PP2A_activity',
+    id: 'pp2a_activity',
     label: 'PP2A Activity',
     category: 'STOCK',
     subtype: 'ActiveProteinPool',
@@ -810,7 +835,7 @@ export const module4Nodes: MechanisticNode[] = [
 
   // SHARED nodes (used by multiple modules)
   {
-    id: 'Abeta_oligomers',
+    id: 'abeta_oligomers',
     label: 'Aβ Oligomers',
     category: 'STOCK',
     subtype: 'Aggregate',
@@ -849,7 +874,7 @@ export const module5Nodes: MechanisticNode[] = [
     mechanism: 'Triggered by neuroinflammation; transitions to multiple phenotypes',
   },
   {
-    id: 'NF_kB_active',
+    id: 'nf_kb_active',
     label: 'NF-κB Active',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Activator',
@@ -860,7 +885,7 @@ export const module5Nodes: MechanisticNode[] = [
     roles: ['REGULATOR', 'THERAPEUTIC_TARGET'],
   },
   {
-    id: 'HIF1A_stabilized',
+    id: 'hif1a_stabilized',
     label: 'HIF-1α Stabilized',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Activator',
@@ -880,7 +905,7 @@ export const module5Nodes: MechanisticNode[] = [
     mechanism: 'HIF-1α → PKM2 dimer → aerobic glycolysis',
   },
   {
-    id: 'SREBP1_active',
+    id: 'srebp1_active',
     label: 'SREBP1 Active',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Activator',
@@ -900,7 +925,7 @@ export const module5Nodes: MechanisticNode[] = [
     mechanism: 'SREBP1 → lipogenesis → LD formation',
   },
   {
-    id: 'LDAM',
+    id: 'ldam',
     label: 'LDAM Microglia',
     category: 'STATE',
     subtype: 'LDAM',
@@ -910,7 +935,7 @@ export const module5Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'DAM_stage1',
+    id: 'dam_stage1',
     label: 'DAM Stage 1',
     category: 'STATE',
     subtype: 'DAM',
@@ -919,7 +944,7 @@ export const module5Nodes: MechanisticNode[] = [
     mechanism: 'P2ry12↓, Cx3cr1↓, Tyrobp↑ (checkpoint release)',
   },
   {
-    id: 'DAM_stage2',
+    id: 'dam_stage2',
     label: 'DAM Stage 2',
     category: 'STATE',
     subtype: 'DAM',
@@ -938,7 +963,7 @@ export const module5Nodes: MechanisticNode[] = [
     mechanism: 'Lipid-laden lysosomes impair phagosome maturation',
   },
   {
-    id: 'IL1A',
+    id: 'il1a',
     label: 'IL-1α',
     category: 'STOCK',
     subtype: 'CytokineLevel',
@@ -947,7 +972,7 @@ export const module5Nodes: MechanisticNode[] = [
     description: 'Required for A1 astrocyte induction',
   },
   {
-    id: 'TNF',
+    id: 'tnf',
     label: 'TNF-α',
     category: 'STOCK',
     subtype: 'CytokineLevel',
@@ -956,7 +981,7 @@ export const module5Nodes: MechanisticNode[] = [
     description: 'Required for A1 astrocyte induction',
   },
   {
-    id: 'C1q',
+    id: 'c1q',
     label: 'C1q',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -967,7 +992,7 @@ export const module5Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'A1_astrocytes',
+    id: 'a1_astrocytes',
     label: 'A1 Astrocytes',
     category: 'STATE',
     subtype: 'A1_Astrocyte',
@@ -983,7 +1008,7 @@ export const module5Nodes: MechanisticNode[] = [
 
 export const module6Nodes: MechanisticNode[] = [
   {
-    id: 'BACE1_upregulated',
+    id: 'bace1_upregulated',
     label: 'BACE1 Upregulated',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Protease',
@@ -994,7 +1019,7 @@ export const module6Nodes: MechanisticNode[] = [
     roles: ['REGULATOR', 'THERAPEUTIC_TARGET', 'RATE_LIMITER'],
   },
   {
-    id: 'APP_betaCTF',
+    id: 'app_betactf',
     label: 'APP β-CTF (C99)',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -1004,7 +1029,7 @@ export const module6Nodes: MechanisticNode[] = [
     mechanism: 'BACE1 cleaves APP → sAPPβ released + C99 remains membrane-bound → γ-secretase substrate',
   },
   {
-    id: 'Abeta_monomers',
+    id: 'abeta_monomers',
     label: 'Aβ Monomers',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -1015,7 +1040,7 @@ export const module6Nodes: MechanisticNode[] = [
     units: 'pg/mL',
   },
   {
-    id: 'APP_processing_amyloidogenic',
+    id: 'app_processing_amyloidogenic',
     label: 'Amyloidogenic APP Processing',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1025,7 +1050,7 @@ export const module6Nodes: MechanisticNode[] = [
     mechanism: 'Sequential cleavage producing Aβ40/42',
   },
   {
-    id: 'Abeta_production',
+    id: 'abeta_production',
     label: 'Aβ Production Rate',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1035,7 +1060,7 @@ export const module6Nodes: MechanisticNode[] = [
     units: 'pg/mL/h',
   },
   {
-    id: 'Abeta_plaques',
+    id: 'abeta_plaques',
     label: 'Aβ Plaques',
     category: 'STOCK',
     subtype: 'Aggregate',
@@ -1046,7 +1071,7 @@ export const module6Nodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'Abeta_clearance',
+    id: 'abeta_clearance',
     label: 'Aβ Clearance',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'Phagocytosis',
@@ -1065,7 +1090,7 @@ export const module6Nodes: MechanisticNode[] = [
     mechanism: 'Microglia barrier around plaques prevents toxic oligomer release',
   },
   {
-    id: 'synaptic_Abeta_binding',
+    id: 'synaptic_abeta_binding',
     label: 'Synaptic Aβ Binding',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1074,7 +1099,7 @@ export const module6Nodes: MechanisticNode[] = [
     mechanism: 'Disrupts synaptic function; blocks LTP',
   },
   {
-    id: 'LTP_inhibition',
+    id: 'ltp_inhibition',
     label: 'LTP Inhibition',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -1110,7 +1135,7 @@ export const module7Nodes: MechanisticNode[] = [
     mechanism: 'Axonal transport disruption, synaptic dysfunction, proteostasis failure',
   },
   {
-    id: 'p38_MAPK_active',
+    id: 'p38_mapk_active',
     label: 'p38 MAPK Active',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Kinase',
@@ -1121,7 +1146,7 @@ export const module7Nodes: MechanisticNode[] = [
     roles: ['REGULATOR'],
   },
   {
-    id: 'PP2A_inhibited',
+    id: 'pp2a_inhibited',
     label: 'PP2A Inhibited',
     category: 'STATE',
     subtype: 'Phosphorylated',
@@ -1131,7 +1156,7 @@ export const module7Nodes: MechanisticNode[] = [
     mechanism: 'Activity ↓20-40% in AD brain; inhibited by I1PP2A↑, I2PP2A↑',
   },
   {
-    id: 'tau_aggregated_PHF',
+    id: 'tau_aggregated_phf',
     label: 'Tau PHF Aggregates',
     category: 'STOCK',
     subtype: 'Aggregate',
@@ -1141,7 +1166,7 @@ export const module7Nodes: MechanisticNode[] = [
     mechanism: 'β-sheet-rich aggregates of hyperphosphorylated tau',
   },
   {
-    id: 'NFT_formation',
+    id: 'nft_formation',
     label: 'Neurofibrillary Tangles',
     category: 'STOCK',
     subtype: 'Aggregate',
@@ -1183,7 +1208,7 @@ export const module7Nodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'CBS_enzyme',
+    id: 'cbs_enzyme',
     label: 'CBS (Cystathionine β-synthase)',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Transferase',
@@ -1204,7 +1229,7 @@ export const module7Nodes: MechanisticNode[] = [
     description: 'Intermediate; CBS product, CSE substrate',
   },
   {
-    id: 'CSE_enzyme',
+    id: 'cse_enzyme',
     label: 'CSE (Cystathionine γ-lyase)',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Transferase',
@@ -1226,7 +1251,7 @@ export const module7Nodes: MechanisticNode[] = [
     mechanism: 'Essential for glutathione synthesis',
   },
   {
-    id: 'H2S_production',
+    id: 'h2s_production',
     label: 'H₂S Production',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1236,7 +1261,7 @@ export const module7Nodes: MechanisticNode[] = [
     mechanism: 'Sulfhydrates proteins including GSK3β',
   },
   {
-    id: 'glutathione_GSH',
+    id: 'glutathione_gsh',
     label: 'Glutathione (GSH)',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -1257,7 +1282,7 @@ export const module7Nodes: MechanisticNode[] = [
     mechanism: 'Modifies cysteine thiols (-SH) to persulfides (-SSH)',
   },
   {
-    id: 'GSK3beta_sulfhydrated',
+    id: 'gsk3beta_sulfhydrated',
     label: 'GSK3β Sulfhydrated (Inactive)',
     category: 'STATE',
     subtype: 'Phosphorylated',
@@ -1274,7 +1299,7 @@ export const module7Nodes: MechanisticNode[] = [
 
 export const module8Nodes: MechanisticNode[] = [
   {
-    id: 'C1q_elevated',
+    id: 'c1q_elevated',
     label: 'C1q Elevated',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -1285,7 +1310,7 @@ export const module8Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET', 'BIOMARKER'],
   },
   {
-    id: 'C3_opsonization',
+    id: 'c3_opsonization',
     label: 'C3 Opsonization',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1295,7 +1320,7 @@ export const module8Nodes: MechanisticNode[] = [
     mechanism: 'C1q → C4 → C2 → C3 convertase → C3b',
   },
   {
-    id: 'CR3_mediated_pruning',
+    id: 'cr3_mediated_pruning',
     label: 'CR3-Mediated Synapse Pruning',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'Phagocytosis',
@@ -1389,7 +1414,7 @@ export const module9Nodes: MechanisticNode[] = [
     mechanism: 'Fe-S clusters fail, mitochondrial function impaired',
   },
   {
-    id: 'GPX4_activity',
+    id: 'gpx4_activity',
     label: 'GPX4 Activity',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Transferase',
@@ -1427,15 +1452,8 @@ export const module9Nodes: MechanisticNode[] = [
     mechanism: 'Iron drives senescence; targets for ferroptotic senolysis',
     roles: ['THERAPEUTIC_TARGET'],
   },
-  {
-    id: 'SASP',
-    label: 'SASP (Senescence-Associated Secretory Phenotype)',
-    category: 'STOCK',
-    subtype: 'CytokineLevel',
-    moduleId: 'M09',
-    description: 'Secretory phenotype of senescent cells producing IL-6, IL-8, MMPs',
-    mechanism: 'Iron accumulation drives SASP; perpetuates inflammation',
-  },
+  // SASP removed - it's a phenotypic category, not a discrete node
+  // Downstream effects (IL-6, IL-8, IL-1β, TNF-α) are captured by edge to IL1B
 ];
 
 // ============================================================================
@@ -1444,7 +1462,7 @@ export const module9Nodes: MechanisticNode[] = [
 
 export const module10Nodes: MechanisticNode[] = [
   {
-    id: 'APOE4_domain_interaction',
+    id: 'apoe4_domain_interaction',
     label: 'APOE4 Domain Interaction',
     category: 'STATE',
     subtype: 'Bound',
@@ -1453,7 +1471,7 @@ export const module10Nodes: MechanisticNode[] = [
     mechanism: '↓ Protein stability → aggregation; ↓ lipid-binding capacity',
   },
   {
-    id: 'APOE_lipidation_reduced',
+    id: 'apoe_lipidation_reduced',
     label: 'APOE Lipidation Reduced',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -1480,7 +1498,7 @@ export const module10Nodes: MechanisticNode[] = [
     mechanism: 'Enriched in unsaturated TAG → ferroptosis vulnerability',
   },
   {
-    id: 'REST_nuclear',
+    id: 'rest_nuclear',
     label: 'REST Nuclear (Protective)',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Repressor',
@@ -1491,7 +1509,7 @@ export const module10Nodes: MechanisticNode[] = [
     roles: ['REGULATOR', 'LEVERAGE_POINT'],
   },
   {
-    id: 'REST_depleted',
+    id: 'rest_depleted',
     label: 'REST Depleted (AD)',
     category: 'STATE',
     subtype: 'NuclearLocalized',
@@ -1500,7 +1518,7 @@ export const module10Nodes: MechanisticNode[] = [
     mechanism: 'Loss of stress resistance and Nrf2-mediated protection',
   },
   {
-    id: 'Nrf2_pathway',
+    id: 'nrf2_pathway',
     label: 'Nrf2 Antioxidant Pathway',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Activator',
@@ -1518,7 +1536,7 @@ export const module10Nodes: MechanisticNode[] = [
 
 export const module11Nodes: MechanisticNode[] = [
   {
-    id: 'TREM2_surface',
+    id: 'trem2_surface',
     label: 'TREM2 Surface Expression',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -1529,7 +1547,7 @@ export const module11Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'sTREM2',
+    id: 'strem2',
     label: 'Soluble TREM2',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -1540,7 +1558,7 @@ export const module11Nodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'DAM_transition_blocked',
+    id: 'dam_transition_blocked',
     label: 'DAM Transition Blocked',
     category: 'STATE',
     subtype: 'DAM',
@@ -1558,7 +1576,7 @@ export const module11Nodes: MechanisticNode[] = [
     mechanism: 'Microglia form barrier → reduced neuritic dystrophy',
   },
   {
-    id: 'senescent_TREM2_microglia',
+    id: 'senescent_trem2_microglia',
     label: 'Senescent TREM2+ Microglia',
     category: 'STATE',
     subtype: 'Senescent',
@@ -1574,7 +1592,7 @@ export const module11Nodes: MechanisticNode[] = [
 
 export const module12Nodes: MechanisticNode[] = [
   {
-    id: 'BBB_breakdown',
+    id: 'bbb_breakdown',
     label: 'BBB Breakdown',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -1584,7 +1602,7 @@ export const module12Nodes: MechanisticNode[] = [
     roles: ['BIOMARKER'],
   },
   {
-    id: 'CypA_elevated',
+    id: 'cypa_elevated',
     label: 'Cyclophilin A Elevated',
     category: 'STOCK',
     subtype: 'ProteinPool',
@@ -1594,7 +1612,7 @@ export const module12Nodes: MechanisticNode[] = [
     mechanism: 'CypA → NF-κB → MMP9 transcription',
   },
   {
-    id: 'MMP9_elevated',
+    id: 'mmp9_elevated',
     label: 'MMP-9 Elevated',
     category: 'STOCK',
     subtype: 'ActiveProteinPool',
@@ -1633,13 +1651,37 @@ export const module12Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'ISF_Abeta_clearance',
+    id: 'isf_abeta_clearance',
     label: 'ISF Aβ Clearance',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
     moduleId: 'M12',
     description: 'Interstitial fluid Aβ drainage',
     mechanism: 'Para-arterial influx → para-venous efflux',
+  },
+  {
+    id: 'bbb_integrity',
+    label: 'BBB Integrity',
+    category: 'STATE',
+    subtype: 'Homeostatic',
+    moduleId: 'M12',
+    description: 'Blood-brain barrier structural and functional integrity',
+    mechanism: 'Maintained by tight junctions (claudin-5, occludin, ZO-1), pericyte coverage, OPC-derived TGF-β1. Intact BBB prevents peripheral factors from entering CNS',
+    sharedWith: ['M13'], // OPC-BBB axis
+    roles: ['BIOMARKER'],
+  },
+  {
+    id: 'pericyte_function',
+    label: 'Pericyte Function',
+    category: 'STATE',
+    subtype: 'Homeostatic',
+    moduleId: 'M12',
+    references: {
+      cellType: 'CL:0000669', // pericyte
+    },
+    description: 'Pericyte-mediated BBB support and capillary dilation',
+    mechanism: 'Pericytes regulate BBB permeability, capillary blood flow, and respond to OPC Ca²⁺ signals. Receive TGF-β1 from OPCs for tight junction maintenance',
+    sharedWith: ['M13'], // OPC-vascular coupling
   },
 ];
 
@@ -1658,7 +1700,7 @@ export const module13Nodes: MechanisticNode[] = [
     mechanism: 'Basis for AChEI symptomatic treatment',
   },
   {
-    id: 'ACh_reduced',
+    id: 'ach_reduced',
     label: 'Acetylcholine Reduced',
     category: 'STOCK',
     subtype: 'MetaboliteSignal',
@@ -1685,6 +1727,97 @@ export const module13Nodes: MechanisticNode[] = [
     description: 'Demyelination in AD',
     mechanism: 'Oligodendrocyte death → myelin loss → axonal dysfunction',
   },
+
+  // Oligodendrocyte Lineage (added 2026-01-15)
+  {
+    id: 'opcs',
+    label: 'Oligodendrocyte Precursor Cells',
+    category: 'STOCK',
+    subtype: 'CellPopulation',
+    moduleId: 'M13',
+    references: {
+      cellType: 'CL:0002453', // oligodendrocyte precursor cell
+    },
+    description: 'NG2+ progenitors; maintain remyelination capacity; support BBB',
+    mechanism: 'OPCs differentiate to mature OLs; also release TGF-β1 for BBB support; Ca²⁺ signals precede pericyte dilation in NVC. Key evidence: Seo 2014 (PMID:25186741) showed OPCs support BBB integrity via TGF-β1; Rungta 2018 (PMID:29937277) showed OPC Ca²⁺ signals precede pericyte dilation',
+    units: 'cells/mm³',
+  },
+  {
+    id: 'mature_oligodendrocytes',
+    label: 'Mature Oligodendrocytes',
+    category: 'STOCK',
+    subtype: 'CellPopulation',
+    moduleId: 'M13',
+    references: {
+      cellType: 'CL:0000128', // oligodendrocyte
+    },
+    description: 'MBP+/MOG+ myelinating cells; vulnerable to APOE4, A1 astrocytes',
+    mechanism: 'Produce and maintain myelin sheaths; require cholesterol for myelin synthesis; killed by A1 astrocyte-derived saturated lipids. Blanchard 2022 Nature (PMID:36385529) showed APOE4 impairs cholesterol transport to oligodendrocytes leading to myelin deficits',
+    units: 'cells/mm³',
+  },
+  {
+    id: 'opc_nos1_activity',
+    label: 'OPC NOS1 Activity',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M13',
+    references: {
+      gene: 'HGNC:7872', // NOS1
+      protein: 'UniProt:P29475',
+    },
+    description: 'Nitric oxide synthase 1 expression in OPCs - HUMAN-SPECIFIC',
+    mechanism: 'Human OPCs express NOS1 (cell type enhanced, τ=0.85 per Human Protein Atlas); mouse OPCs do NOT express Nos1 (Tabula Muris/Allen Brain Atlas). CRITICAL TRANSLATIONAL GAP: Human-specific NOS1 expression in OPCs means mouse BBB models lack this signaling axis. Current BBB models (Transwell, organoids) typically lack oligodendrocyte lineage cells entirely',
+  },
+  {
+    id: 'ol_cholesterol_synthesis',
+    label: 'OL Cholesterol Synthesis',
+    category: 'STATE',
+    subtype: 'MetabolicState',
+    moduleId: 'M13',
+    references: {
+      process: 'GO:0006695', // cholesterol biosynthetic process
+    },
+    description: 'Oligodendrocyte cholesterol production for myelin',
+    mechanism: 'OLs synthesize cholesterol de novo OR receive from astrocytes via APOE. APOE4 impairs both pathways: ↓SREBP2 in OLs + poor lipidation of secreted APOE4. Blanchard 2022 (PMID:36385529): APOE4 oligodendrocytes have reduced cholesterol synthesis and increased reliance on external cholesterol that cannot be adequately supplied',
+    roles: ['THERAPEUTIC_TARGET'],
+  },
+  {
+    id: 'opc_tgf_beta1',
+    label: 'OPC-Derived TGF-β1',
+    category: 'STOCK',
+    subtype: 'CytokineSignal',
+    moduleId: 'M13',
+    references: {
+      gene: 'HGNC:11766', // TGFB1
+      protein: 'UniProt:P01137',
+    },
+    description: 'TGF-β1 secreted by OPCs to support BBB integrity',
+    mechanism: 'OPCs release TGF-β1 → activates TGF-βR on pericytes/endothelium → maintains tight junctions. OPC loss → BBB breakdown. Seo 2014 (PMID:25186741): OPC-derived TGF-β1 is essential for maintaining blood-brain barrier integrity',
+    sharedWith: ['M12'], // BBB/Glymphatic module
+  },
+  {
+    id: 'opc_vascular_coupling',
+    label: 'OPC-Vascular Coupling',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M13',
+    references: {
+      process: 'GO:0001974', // blood vessel remodeling
+    },
+    description: 'OPC Ca²⁺ signaling drives neurovascular coupling',
+    mechanism: 'OPCs wrap capillaries; Ca²⁺ transients in OPCs PRECEDE pericyte relaxation during functional hyperemia. Human OPCs may use NOS1/NO pathway (absent in mice). Rungta 2018 (PMID:29937277) showed calcium increases in NG2 cells precede arteriole dilation. TRANSLATIONAL GAP: Human mechanism may differ due to NOS1 expression',
+    sharedWith: ['M12'], // BBB/Glymphatic module
+  },
+  {
+    id: 'remyelination_capacity',
+    label: 'Remyelination Capacity',
+    category: 'STATE',
+    subtype: 'Homeostatic',
+    moduleId: 'M13',
+    description: 'Ability to regenerate myelin after damage',
+    mechanism: 'Requires OPC pool + differentiation signals + cholesterol supply. Declines with age: OPC senescence, LINGO1↑, Nogo receptor activation. Neumann 2019 (PMID:31497960): Remyelination efficiency declines with age due to impaired OPC differentiation',
+    roles: ['THERAPEUTIC_TARGET'],
+  },
 ];
 
 // ============================================================================
@@ -1693,7 +1826,7 @@ export const module13Nodes: MechanisticNode[] = [
 
 export const module14Nodes: MechanisticNode[] = [
   {
-    id: 'MAM_hyperconnectivity',
+    id: 'mam_hyperconnectivity',
     label: 'MAM Hyperconnectivity',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -1702,7 +1835,7 @@ export const module14Nodes: MechanisticNode[] = [
     mechanism: 'FAD mutations → PS2-Mfn2 binding, APP C99 at MAM',
   },
   {
-    id: 'ER_mito_Ca_flux',
+    id: 'er_mito_ca_flux',
     label: 'ER-Mito Ca²⁺ Flux Increased',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1711,7 +1844,7 @@ export const module14Nodes: MechanisticNode[] = [
     mechanism: 'IP3R-VDAC-MCU axis at MAM',
   },
   {
-    id: 'gamma_secretase_MAM',
+    id: 'gamma_secretase_mam',
     label: 'γ-Secretase at MAM',
     category: 'STOCK', // SBSF v2.0: Was REGULATOR, now STOCK with REGULATOR role
     subtype: 'Protease',
@@ -1721,7 +1854,7 @@ export const module14Nodes: MechanisticNode[] = [
     roles: ['REGULATOR'],
   },
   {
-    id: 'ER_Ca_stores',
+    id: 'er_ca_stores',
     label: 'ER Ca²⁺ Stores',
     category: 'STOCK',
     subtype: 'MetabolitePool',
@@ -1730,7 +1863,7 @@ export const module14Nodes: MechanisticNode[] = [
     mechanism: 'Increased ER Ca²⁺ → enhanced release to mitochondria',
   },
   {
-    id: 'mito_Ca_overload_MAM',
+    id: 'mito_ca_overload_mam',
     label: 'Mitochondrial Ca²⁺ Overload (MAM)',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -1751,6 +1884,7 @@ export const module15Nodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'Lifestyle',
     moduleId: 'M15',
+    boundaryDirection: 'input',
     description: 'Physical activity intervention',
     mechanism: 'Increases BDNF, autophagy, glymphatic clearance; reduces inflammation',
     defaultVariant: 'exercise_moderate',
@@ -1794,7 +1928,7 @@ export const module15Nodes: MechanisticNode[] = [
     ],
   },
   {
-    id: 'BBB_penetration',
+    id: 'bbb_penetration',
     label: 'BBB Penetration',
     category: 'STATE',
     subtype: 'CompartmentIntegrity',
@@ -1827,6 +1961,7 @@ export const module15Nodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'CognitiveScore',
     moduleId: 'M15',
+    boundaryDirection: 'output',
     description: 'Cognitive/functional improvement',
     mechanism: 'Ultimate outcome; requires right timing + mechanism',
   },
@@ -1856,7 +1991,7 @@ export const module16Nodes: MechanisticNode[] = [
     mechanism: 'Increases autophagy flux',
   },
   {
-    id: 'FSH_elevated',
+    id: 'fsh_elevated',
     label: 'FSH Elevated (Menopause)',
     category: 'STOCK',
     subtype: 'HormoneLevel',
@@ -1865,11 +2000,12 @@ export const module16Nodes: MechanisticNode[] = [
     mechanism: 'Acts on hippocampal neurons → C/EBPβ-δ-secretase → Aβ/tau',
   },
   {
-    id: 'X_linked_lysosomal_genes',
+    id: 'x_linked_lysosomal_genes',
     label: 'X-Linked Lysosomal Genes',
     category: 'BOUNDARY',
     subtype: 'Gene',
     moduleId: 'M16',
+    boundaryDirection: 'input',
     description: 'ATP6AP2, SLC9A7, ATP6AP1, LAMP2 on X chromosome',
     mechanism: 'XX vs XY affects lysosomal gene dosage',
   },
@@ -1883,7 +2019,7 @@ export const module16Nodes: MechanisticNode[] = [
     mechanism: 'Ancestry-dependent distribution; pro-inflammatory',
   },
   {
-    id: 'APOE4_ancestry_effect',
+    id: 'apoe4_ancestry_effect',
     label: 'APOE4 Ancestry Effect',
     category: 'STATE',
     subtype: 'GeneticVariant',
@@ -1908,17 +2044,18 @@ export const module16Nodes: MechanisticNode[] = [
 
 export const module17Nodes: MechanisticNode[] = [
   {
-    id: 'AS01_adjuvant',
+    id: 'as01_adjuvant',
     label: 'AS01 Adjuvant (Shingrix/Arexvy)',
     category: 'BOUNDARY',
     subtype: 'SmallMolecule',
     moduleId: 'M17',
+    boundaryDirection: 'input',
     description: 'MPL + QS-21 vaccine adjuvant',
     mechanism: 'TLR4 agonist (MPL) + saponin (QS-21) → DC/macrophage activation → IFN-γ',
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'TLR4_activation',
+    id: 'tlr4_activation',
     label: 'TLR4 Activation',
     category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
     subtype: 'BiologicalProcess',
@@ -1928,7 +2065,7 @@ export const module17Nodes: MechanisticNode[] = [
     mechanism: 'Monophosphoryl lipid A (MPL) activates TLR4 → MyD88/TRIF signaling',
   },
   {
-    id: 'IFN_gamma',
+    id: 'ifn_gamma',
     label: 'IFN-γ',
     category: 'STOCK',
     subtype: 'CytokineLevel',
@@ -1938,15 +2075,7 @@ export const module17Nodes: MechanisticNode[] = [
     mechanism: 'May attenuate amyloid plaque deposition; negatively correlated with cognitive decline in unimpaired elderly',
     roles: ['BIOMARKER'],
   },
-  {
-    id: 'amyloid_clearance_enhanced',
-    label: 'Enhanced Aβ Clearance (IFN-γ)',
-    category: 'STATE', // SBSF v2.0: Was PROCESS, now STATE (process activity as categorical state)
-    subtype: 'Phagocytosis',
-    moduleId: 'M17',
-    description: 'IFN-γ-mediated enhancement of Aβ clearance',
-    mechanism: 'Proposed mechanism for AS01 dementia risk reduction',
-  },
+  // amyloid_clearance_enhanced removed - IFN-γ now directly modulates Abeta_clearance (M06)
 ];
 
 // ============================================================================

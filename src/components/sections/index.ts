@@ -13,3 +13,4 @@ export { EvidenceHierarchy } from './EvidenceHierarchy';
 export { HopefulDevelopments } from './HopefulDevelopments';
 export { SexAncestryEffects, MenopauseComparison, AncestryRiskChart, FatDistributionChart, InterventionsTable } from './SexAncestryEffects';
 export { MechanisticNetworkGraph } from './MechanisticNetworkGraph';
+export { TranslationalFailures } from './TranslationalFailures';

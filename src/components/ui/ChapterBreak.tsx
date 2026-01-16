@@ -1,7 +1,15 @@
 'use client';
 
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
+
+// Define act configuration
+const acts = [
+  { id: 'act-1', label: 'I', sectionId: 'paradox' },
+  { id: 'act-2', label: 'II', sectionId: 'system' },
+  { id: 'act-3', label: 'III', sectionId: 'hopeful-developments' },
+];
 
 interface ChapterBreakProps {
   /** The main statement or question */
@@ -23,6 +31,22 @@ export function ChapterBreak({
   variant = 'default',
   className,
 }: ChapterBreakProps) {
+  const containerRef = useRef<HTMLElement>(null);
+  const [barWidth, setBarWidth] = useState(0);
+
+  // Calculate the width of the progress bar area
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        // Use a max-width similar to the content
+        setBarWidth(Math.min(containerRef.current.offsetWidth - 48, 800));
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   const variantStyles = {
     default: 'bg-[var(--bg-secondary)]',
     dark: 'bg-[var(--text-primary)] text-white',
@@ -38,14 +62,116 @@ export function ChapterBreak({
     ? 'text-white/70'
     : 'text-[var(--accent-orange)]';
 
+  const barColor = variant === 'dark' || variant === 'teal'
+    ? 'bg-white/20'
+    : 'bg-[var(--border)]';
+
+  const tickColor = variant === 'dark' || variant === 'teal'
+    ? 'bg-white/40'
+    : 'bg-[var(--text-muted)]';
+
+  const activeTickColor = variant === 'dark' || variant === 'teal'
+    ? 'bg-white'
+    : 'bg-[var(--accent-orange)]';
+
+  // Determine which act is currently active based on the label
+  const currentActIndex = label ? parseInt(label.replace(/\D/g, '')) - 1 : -1;
+
+  // Scroll to a specific act section
+  const scrollToAct = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Calculate tick positions (evenly distributed)
+  const tickSpacing = barWidth / (acts.length + 1);
+
   return (
     <section
+      ref={containerRef}
+      id={label ? `act-${label.replace(/\D/g, '')}` : undefined}
       className={cn(
-        'min-h-[60vh] md:min-h-[70vh] flex items-center justify-center px-6',
+        'min-h-[70vh] md:min-h-[80vh] flex flex-col items-center justify-center px-6 py-16',
         variantStyles[variant],
         className
       )}
     >
+      {/* Progress bar with act markers */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="mb-16 relative"
+        style={{ width: barWidth || '100%' }}
+      >
+        {/* Main horizontal line */}
+        <div className={cn('h-px w-full', barColor)} />
+
+        {/* Tick marks and labels */}
+        <div className="relative" style={{ height: 60 }}>
+          {acts.map((act, index) => {
+            const isActive = index === currentActIndex;
+            const isPast = index < currentActIndex;
+            const xPos = tickSpacing * (index + 1);
+
+            return (
+              <button
+                key={act.id}
+                onClick={() => scrollToAct(act.sectionId)}
+                className="absolute flex flex-col items-center group transition-transform hover:scale-110"
+                style={{
+                  left: xPos,
+                  transform: 'translateX(-50%)',
+                  top: -8,
+                }}
+              >
+                {/* Tick mark */}
+                <div
+                  className={cn(
+                    'w-0.5 h-4 transition-colors',
+                    isActive ? activeTickColor : isPast ? tickColor : barColor
+                  )}
+                />
+                {/* Dot */}
+                <div
+                  className={cn(
+                    'w-3 h-3 rounded-full border-2 transition-all mt-1',
+                    isActive
+                      ? `${activeTickColor} border-transparent`
+                      : isPast
+                        ? `${tickColor} border-transparent`
+                        : `bg-transparent ${variant === 'dark' || variant === 'teal' ? 'border-white/30' : 'border-[var(--border)]'}`
+                  )}
+                />
+                {/* Label */}
+                <span
+                  className={cn(
+                    'mt-2 text-xs font-medium uppercase tracking-widest transition-colors',
+                    isActive
+                      ? labelColor
+                      : isPast
+                        ? (variant === 'dark' || variant === 'teal' ? 'text-white/50' : 'text-[var(--text-muted)]')
+                        : (variant === 'dark' || variant === 'teal' ? 'text-white/30' : 'text-[var(--border)]'),
+                    'group-hover:text-[var(--accent-orange)]'
+                  )}
+                >
+                  Act {act.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Main content */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -79,6 +205,18 @@ export function ChapterBreak({
         >
           {children}
         </motion.h2>
+      </motion.div>
+
+      {/* Bottom decorative element */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        viewport={{ once: true }}
+        className="mt-16 flex flex-col items-center gap-2"
+      >
+        <div className={cn('w-px h-8', barColor)} />
+        <div className={cn('w-2 h-2 rotate-45', barColor)} />
       </motion.div>
     </section>
   );

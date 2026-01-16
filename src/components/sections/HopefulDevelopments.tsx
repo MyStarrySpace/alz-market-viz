@@ -71,9 +71,9 @@ function DevelopmentsList({ developments, emptyMessage }: { developments: Hopefu
             return (
               <button
                 key={dev.id}
-                className={`w-full flex items-center justify-between p-4 text-left hover:bg-[var(--bg-secondary)] ${
+                className={`w-full flex items-center justify-between p-4 text-left hover:bg-[var(--bg-secondary)] transition-all ${
                   index > 0 ? 'border-t border-[var(--border)]' : ''
-                } ${isSelected ? 'bg-[var(--bg-secondary)]' : ''}`}
+                } ${isSelected ? 'bg-[var(--bg-secondary)] border-l-4 border-l-[var(--accent-orange)]' : 'border-l-4 border-l-transparent'}`}
                 onClick={() => setSelectedId(isSelected ? null : dev.id)}
               >
                 <div className="flex-1 min-w-0">
@@ -375,7 +375,7 @@ export function HopefulDevelopments() {
             <span className="font-semibold">sleep</span>, and{' '}
             <span className="font-semibold">cognitive engagement</span>{' '}
             can reduce your risk by{' '}
-            <span className="font-bold text-[var(--accent-orange)] text-2xl md:text-3xl">30–50%</span>.
+            <span className="font-bold text-[var(--accent-orange)] text-2xl md:text-3xl">30-50%</span>.
           </p>
           <p className="text-[var(--text-muted)]">
             These interventions address the same upstream mechanisms that sidelined researchers identified decades ago.

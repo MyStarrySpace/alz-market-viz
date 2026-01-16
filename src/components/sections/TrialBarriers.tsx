@@ -13,6 +13,7 @@ import {
   Heart,
   Pill,
   Info,
+  ExternalLink,
 } from 'lucide-react';
 import {
   BarChart,
@@ -29,6 +30,7 @@ import {
   Legend,
 } from 'recharts';
 import { Container, Section, SectionHeader, Card, CardContent, TextWithAbbreviations, DataCard, InteractivePieBarChart } from '@/components/ui';
+import { bibliography } from '@/data/bibliography';
 import {
   trialRequirements,
   adTrialPhaseCosts,
@@ -183,6 +185,19 @@ function CollapsibleQuestion({
   );
 }
 
+// Helper to get source info from bibliography
+function getSourceInfo(sourceId: string) {
+  const source = bibliography.find(s => s.id === sourceId);
+  if (!source) return null;
+  return {
+    id: source.id,
+    title: source.title,
+    authors: source.authors,
+    year: source.year,
+    url: source.url || (source.doi ? `https://doi.org/${source.doi}` : null),
+  };
+}
+
 // Redirected drugs list with expandable details
 function RedirectedDrugsList({ drugs }: { drugs: typeof redirectedDrugs }) {
   const [selectedDrug, setSelectedDrug] = useState<string | null>(null);
@@ -299,6 +314,33 @@ function RedirectedDrugsList({ drugs }: { drugs: typeof redirectedDrugs }) {
                     ))}
                   </div>
                 </div>
+
+                {/* Sources */}
+                {selected.sourceIds && selected.sourceIds.length > 0 && (
+                  <div className="pt-4 mt-4 border-t border-[var(--border)]">
+                    <div className="flex justify-end">
+                      <div className="flex flex-wrap gap-2 justify-end">
+                        {selected.sourceIds.map((sourceId) => {
+                          const sourceInfo = getSourceInfo(sourceId);
+                          if (!sourceInfo || !sourceInfo.url) return null;
+                          return (
+                            <a
+                              key={sourceId}
+                              href={sourceInfo.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors"
+                              title={`${sourceInfo.authors[0]} et al. (${sourceInfo.year})`}
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span>{sourceInfo.authors[0]?.split(' ').pop()} {sourceInfo.year}</span>
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -328,31 +370,27 @@ export function TrialBarriers() {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <div className="p-4 bg-white border border-[var(--border)] text-center">
-            <DollarSign className="w-6 h-6 mx-auto text-[#486393] mb-2" />
-            <span className="text-2xl font-bold font-mono text-[var(--text-primary)]">$42.5B</span>
-            <p className="text-xs text-[var(--text-muted)] mt-1">Invested 1995-2021</p>
+          <div className="bg-white border border-[var(--border)] p-4 text-center">
+            <span className="text-2xl font-bold text-[var(--text-primary)]">$42.5B</span>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Private investment (1995-2021)</p>
           </div>
-          <div className="p-4 bg-[var(--danger-light)] border border-[var(--danger)] text-center">
-            <AlertTriangle className="w-6 h-6 mx-auto text-[var(--danger)] mb-2" />
-            <span className="text-2xl font-bold font-mono text-[var(--danger)]">
+          <div className="bg-white border border-[var(--border)] p-4 text-center">
+            <span className="text-2xl font-bold text-[var(--accent-orange)]">
               {adDevelopmentStatistics.overallFailureRate}%
             </span>
-            <p className="text-xs text-[var(--text-muted)] mt-1">Failure rate</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Phase 2/3 failure rate</p>
           </div>
-          <div className="p-4 bg-white border border-[var(--border)] text-center">
-            <Users className="w-6 h-6 mx-auto text-[var(--success)] mb-2" />
-            <span className="text-2xl font-bold font-mono text-[var(--text-primary)]">
+          <div className="bg-white border border-[var(--border)] p-4 text-center">
+            <span className="text-2xl font-bold text-[var(--text-primary)]">
               {(adDevelopmentStatistics.totalParticipants / 1000).toFixed(0)}K
             </span>
-            <p className="text-xs text-[var(--text-muted)] mt-1">Trial participants</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Trial participants enrolled</p>
           </div>
-          <div className="p-4 bg-white border border-[var(--border)] text-center">
-            <Clock className="w-6 h-6 mx-auto text-[var(--accent-orange)] mb-2" />
-            <span className="text-2xl font-bold font-mono text-[var(--text-primary)]">
+          <div className="bg-white border border-[var(--border)] p-4 text-center">
+            <span className="text-2xl font-bold text-[var(--text-primary)]">
               {adDevelopmentStatistics.fdaApprovals}
             </span>
-            <p className="text-xs text-[var(--text-muted)] mt-1">FDA approvals (26 yrs)</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">FDA approvals (26 years)</p>
           </div>
         </motion.div>
 

@@ -100,42 +100,54 @@ export default function ShowcasePage() {
       <Section id="typography">
         <Container>
           <SectionTitle>Typography</SectionTitle>
-          <Card variant="default" hover={false}>
-            <CardContent className="space-y-8">
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-2">Heading 1 (Neuton)</p>
-                <Heading as="h1" animate={false}>Untangling Alzheimer&apos;s</Heading>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-2">Heading 2 (Neuton)</p>
-                <Heading as="h2" animate={false}>The Investment Paradox</Heading>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-2">Heading 3 (Neuton)</p>
-                <Heading as="h3" animate={false}>Case Studies in Market Failure</Heading>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-2">Body Text (Encode Sans)</p>
-                <p className="text-[var(--text-body)]">
-                  Each of these researchers proposed that amyloid was a consequence—not a
-                  cause—of upstream dysfunction. Each was marginalized as the field
-                  consolidated around the amyloid cascade hypothesis.
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-2">Muted Text</p>
-                <p className="text-[var(--text-muted)]">
-                  Supporting information and secondary content appears in muted gray.
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-2">Accent Text</p>
-                <p className="text-[var(--text-body)]">
-                  Important terms can be <span className="text-[var(--accent-orange)] font-semibold">highlighted with orange</span> for emphasis.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Examples */}
+            <div className="lg:col-span-2">
+              <Card variant="default" hover={false}>
+                <CardContent className="space-y-6">
+                  <div>
+                    <p className="text-sm text-[var(--text-muted)] mb-2">Heading 1 (Neuton)</p>
+                    <Heading as="h1" animate={false}>Untangling Alzheimer&apos;s</Heading>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[var(--text-muted)] mb-2">Heading 2 (Neuton)</p>
+                    <Heading as="h2" animate={false}>The Investment Paradox</Heading>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[var(--text-muted)] mb-2">Heading 3 (Neuton)</p>
+                    <Heading as="h3" animate={false}>Case Studies in Market Failure</Heading>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-[var(--text-muted)] mb-2">Body Text (Encode Sans)</p>
+                      <p className="text-[var(--text-body)]">
+                        Each of these researchers proposed that amyloid was a consequence—not a
+                        cause—of upstream dysfunction.
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[var(--text-muted)] mb-2">Muted &amp; Accent</p>
+                      <p className="text-[var(--text-muted)]">
+                        Supporting info in gray. <span className="text-[var(--accent-orange)] font-semibold">Key terms in orange.</span>
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            {/* Design rationale */}
+            <div className="space-y-4">
+              <DesignNote title="Why Neuton for headings?">
+                Serif fonts convey authority and gravitas, appropriate for serious medical/scientific content. Neuton&apos;s moderate x-height ensures readability at large sizes.
+              </DesignNote>
+              <DesignNote title="Why Encode Sans for body?">
+                Clean sans-serif provides excellent readability for longer passages. The neutral character doesn&apos;t compete with data visualizations.
+              </DesignNote>
+              <DesignNote title="Text hierarchy">
+                Three-level gray scale (primary, body, muted) creates clear visual hierarchy without harsh contrast. Orange accent sparingly highlights key terms.
+              </DesignNote>
+            </div>
+          </div>
         </Container>
       </Section>
 
@@ -143,57 +155,69 @@ export default function ShowcasePage() {
       <Section id="colors" className="bg-[var(--bg-secondary)]">
         <Container>
           <SectionTitle>Color Palette</SectionTitle>
-          <div className="space-y-6">
-            <div>
-              <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Backgrounds & Borders</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <ColorSwatch name="Primary BG" color="var(--bg-primary)" hex="#faf9f7" />
-                <ColorSwatch name="Secondary BG" color="var(--bg-secondary)" hex="#f5f3f0" />
-                <ColorSwatch name="Card BG" color="var(--bg-card)" hex="#ffffff" />
-                <ColorSwatch name="Border" color="var(--border)" hex="#e5e2dd" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Color swatches */}
+            <div className="lg:col-span-2 space-y-6">
+              <div>
+                <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Foundation</p>
+                <div className="grid grid-cols-4 gap-3">
+                  <ColorSwatch name="BG Primary" hex="#faf9f7" />
+                  <ColorSwatch name="BG Secondary" hex="#f5f3f0" />
+                  <ColorSwatch name="Text Primary" hex="#2d2d2d" dark />
+                  <ColorSwatch name="Accent" hex="#e36216" dark />
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Semantic</p>
+                <div className="grid grid-cols-4 gap-3">
+                  <ColorSwatch name="Success" hex="#5a8a6e" dark />
+                  <ColorSwatch name="Danger" hex="#c75146" dark />
+                  <ColorSwatch name="Teal (increases)" hex="#007385" dark />
+                  <ColorSwatch name="Red (decreases)" hex="#c75146" dark />
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Data Visualization</p>
+                <div className="grid grid-cols-5 gap-3">
+                  <ColorSwatch name="Primary" hex="#e36216" dark />
+                  <ColorSwatch name="Teal" hex="#007385" dark />
+                  <ColorSwatch name="Blue" hex="#486393" dark />
+                  <ColorSwatch name="Warning" hex="#E5AF19" />
+                  <ColorSwatch name="Pink" hex="#C3577F" dark />
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Module Colors (Network Graph)</p>
+                <div className="grid grid-cols-6 gap-2">
+                  <ColorSwatch name="M01" hex="#486393" dark compact />
+                  <ColorSwatch name="M02" hex="#007385" dark compact />
+                  <ColorSwatch name="M03" hex="#C9461D" dark compact />
+                  <ColorSwatch name="M04" hex="#E5AF19" compact />
+                  <ColorSwatch name="M05" hex="#C3577F" dark compact />
+                  <ColorSwatch name="M06" hex="#60a5fa" dark compact />
+                  <ColorSwatch name="M07" hex="#a78bfa" dark compact />
+                  <ColorSwatch name="M08" hex="#34d399" dark compact />
+                  <ColorSwatch name="M09" hex="#f472b6" dark compact />
+                  <ColorSwatch name="M10" hex="#8ecae6" compact />
+                  <ColorSwatch name="M11" hex="#fbbf24" compact />
+                  <ColorSwatch name="M12" hex="#94a3b8" dark compact />
+                </div>
               </div>
             </div>
-            <div>
-              <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Text</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <ColorSwatch name="Text Primary" color="var(--text-primary)" hex="#2d2d2d" dark />
-                <ColorSwatch name="Text Body" color="var(--text-body)" hex="#4a4a4a" dark />
-                <ColorSwatch name="Text Muted" color="var(--text-muted)" hex="#7a7a7a" dark />
-                <ColorSwatch name="Accent Orange" color="var(--accent-orange)" hex="#e36216" dark />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Semantic Colors</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <ColorSwatch name="Success" color="var(--success)" hex="#5a8a6e" dark />
-                <ColorSwatch name="Danger" color="var(--danger)" hex="#c75146" dark />
-                <ColorSwatch name="Success Light" color="var(--success-light)" hex="#e8f3ec" />
-                <ColorSwatch name="Danger Light" color="var(--danger-light)" hex="#fae8e6" />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Chart Colors</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <ColorSwatch name="Chart Primary" color="var(--chart-primary)" hex="#486393" dark />
-                <ColorSwatch name="Chart Secondary" color="var(--chart-secondary)" hex="#007385" dark />
-                <ColorSwatch name="Chart Accent" color="var(--chart-accent)" hex="#C9461D" dark />
-                <ColorSwatch name="Chart Warning" color="var(--chart-warning)" hex="#E5AF19" dark />
-                <ColorSwatch name="Chart Pink" color="var(--chart-pink)" hex="#C3577F" dark />
-                <ColorSwatch name="Chart Muted" color="var(--chart-muted)" hex="#787473" dark />
-                <ColorSwatch name="Chart Light Blue" color="var(--chart-light-blue)" hex="#7ED3FF" dark />
-                <ColorSwatch name="Chart Light Orange" color="var(--chart-light-orange)" hex="#FFA380" dark />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-[var(--text-muted)] mb-3 font-medium">Category Colors</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <ColorSwatch name="Amyloid" color="var(--category-amyloid)" hex="#60a5fa" dark />
-                <ColorSwatch name="Vascular" color="var(--category-vascular)" hex="#a78bfa" dark />
-                <ColorSwatch name="Metabolic" color="var(--category-metabolic)" hex="#fbbf24" />
-                <ColorSwatch name="Lysosomal" color="var(--category-lysosomal)" hex="#34d399" dark />
-                <ColorSwatch name="Mitochondrial" color="var(--category-mitochondrial)" hex="#8ecae6" />
-                <ColorSwatch name="Myelin" color="var(--category-myelin)" hex="#f472b6" dark />
-              </div>
+            {/* Design rationale */}
+            <div className="space-y-4">
+              <DesignNote title="Warm neutrals">
+                Off-white backgrounds (#faf9f7) feel warmer and less clinical than pure white. This warmth pairs well with the orange accent and creates a more approachable feel for difficult subject matter.
+              </DesignNote>
+              <DesignNote title="Orange as signature">
+                #e36216 is used sparingly for CTAs, highlights, and key data points. It provides energy without overwhelming the scientific content.
+              </DesignNote>
+              <DesignNote title="Edge semantics">
+                Teal (#007385) = increases/activates. Red (#c75146) = decreases/inhibits. This matches common biological pathway conventions.
+              </DesignNote>
+              <DesignNote title="Module differentiation">
+                Each module in the network graph has a distinct hue. Colors were chosen to be distinguishable even for colorblind users (avoiding red-green only distinctions).
+              </DesignNote>
             </div>
           </div>
         </Container>
@@ -203,56 +227,73 @@ export default function ShowcasePage() {
       <Section id="buttons">
         <Container>
           <SectionTitle>Buttons</SectionTitle>
-          <Card variant="default" hover={false}>
-            <CardContent className="space-y-8">
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-4">Primary Button</p>
-                <div className="flex flex-wrap gap-4">
-                  <Button variant="primary">Primary Action</Button>
-                  <Button variant="primary" disabled>Disabled</Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-4">Secondary Button</p>
-                <div className="flex flex-wrap gap-4">
-                  <Button variant="secondary">Secondary Action</Button>
-                  <Button variant="secondary" disabled>Disabled</Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-4">Ghost Button</p>
-                <div className="flex flex-wrap gap-4">
-                  <Button variant="ghost">Ghost Action</Button>
-                  <Button variant="ghost" disabled>Disabled</Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-4">With Icons</p>
-                <div className="flex flex-wrap gap-4">
-                  <Button variant="primary">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Report
-                  </Button>
-                  <Button variant="secondary">
-                    Learn More
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                  <Button variant="ghost">
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    View Source
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-[var(--text-muted)] mb-4">Sizes</p>
-                <div className="flex flex-wrap items-center gap-4">
-                  <Button variant="primary" size="sm">Small</Button>
-                  <Button variant="primary" size="md">Medium</Button>
-                  <Button variant="primary" size="lg">Large</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Card variant="default" hover={false}>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-[var(--text-muted)] mb-3">Primary</p>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="primary">Primary Action</Button>
+                        <Button variant="primary" disabled>Disabled</Button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[var(--text-muted)] mb-3">Secondary</p>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="secondary">Secondary</Button>
+                        <Button variant="secondary" disabled>Disabled</Button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[var(--text-muted)] mb-3">Ghost</p>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="ghost">Ghost Action</Button>
+                        <Button variant="ghost" disabled>Disabled</Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[var(--text-muted)] mb-3">With Icons</p>
+                    <div className="flex flex-wrap gap-3">
+                      <Button variant="primary" size="sm">
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                      </Button>
+                      <Button variant="secondary" size="sm">
+                        Learn More
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Source
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[var(--text-muted)] mb-3">Sizes</p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Button variant="primary" size="sm">Small</Button>
+                      <Button variant="primary" size="md">Medium</Button>
+                      <Button variant="primary" size="lg">Large</Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="space-y-4">
+              <DesignNote title="Clean, minimal style">
+                All buttons use white backgrounds with subtle borders and shadows. On hover, the border and text turn orange for clear feedback.
+              </DesignNote>
+              <DesignNote title="Square corners">
+                All buttons have square corners (no border-radius). This creates a sharp, professional aesthetic consistent with the overall design system.
+              </DesignNote>
+              <DesignNote title="Icon placement">
+                Leading icons for actions (Download, View). Trailing icons for navigation (Learn More →). Never both.
+              </DesignNote>
+            </div>
+          </div>
         </Container>
       </Section>
 
@@ -260,47 +301,54 @@ export default function ShowcasePage() {
       <Section id="cards" className="bg-[var(--bg-secondary)]">
         <Container>
           <SectionTitle>Cards</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card variant="default">
-              <CardHeader>
-                <Heading as="h4" animate={false}>Default Card</Heading>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[var(--text-body)]">
-                  Standard card for general content. White background with subtle border.
-                </p>
-              </CardContent>
-            </Card>
-            <Card variant="highlighted">
-              <CardHeader>
-                <Heading as="h4" animate={false}>Highlighted Card</Heading>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[var(--text-body)]">
-                  Used for important callouts or featured content. Orange-tinted background.
-                </p>
-              </CardContent>
-            </Card>
-            <Card variant="success">
-              <CardHeader>
-                <Heading as="h4" animate={false}>Success Card</Heading>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[var(--text-body)]">
-                  Indicates positive outcomes or successful actions. Green-tinted background.
-                </p>
-              </CardContent>
-            </Card>
-            <Card variant="danger">
-              <CardHeader>
-                <Heading as="h4" animate={false}>Danger Card</Heading>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[var(--text-body)]">
-                  Highlights warnings or critical information. Red-tinted background.
-                </p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="grid grid-cols-2 gap-4">
+                <Card variant="default">
+                  <CardHeader>
+                    <Heading as="h4" animate={false}>Default</Heading>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-[var(--text-body)]">White background, subtle border. General content.</p>
+                  </CardContent>
+                </Card>
+                <Card variant="highlighted">
+                  <CardHeader>
+                    <Heading as="h4" animate={false}>Highlighted</Heading>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-[var(--text-body)]">Orange-tinted. Featured content, key insights.</p>
+                  </CardContent>
+                </Card>
+                <Card variant="success">
+                  <CardHeader>
+                    <Heading as="h4" animate={false}>Success</Heading>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-[var(--text-body)]">Green-tinted. Positive outcomes, alternatives.</p>
+                  </CardContent>
+                </Card>
+                <Card variant="danger">
+                  <CardHeader>
+                    <Heading as="h4" animate={false}>Danger</Heading>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-[var(--text-body)]">Red-tinted. Warnings, failures, critical info.</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <DesignNote title="Rectangular corners">
+                Cards use `rounded` (4px) not `rounded-lg`. This creates a more professional, data-focused aesthetic that matches scientific literature.
+              </DesignNote>
+              <DesignNote title="Semantic variants">
+                Success (green) for hopeful alternatives. Danger (red) for market failures and abandoned research. Highlighted (orange) for key takeaways.
+              </DesignNote>
+              <DesignNote title="Hover states">
+                Cards have subtle lift on hover (shadow increase) to indicate interactivity. Can be disabled with `hover={false}`.
+              </DesignNote>
+            </div>
           </div>
         </Container>
       </Section>
@@ -457,19 +505,19 @@ export default function ShowcasePage() {
                       <td className="py-3 px-4 text-[var(--text-primary)] font-medium">Lecanemab</td>
                       <td className="py-3 px-4 text-[var(--text-body)]">Monoclonal Antibody</td>
                       <td className="py-3 px-4"><Badge variant="success">Approved</Badge></td>
-                      <td className="py-3 px-4 text-[var(--accent-orange)] font-mono">$26,500</td>
+                      <td className="py-3 px-4 text-[var(--accent-orange)] font-neuton font-bold">$26,500</td>
                     </tr>
                     <tr className="border-b border-[var(--border)]">
                       <td className="py-3 px-4 text-[var(--text-primary)] font-medium">Lithium</td>
                       <td className="py-3 px-4 text-[var(--text-body)]">Generic</td>
                       <td className="py-3 px-4"><Badge variant="warning">No Pathway</Badge></td>
-                      <td className="py-3 px-4 text-[var(--success)] font-mono">$50</td>
+                      <td className="py-3 px-4 text-[var(--success)] font-neuton font-bold">$50</td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 text-[var(--text-primary)] font-medium">GV-971</td>
                       <td className="py-3 px-4 text-[var(--text-body)]">Generic</td>
                       <td className="py-3 px-4"><Badge variant="warning">China Only</Badge></td>
-                      <td className="py-3 px-4 text-[var(--success)] font-mono">$200</td>
+                      <td className="py-3 px-4 text-[var(--success)] font-neuton font-bold">$200</td>
                     </tr>
                   </tbody>
                 </table>
@@ -538,19 +586,28 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ColorSwatch({ name, color, hex, dark }: { name: string; color: string; hex: string; dark?: boolean }) {
+function DesignNote({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="p-3 bg-white border border-[var(--border)] rounded">
+      <p className="text-xs font-semibold text-[var(--text-primary)] mb-1">{title}</p>
+      <p className="text-xs text-[var(--text-muted)] leading-relaxed">{children}</p>
+    </div>
+  );
+}
+
+function ColorSwatch({ name, hex, dark, compact }: { name: string; hex: string; dark?: boolean; compact?: boolean }) {
   return (
     <div className="overflow-hidden border border-[var(--border)]">
       <div
-        className="h-16 flex items-end p-2"
-        style={{ backgroundColor: `var(${color.replace('var(', '').replace(')', '')})` }}
+        className={`${compact ? 'h-8' : 'h-12'} flex items-end p-1.5`}
+        style={{ backgroundColor: hex }}
       >
-        <span className={`text-xs font-mono ${dark ? 'text-white' : 'text-[var(--text-body)]'}`}>
+        <span className={`${compact ? 'text-[8px]' : 'text-[10px]'} font-mono ${dark ? 'text-white' : 'text-[var(--text-body)]'}`}>
           {hex}
         </span>
       </div>
-      <div className="p-2 bg-white">
-        <p className="text-xs font-medium text-[var(--text-primary)]">{name}</p>
+      <div className={`${compact ? 'px-1 py-0.5' : 'p-1.5'} bg-white`}>
+        <p className={`${compact ? 'text-[8px]' : 'text-[10px]'} font-medium text-[var(--text-primary)] truncate`}>{name}</p>
       </div>
     </div>
   );

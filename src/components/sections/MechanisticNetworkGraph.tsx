@@ -21,7 +21,7 @@ import '@xyflow/react/dist/style.css';
 
 import { allNodes } from '@/data/mechanisticFramework/nodes';
 import { allEdges } from '@/data/mechanisticFramework/edges';
-import type { MechanisticNode, BoundaryVariant } from '@/data/mechanisticFramework/types';
+import type { MechanisticNode, BoundaryVariant, BoundaryDirection } from '@/data/mechanisticFramework/types';
 
 // Tri-state for module filtering: 'on' (full), 'partial' (filtered), 'off' (hidden)
 type ModuleFilterState = 'on' | 'partial' | 'off';
@@ -275,9 +275,58 @@ const BoundaryVariantNode = memo(({ data }: NodeProps<Node<BoundaryVariantNodeDa
 
 BoundaryVariantNode.displayName = 'BoundaryVariantNode';
 
+// Custom node for boundary expand/collapse button
+interface BoundaryExpandButtonData extends Record<string, unknown> {
+  direction: 'input' | 'output';
+  isExpanded: boolean;
+  boundaryCount: number;
+  onToggle: () => void;
+}
+
+const BoundaryExpandButton = memo(({ data }: NodeProps<Node<BoundaryExpandButtonData>>) => {
+  const isInput = data.direction === 'input';
+
+  return (
+    <div
+      className="bg-white border-2 border-dashed cursor-pointer transition-all hover:shadow-md hover:border-[var(--accent-orange)]"
+      style={{
+        borderColor: data.isExpanded ? 'var(--accent-orange)' : '#787473',
+        width: 80,
+        padding: '8px',
+        borderRadius: '8px',
+        textAlign: 'center',
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        data.onToggle();
+      }}
+    >
+      {/* Only show handle on the appropriate side */}
+      {isInput ? (
+        <Handle type="source" position={Position.Right} className="!bg-[var(--border)]" />
+      ) : (
+        <Handle type="target" position={Position.Left} className="!bg-[var(--border)]" />
+      )}
+
+      <div className="text-[10px] font-medium text-[var(--text-primary)]">
+        {data.isExpanded ? '−' : '+'}
+      </div>
+      <div className="text-[9px] text-[var(--text-muted)]">
+        {isInput ? 'Inputs' : 'Outputs'}
+      </div>
+      <div className="text-[8px] text-[var(--text-muted)]">
+        ({data.boundaryCount})
+      </div>
+    </div>
+  );
+});
+
+BoundaryExpandButton.displayName = 'BoundaryExpandButton';
+
 // Node types for React Flow
 const nodeTypes = {
   boundaryVariant: BoundaryVariantNode,
+  boundaryExpandButton: BoundaryExpandButton,
 };
 
 // Compute topological layers for DAG layout (left-to-right)
@@ -567,16 +616,18 @@ function findPseudoNodes(
 /**
  * Greedy layout algorithm that positions nodes based on causal flow.
  * Handles disconnected components by laying them out separately.
+ * Also identifies back edges (cycle-completing edges) during BFS.
  */
 function computeGreedyLayout(
   filteredNodes: MechanisticNode[],
   edges: typeof allEdges,
   pseudoNodes: PseudoNode[] = [],
   excludedEdges: Set<string> = new Set()
-): Map<string, LayoutPosition> {
+): { positions: Map<string, LayoutPosition>; backEdges: Set<string> } {
   const positions = new Map<string, LayoutPosition>();
+  const backEdges = new Set<string>();
 
-  if (filteredNodes.length === 0) return positions;
+  if (filteredNodes.length === 0) return { positions, backEdges };
 
   const nodeIds = new Set(filteredNodes.map(n => n.id));
   const nodeMap = new Map(filteredNodes.map(n => [n.id, n]));
@@ -603,6 +654,12 @@ function computeGreedyLayout(
   const filteredEdges = edges.filter(e =>
     nodeIds.has(e.source) && nodeIds.has(e.target) && !excludedEdges.has(e.id)
   );
+
+  // Build a map from source-target pair to edge ID for back-edge detection
+  const edgeIdMap = new Map<string, string>();
+  filteredEdges.forEach(e => {
+    edgeIdMap.set(`${e.source}->${e.target}`, e.id);
+  });
 
   filteredEdges.forEach(e => {
     outgoing[e.source].push(e.target);
@@ -659,53 +716,41 @@ function computeGreedyLayout(
   const allEdgesForComponents = [...filteredEdges, ...pseudoEdges];
   const components = findFilteredComponents(allNodesList, allEdgesForComponents);
 
-  // DEBUG: When both M01 and M03 are enabled
-  const hasM01 = filteredNodes.some(n => n.moduleId === 'M01');
-  const hasM03 = filteredNodes.some(n => n.moduleId === 'M03');
-  if (hasM01 && hasM03) {
-    console.log('=== DEBUG M01+M03 ===');
-    console.log('excludedEdges:', Array.from(excludedEdges));
-    console.log('M03 edges in filteredEdges:', filteredEdges.filter(e => e.id.startsWith('E03')).map(e => `${e.id}: ${e.source}->${e.target}`));
-    console.log('All M03 edges in data:', edges.filter(e => e.id.startsWith('E03')).map(e => `${e.id}: ${e.source}->${e.target} (excluded: ${excludedEdges.has(e.id)})`));
-  }
-
   // Sort components by size (largest first)
   components.sort((a, b) => b.length - a.length);
 
   // Layout each component separately
   let globalYOffset = 50;
-  const layerWidth = 250;
-  const nodeHeight = 80;
-  const componentGap = 100;
+  const layerWidth = 280;   // Slightly wider horizontal spacing
+  const nodeHeight = 100;   // More vertical spacing between nodes
+  const componentGap = 120;
 
-  components.forEach((component, compIdx) => {
+  components.forEach((component) => {
     const componentNodeIds = new Set(component);
 
-    // DEBUG: Check M03 nodes in this component
-    const hasM03 = component.some(id => id.includes('mito') || id.includes('mtDNA'));
-    if (hasM03) {
-      console.log(`=== LAYER DEBUG Component ${compIdx} ===`);
-      console.log('Component nodes:', component);
-    }
-
-    // Find sources within this component
-    const sources = component.filter(id => {
-      const incomingInComponent = (incoming[id] || []).filter(p => componentNodeIds.has(p));
-      const isSource = incomingInComponent.length === 0;
-      if (hasM03) {
-        // Log ALL M03 nodes to see why they're being marked as sources
-        const node = nodeMap.get(id);
-        if (node?.moduleId === 'M03' || id.includes('pseudo')) {
-          console.log(`Node ${id}: incoming=${JSON.stringify(incoming[id])}, incomingInComponent=${JSON.stringify(incomingInComponent)}, isSource=${isSource}`);
-        }
-      }
-      return isSource;
+    // Identify input and output boundaries in this component
+    const inputBoundaries = component.filter(id => {
+      const node = nodeMap.get(id);
+      return node?.category === 'BOUNDARY' && node.boundaryDirection === 'input';
+    });
+    const outputBoundaries = component.filter(id => {
+      const node = nodeMap.get(id);
+      return node?.category === 'BOUNDARY' && node.boundaryDirection === 'output';
     });
 
-    // DEBUG: Log sources right after filter
-    if (hasM03) {
-      console.log('Sources IMMEDIATELY after filter:', sources.slice());
-    }
+    // Find sources within this component (nodes with no incoming edges from within the component)
+    // Input boundaries should always be treated as sources
+    let sources = component.filter(id => {
+      const incomingInComponent = (incoming[id] || []).filter(p => componentNodeIds.has(p));
+      return incomingInComponent.length === 0;
+    });
+
+    // Ensure all input boundaries are included as sources
+    inputBoundaries.forEach(id => {
+      if (!sources.includes(id)) {
+        sources.push(id);
+      }
+    });
 
     // If no sources (cycle detected), pick ONE node with fewest incoming as the starting point
     if (sources.length === 0) {
@@ -716,61 +761,74 @@ function computeGreedyLayout(
       incomingCounts.sort((a, b) => a.count - b.count);
       // Only pick the FIRST node with minimum incoming, not all of them
       sources.push(incomingCounts[0].id);
-      if (hasM03) {
-        console.log('Cycle detected - picking single source:', sources[0], 'with', incomingCounts[0].count, 'incoming');
-      }
     }
 
-    // Assign layers via BFS
+    // Assign layers via BFS with cycle detection
+    // We use a modified Kahn's algorithm that tracks back edges
     const layers = new Map<string, number>();
     const queue = [...sources];
     sources.forEach(id => layers.set(id, 0));
 
     const processed = new Set<string>();
+    const inQueue = new Set<string>(sources);
     let iterations = 0;
     const maxIterations = component.length * 10;
+
+    // Track which edges are back edges (cycle-completing)
+    // A back edge is one where the target has a lower or equal layer than the source
+    // We detect these when a predecessor hasn't been processed but is in a cycle
 
     while (queue.length > 0 && iterations < maxIterations) {
       iterations++;
       const nodeId = queue.shift()!;
+      inQueue.delete(nodeId);
 
       if (!componentNodeIds.has(nodeId)) continue;
       if (processed.has(nodeId)) continue;
 
       const preds = (incoming[nodeId] || []).filter(p => componentNodeIds.has(p));
-      const allPredsProcessed = preds.every(p => layers.has(p));
 
-      // DEBUG: Trace mtDNA_oxidized processing
-      if (hasM03 && nodeId === 'mtDNA_oxidized') {
-        console.log(`BFS processing mtDNA_oxidized:`);
-        console.log(`  preds: ${JSON.stringify(preds)}`);
-        console.log(`  allPredsProcessed: ${allPredsProcessed}`);
-        console.log(`  preds layers: ${preds.map(p => `${p}=${layers.get(p)}`).join(', ')}`);
-      }
+      // Check which predecessors have been processed
+      // If a predecessor is not processed and not in queue, it might be part of a cycle
+      const processedPreds = preds.filter(p => layers.has(p));
+      const unprocessedPreds = preds.filter(p => !layers.has(p));
 
-      if (!allPredsProcessed && preds.length > 0) {
-        if (hasM03 && nodeId === 'mtDNA_oxidized') {
-          console.log(`  -> Re-queuing because not all preds processed`);
-        }
+      // If all predecessors are processed, or we've been iterating long enough (cycle detected), proceed
+      const shouldProcess = unprocessedPreds.length === 0 ||
+        (iterations > component.length && processedPreds.length > 0);
+
+      if (!shouldProcess) {
         queue.push(nodeId);
+        inQueue.add(nodeId);
         continue;
       }
 
-      const predLayers = preds.map(p => layers.get(p) ?? -1);
+      // Mark edges from unprocessed predecessors as back edges
+      // (they are predecessors that haven't been processed yet, meaning they're downstream in the BFS)
+      unprocessedPreds.forEach(predId => {
+        const edgeId = edgeIdMap.get(`${predId}->${nodeId}`);
+        if (edgeId) {
+          backEdges.add(edgeId);
+        }
+      });
+
+      const predLayers = processedPreds.map(p => layers.get(p) ?? -1);
       const layer = predLayers.length > 0 ? Math.max(...predLayers) + 1 : 0;
       layers.set(nodeId, layer);
       processed.add(nodeId);
 
-      if (hasM03 && (nodeId === 'mito_ROS' || nodeId === 'mtDNA_oxidized')) {
-        console.log(`BFS assigned ${nodeId} to layer ${layer} (predLayers: ${JSON.stringify(predLayers)})`);
-      }
-
       (outgoing[nodeId] || []).forEach(succ => {
-        if (componentNodeIds.has(succ) && !processed.has(succ)) {
-          if (hasM03 && succ === 'mtDNA_oxidized') {
-            console.log(`BFS: Adding mtDNA_oxidized to queue from ${nodeId}`);
+        if (componentNodeIds.has(succ)) {
+          if (processed.has(succ)) {
+            // This is a back edge - going to an already processed node
+            const edgeId = edgeIdMap.get(`${nodeId}->${succ}`);
+            if (edgeId) {
+              backEdges.add(edgeId);
+            }
+          } else if (!inQueue.has(succ)) {
+            queue.push(succ);
+            inQueue.add(succ);
           }
-          queue.push(succ);
         }
       });
     }
@@ -857,17 +915,6 @@ function computeGreedyLayout(
       }
     }
 
-    // DEBUG: Log layer assignments for M03 nodes
-    if (hasM03) {
-      console.log('Sources identified:', sources);
-      console.log('Layer assignments:');
-      layers.forEach((layer, nodeId) => {
-        if (nodeId.includes('mito') || nodeId.includes('mtDNA') || nodeId.includes('pseudo') || nodeId.includes('insulin') || nodeId.includes('mTOR')) {
-          console.log(`  ${nodeId} -> layer ${layer}`);
-        }
-      });
-    }
-
     // Group by layer
     const layerGroups: Map<number, string[]> = new Map();
     layers.forEach((layer, nodeId) => {
@@ -877,16 +924,154 @@ function computeGreedyLayout(
       layerGroups.get(layer)!.push(nodeId);
     });
 
-    // Sort within layers by module
+    // Layer balancing: try to move nodes to later layers if it helps balance
+    // This reduces clustering in middle layers by pushing nodes toward their sinks
+    const sortedLayerKeys = Array.from(layerGroups.keys()).sort((a, b) => a - b);
+    const totalLayers = sortedLayerKeys.length;
+
+    if (totalLayers > 2) {
+      // Calculate ideal layer width (average)
+      const idealWidth = Math.ceil(component.length / totalLayers);
+
+      // For each layer from second-to-last backward, try to push nodes to later layers
+      for (let i = sortedLayerKeys.length - 2; i >= 0; i--) {
+        const currentLayerIdx = sortedLayerKeys[i];
+        const currentLayerNodes = layerGroups.get(currentLayerIdx) || [];
+
+        // If this layer is too crowded, try to push some nodes to later layers
+        if (currentLayerNodes.length > idealWidth * 1.5) {
+          const nodesToPush: string[] = [];
+
+          currentLayerNodes.forEach(nodeId => {
+            // Skip dummy and pseudo nodes
+            if (nodeId.startsWith('__dummy_') || nodeId.startsWith('__pseudo_')) return;
+
+            // Check if all successors are at layer + 2 or greater (i.e., there's room to push)
+            const succs = (outgoing[nodeId] || []).filter(s => componentNodeIds.has(s));
+            if (succs.length === 0) return; // Don't push sinks
+
+            const minSuccLayer = Math.min(...succs.map(s => layers.get(s) ?? currentLayerIdx));
+            if (minSuccLayer > currentLayerIdx + 1) {
+              // Can push this node one layer later
+              nodesToPush.push(nodeId);
+            }
+          });
+
+          // Push nodes to balance (but don't push too many)
+          const toPush = nodesToPush.slice(0, Math.floor(currentLayerNodes.length / 3));
+          toPush.forEach(nodeId => {
+            const currentLayer = layers.get(nodeId)!;
+            layers.set(nodeId, currentLayer + 1);
+
+            // Update layer groups
+            const idx = layerGroups.get(currentLayer)!.indexOf(nodeId);
+            if (idx >= 0) layerGroups.get(currentLayer)!.splice(idx, 1);
+            if (!layerGroups.has(currentLayer + 1)) layerGroups.set(currentLayer + 1, []);
+            layerGroups.get(currentLayer + 1)!.push(nodeId);
+          });
+        }
+      }
+    }
+
+    // Move output boundaries to the rightmost layer
+    // This ensures clinical outcomes appear on the right side of the graph
+    if (outputBoundaries.length > 0) {
+      const maxLayer = Math.max(...Array.from(layers.values()));
+      const outputLayer = maxLayer + 1;
+
+      outputBoundaries.forEach(id => {
+        const currentLayer = layers.get(id);
+        if (currentLayer !== undefined && currentLayer !== outputLayer) {
+          // Remove from current layer group
+          const currentGroup = layerGroups.get(currentLayer);
+          if (currentGroup) {
+            const idx = currentGroup.indexOf(id);
+            if (idx >= 0) currentGroup.splice(idx, 1);
+          }
+
+          // Add to output layer
+          layers.set(id, outputLayer);
+          if (!layerGroups.has(outputLayer)) {
+            layerGroups.set(outputLayer, []);
+          }
+          layerGroups.get(outputLayer)!.push(id);
+        }
+      });
+    }
+
+    // Insert dummy nodes for long edges (edges spanning multiple layers)
+    // This is critical for proper crossing minimization
+    const dummyNodes: { id: string; layer: number; sourceId: string; targetId: string }[] = [];
+    const dummyOutgoing: Record<string, string[]> = { ...outgoing };
+    const dummyIncoming: Record<string, string[]> = { ...incoming };
+
+    // Find all edges and check if they span multiple layers
+    component.forEach(sourceId => {
+      const sourceLayer = layers.get(sourceId);
+      if (sourceLayer === undefined) return;
+
+      (outgoing[sourceId] || []).forEach(targetId => {
+        if (!componentNodeIds.has(targetId)) return;
+        const targetLayer = layers.get(targetId);
+        if (targetLayer === undefined) return;
+
+        // Skip back edges
+        const edgeId = edgeIdMap.get(`${sourceId}->${targetId}`);
+        if (edgeId && backEdges.has(edgeId)) return;
+
+        const layerDiff = targetLayer - sourceLayer;
+        if (layerDiff > 1) {
+          // This edge spans multiple layers - insert dummy nodes
+          let prevNodeId = sourceId;
+
+          for (let l = sourceLayer + 1; l < targetLayer; l++) {
+            const dummyId = `__dummy_${sourceId}_${targetId}_${l}`;
+            dummyNodes.push({ id: dummyId, layer: l, sourceId, targetId });
+            layers.set(dummyId, l);
+
+            if (!layerGroups.has(l)) {
+              layerGroups.set(l, []);
+            }
+            layerGroups.get(l)!.push(dummyId);
+
+            // Update adjacency for dummy nodes
+            dummyOutgoing[dummyId] = [];
+            dummyIncoming[dummyId] = [];
+
+            // Connect previous node to this dummy
+            if (!dummyOutgoing[prevNodeId]) dummyOutgoing[prevNodeId] = [...(outgoing[prevNodeId] || [])];
+            dummyOutgoing[prevNodeId] = dummyOutgoing[prevNodeId].filter(t => t !== targetId);
+            dummyOutgoing[prevNodeId].push(dummyId);
+            dummyIncoming[dummyId].push(prevNodeId);
+
+            prevNodeId = dummyId;
+          }
+
+          // Connect last dummy to target
+          dummyOutgoing[prevNodeId].push(targetId);
+          if (!dummyIncoming[targetId]) dummyIncoming[targetId] = [...(incoming[targetId] || [])];
+          dummyIncoming[targetId] = dummyIncoming[targetId].filter(s => s !== sourceId);
+          dummyIncoming[targetId].push(prevNodeId);
+        }
+      });
+    });
+
+    // Use dummy-aware adjacency for crossing minimization
+    const adjOutgoing = dummyNodes.length > 0 ? dummyOutgoing : outgoing;
+    const adjIncoming = dummyNodes.length > 0 ? dummyIncoming : incoming;
+
+    // Sort within layers by module initially
     layerGroups.forEach(ids => {
       ids.sort((a, b) => {
+        if (a.startsWith('__dummy_')) return 1;
+        if (b.startsWith('__dummy_')) return -1;
         const modA = nodeMap.get(a)?.moduleId || pseudoNodes.find(p => p.id === a)?.moduleId || '';
         const modB = nodeMap.get(b)?.moduleId || pseudoNodes.find(p => p.id === b)?.moduleId || '';
         return modA.localeCompare(modB);
       });
     });
 
-    // Barycenter minimization (3 passes)
+    // Initialize positions
     const nodePositionInLayer = new Map<string, number>();
     layerGroups.forEach(ids => {
       ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
@@ -894,55 +1079,172 @@ function computeGreedyLayout(
 
     const sortedLayers = Array.from(layerGroups.keys()).sort((a, b) => a - b);
 
-    for (let iter = 0; iter < 3; iter++) {
-      // Forward
-      for (let i = 1; i < sortedLayers.length; i++) {
+    // Helper: get predecessors in specific layer (using dummy-aware adjacency, excluding back edges)
+    const getNonBackPreds = (id: string, targetLayer: number): string[] => {
+      return (adjIncoming[id] || []).filter(p => {
+        if (layers.get(p) !== targetLayer) return false;
+        // For dummy nodes, no need to check back edges
+        if (id.startsWith('__dummy_') || p.startsWith('__dummy_')) return true;
+        const edgeId = edgeIdMap.get(`${p}->${id}`);
+        return !edgeId || !backEdges.has(edgeId);
+      });
+    };
+
+    // Helper: get successors in specific layer (using dummy-aware adjacency, excluding back edges)
+    const getNonBackSuccs = (id: string, targetLayer: number): string[] => {
+      return (adjOutgoing[id] || []).filter(s => {
+        if (layers.get(s) !== targetLayer) return false;
+        // For dummy nodes, no need to check back edges
+        if (id.startsWith('__dummy_') || s.startsWith('__dummy_')) return true;
+        const edgeId = edgeIdMap.get(`${id}->${s}`);
+        return !edgeId || !backEdges.has(edgeId);
+      });
+    };
+
+    // Helper: count edge crossings between two adjacent layers
+    const countCrossings = (layer1: number, layer2: number): number => {
+      const ids1 = layerGroups.get(layer1) || [];
+      const ids2 = layerGroups.get(layer2) || [];
+      let crossings = 0;
+
+      for (let i = 0; i < ids1.length; i++) {
+        for (let j = i + 1; j < ids1.length; j++) {
+          const nodeA = ids1[i];
+          const nodeB = ids1[j];
+          const posA = nodePositionInLayer.get(nodeA) ?? i;
+          const posB = nodePositionInLayer.get(nodeB) ?? j;
+
+          // Get successors in layer2 (excluding back edges)
+          const succsA = getNonBackSuccs(nodeA, layer2);
+          const succsB = getNonBackSuccs(nodeB, layer2);
+
+          // Count crossings: when nodeA is above nodeB but has a successor below nodeB's successor
+          for (const sA of succsA) {
+            const posSuccA = nodePositionInLayer.get(sA) ?? 0;
+            for (const sB of succsB) {
+              const posSuccB = nodePositionInLayer.get(sB) ?? 0;
+              // Crossing occurs when relative order is reversed
+              if ((posA < posB && posSuccA > posSuccB) || (posA > posB && posSuccA < posSuccB)) {
+                crossings++;
+              }
+            }
+          }
+        }
+      }
+      return crossings;
+    };
+
+    // Helper: compute median position from a list of positions
+    const getMedian = (positions: number[]): number => {
+      if (positions.length === 0) return 0;
+      const sorted = [...positions].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      if (sorted.length % 2 === 0) {
+        return (sorted[mid - 1] + sorted[mid]) / 2;
+      }
+      return sorted[mid];
+    };
+
+    // Bidirectional median heuristic: each node is positioned based on BOTH predecessors AND successors
+    // This creates more balanced layouts by pulling nodes toward their connections on both sides
+    for (let iter = 0; iter < 8; iter++) {
+      // Bidirectional pass: position each layer using weighted average of predecessor and successor medians
+      for (let i = 0; i < sortedLayers.length; i++) {
         const layer = sortedLayers[i];
+        const prevLayer = i > 0 ? sortedLayers[i - 1] : null;
+        const nextLayer = i < sortedLayers.length - 1 ? sortedLayers[i + 1] : null;
         const ids = layerGroups.get(layer)!;
-        const bary = new Map<string, number>();
+        const bidirectionalPos = new Map<string, number>();
 
         ids.forEach(id => {
-          const preds = (incoming[id] || []).filter(p => layers.get(p) === sortedLayers[i - 1]);
-          if (preds.length > 0) {
-            bary.set(id, preds.reduce((s, p) => s + (nodePositionInLayer.get(p) ?? 0), 0) / preds.length);
+          let totalWeight = 0;
+          let weightedSum = 0;
+
+          // Get median from predecessors (if not first layer)
+          if (prevLayer !== null) {
+            const preds = getNonBackPreds(id, prevLayer);
+            if (preds.length > 0) {
+              const predPositions = preds.map(p => nodePositionInLayer.get(p) ?? 0);
+              const predMedian = getMedian(predPositions);
+              // Weight by number of connections
+              weightedSum += predMedian * preds.length;
+              totalWeight += preds.length;
+            }
+          }
+
+          // Get median from successors (if not last layer)
+          if (nextLayer !== null) {
+            const succs = getNonBackSuccs(id, nextLayer);
+            if (succs.length > 0) {
+              const succPositions = succs.map(t => nodePositionInLayer.get(t) ?? 0);
+              const succMedian = getMedian(succPositions);
+              // Weight by number of connections
+              weightedSum += succMedian * succs.length;
+              totalWeight += succs.length;
+            }
+          }
+
+          if (totalWeight > 0) {
+            bidirectionalPos.set(id, weightedSum / totalWeight);
           } else {
-            bary.set(id, nodePositionInLayer.get(id) ?? 0);
+            bidirectionalPos.set(id, nodePositionInLayer.get(id) ?? 0);
           }
         });
 
-        ids.sort((a, b) => (bary.get(a) ?? 0) - (bary.get(b) ?? 0));
+        ids.sort((a, b) => (bidirectionalPos.get(a) ?? 0) - (bidirectionalPos.get(b) ?? 0));
         ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
       }
 
-      // Backward
-      for (let i = sortedLayers.length - 2; i >= 0; i--) {
+      // Local swap improvement: try swapping adjacent nodes if it reduces crossings
+      for (let i = 0; i < sortedLayers.length; i++) {
         const layer = sortedLayers[i];
         const ids = layerGroups.get(layer)!;
-        const bary = new Map<string, number>();
 
-        ids.forEach(id => {
-          const succs = (outgoing[id] || []).filter(s => layers.get(s) === sortedLayers[i + 1]);
-          if (succs.length > 0) {
-            bary.set(id, succs.reduce((s, t) => s + (nodePositionInLayer.get(t) ?? 0), 0) / succs.length);
-          } else {
-            bary.set(id, nodePositionInLayer.get(id) ?? 0);
+        let improved = true;
+        let swapIterations = 0;
+        const maxSwapIterations = ids.length * 3; // Prevent infinite loops
+
+        while (improved && swapIterations < maxSwapIterations) {
+          improved = false;
+          swapIterations++;
+
+          for (let j = 0; j < ids.length - 1; j++) {
+            // Calculate crossings before swap
+            const prevCrossings = (i > 0 ? countCrossings(sortedLayers[i - 1], layer) : 0) +
+                                  (i < sortedLayers.length - 1 ? countCrossings(layer, sortedLayers[i + 1]) : 0);
+
+            // Try swap
+            [ids[j], ids[j + 1]] = [ids[j + 1], ids[j]];
+            ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
+
+            // Calculate crossings after swap
+            const newCrossings = (i > 0 ? countCrossings(sortedLayers[i - 1], layer) : 0) +
+                                 (i < sortedLayers.length - 1 ? countCrossings(layer, sortedLayers[i + 1]) : 0);
+
+            if (newCrossings < prevCrossings) {
+              improved = true; // Keep the swap
+            } else {
+              // Revert swap
+              [ids[j], ids[j + 1]] = [ids[j + 1], ids[j]];
+              ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
+            }
           }
-        });
-
-        ids.sort((a, b) => (bary.get(a) ?? 0) - (bary.get(b) ?? 0));
-        ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
+        }
       }
     }
 
-    // Calculate positions for this component
+    // Calculate positions for this component (excluding dummy nodes from final output)
     let maxYInComponent = 0;
     layerGroups.forEach((ids, layer) => {
       ids.forEach((id, idx) => {
         const y = globalYOffset + idx * nodeHeight;
-        positions.set(id, {
-          x: layer * layerWidth + 50,
-          y,
-        });
+        // Only add real nodes to positions (not dummy nodes)
+        if (!id.startsWith('__dummy_')) {
+          positions.set(id, {
+            x: layer * layerWidth + 50,
+            y,
+          });
+        }
         maxYInComponent = Math.max(maxYInComponent, y + nodeHeight);
       });
     });
@@ -950,7 +1252,28 @@ function computeGreedyLayout(
     globalYOffset = maxYInComponent + componentGap;
   });
 
-  return positions;
+  // Post-processing: Identify back edges based on final positions
+  // A back edge goes from a node with higher X (later layer) to a node with lower X (earlier layer)
+  // This is more reliable than BFS-based detection
+  backEdges.clear(); // Reset and recompute
+
+  filteredEdges.forEach(e => {
+    const sourcePos = positions.get(e.source);
+    const targetPos = positions.get(e.target);
+
+    if (sourcePos && targetPos) {
+      // If the edge goes backward (target is at same or earlier X position than source)
+      // it's a feedback loop / back edge
+      if (targetPos.x <= sourcePos.x) {
+        const edgeId = edgeIdMap.get(`${e.source}->${e.target}`);
+        if (edgeId) {
+          backEdges.add(edgeId);
+        }
+      }
+    }
+  });
+
+  return { positions, backEdges };
 }
 
 // Module labels for pseudo-nodes
@@ -975,14 +1298,47 @@ const moduleLabels: Record<string, string> = {
   'M17': 'Immunomodulatory',
 };
 
+// Boundary expansion config
+interface BoundaryExpansionConfig {
+  inputExpanded: boolean;
+  outputExpanded: boolean;
+  onToggleInput: () => void;
+  onToggleOutput: () => void;
+}
+
 // Convert mechanistic nodes to React Flow nodes with dynamic layout
 function convertNodes(
   nodes: MechanisticNode[],
   moduleFilters: Record<string, ModuleFilterState>,
-  variantCallbacks?: VariantCallbacks
-): { flowNodes: Node[]; pseudoNodes: PseudoNode[]; excludedEdges: Set<string> } {
-  // Filter nodes based on module filter state (only include 'on' or 'partial' modules)
+  variantCallbacks?: VariantCallbacks,
+  pinnedNodes: Set<string> = new Set(),
+  boundaryExpansion?: BoundaryExpansionConfig
+): { flowNodes: Node[]; pseudoNodes: PseudoNode[]; excludedEdges: Set<string>; nodePositions: Map<string, LayoutPosition>; backEdges: Set<string> } {
+  // Identify input and output boundaries from all nodes
+  const inputBoundaryNodes = nodes.filter(n =>
+    n.category === 'BOUNDARY' && n.boundaryDirection === 'input'
+  );
+  const outputBoundaryNodes = nodes.filter(n =>
+    n.category === 'BOUNDARY' && n.boundaryDirection === 'output'
+  );
+
+  // Filter nodes based on module filter state OR pinned status
+  // Also filter out collapsed boundaries
   const filteredNodes = nodes.filter(n => {
+    // Always include pinned nodes
+    if (pinnedNodes.has(n.id)) return true;
+
+    // Check boundary expansion state
+    if (n.category === 'BOUNDARY' && boundaryExpansion) {
+      if (n.boundaryDirection === 'input' && !boundaryExpansion.inputExpanded) {
+        return false; // Hide input boundaries when collapsed
+      }
+      if (n.boundaryDirection === 'output' && !boundaryExpansion.outputExpanded) {
+        return false; // Hide output boundaries when collapsed
+      }
+    }
+
+    // Otherwise filter by module state
     const state = moduleFilters[n.moduleId];
     return state === 'on' || state === 'partial';
   });
@@ -996,8 +1352,8 @@ function convertNodes(
   // Find pseudo-nodes for hidden connecting modules
   const { pseudoNodes, excludedEdges } = findPseudoNodes(filteredNodes, allEdges, nodes);
 
-  // Compute dynamic layout for filtered nodes + pseudo nodes
-  const dynamicPositions = computeGreedyLayout(filteredNodes, allEdges, pseudoNodes, excludedEdges);
+  // Compute dynamic layout for filtered nodes + pseudo nodes (also identifies back edges)
+  const { positions: dynamicPositions, backEdges } = computeGreedyLayout(filteredNodes, allEdges, pseudoNodes, excludedEdges);
 
   // Add pseudo-nodes to flow
   pseudoNodes.forEach(pn => {
@@ -1115,7 +1471,72 @@ function convertNodes(
     }
   });
 
-  return { flowNodes, pseudoNodes, excludedEdges };
+  // Add boundary expand/collapse buttons when boundaries are collapsed
+  if (boundaryExpansion) {
+    // Calculate Y midpoint for button positioning
+    const allYPositions = Array.from(dynamicPositions.values()).map(p => p.y);
+    const minY = Math.min(...allYPositions, 0);
+    const maxY = Math.max(...allYPositions, 0);
+    const midY = (minY + maxY) / 2;
+
+    // Get X boundaries
+    const allXPositions = Array.from(dynamicPositions.values()).map(p => p.x);
+    const minX = Math.min(...allXPositions, 50);
+    const maxX = Math.max(...allXPositions, 50);
+
+    // Count how many input/output boundaries would be visible if expanded
+    const visibleInputCount = inputBoundaryNodes.filter(n => {
+      const state = moduleFilters[n.moduleId];
+      return state === 'on' || state === 'partial' || pinnedNodes.has(n.id);
+    }).length;
+
+    const visibleOutputCount = outputBoundaryNodes.filter(n => {
+      const state = moduleFilters[n.moduleId];
+      return state === 'on' || state === 'partial' || pinnedNodes.has(n.id);
+    }).length;
+
+    // Add input expand button (left side)
+    if (visibleInputCount > 0) {
+      flowNodes.push({
+        id: '__boundary_expand_input__',
+        type: 'boundaryExpandButton',
+        position: {
+          x: minX - 150,
+          y: midY - 30,
+        },
+        data: {
+          direction: 'input',
+          isExpanded: boundaryExpansion.inputExpanded,
+          boundaryCount: visibleInputCount,
+          onToggle: boundaryExpansion.onToggleInput,
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+      });
+    }
+
+    // Add output expand button (right side)
+    if (visibleOutputCount > 0) {
+      flowNodes.push({
+        id: '__boundary_expand_output__',
+        type: 'boundaryExpandButton',
+        position: {
+          x: maxX + 100,
+          y: midY - 30,
+        },
+        data: {
+          direction: 'output',
+          isExpanded: boundaryExpansion.outputExpanded,
+          boundaryCount: visibleOutputCount,
+          onToggle: boundaryExpansion.onToggleOutput,
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+      });
+    }
+  }
+
+  return { flowNodes, pseudoNodes, excludedEdges, nodePositions: dynamicPositions, backEdges };
 }
 
 // Get variant data for a boundary node
@@ -1127,21 +1548,41 @@ function getVariantData(sourceNodeId: string, variantId: string | null): Boundar
 }
 
 // Convert mechanistic edges to React Flow edges
+// Returns both edges and waypoint nodes for back edge routing
 function convertEdges(
   edges: typeof allEdges,
   moduleFilters: Record<string, ModuleFilterState>,
   activeVariantNodeId: string | null,
   activeVariant: BoundaryVariant | null,
   pseudoNodes: PseudoNode[] = [],
-  excludedEdges: Set<string> = new Set()
-): Edge[] {
-  // Filter edges based on module filter state (excluding edges that should go through pseudo-nodes)
+  excludedEdges: Set<string> = new Set(),
+  backEdges: Set<string> = new Set(),
+  pinnedNodes: Set<string> = new Set(),
+  nodePositions: Map<string, LayoutPosition> = new Map(),
+  showFeedbackLoops: boolean = true
+): { edges: Edge[]; waypointNodes: Node[] } {
+  // Filter edges based on module filter state OR if connecting pinned nodes
   const filteredEdges = edges.filter(e => {
+    if (excludedEdges.has(e.id)) return false;
+    // Filter out back edges (feedback loops) if toggle is off
+    if (!showFeedbackLoops && backEdges.has(e.id)) return false;
+    // Include edge if either endpoint is pinned
+    if (pinnedNodes.has(e.source) || pinnedNodes.has(e.target)) return true;
+    // Otherwise filter by module state
     const state = moduleFilters[e.moduleId];
-    return (state === 'on' || state === 'partial') && !excludedEdges.has(e.id);
+    return state === 'on' || state === 'partial';
   });
 
   const flowEdges: Edge[] = [];
+  const waypointNodes: Node[] = [];
+
+  // Calculate the bottom of the graph for back edge routing
+  const allYPositions = Array.from(nodePositions.values()).map(p => p.y);
+  const maxY = allYPositions.length > 0 ? Math.max(...allYPositions) : 0;
+  const backEdgeBaseY = maxY + 150; // Start back edges 150px below the lowest node
+
+  // Track back edge index for staggering
+  let backEdgeIndex = 0;
 
   // Add pseudo-edges for pseudo-nodes
   pseudoNodes.forEach(pn => {
@@ -1192,11 +1633,20 @@ function convertEdges(
     // Check if this edge originates from a boundary node with an active variant
     const isVariantEdge = !!(activeVariantNodeId && edge.source === activeVariantNodeId && activeVariant);
 
-    // Determine edge color based on variant effect
-    let strokeColor = edge.relation.includes('Decrease') ? '#c75146' : '#007385';
+    // Check if this is a back edge (cycle-completing edge detected during BFS)
+    const isBackEdge = backEdges.has(edge.id);
+
+    // Determine edge color based on relation type (case-insensitive check)
+    let strokeColor = edge.relation.toLowerCase().includes('decrease') ? '#c75146' : '#007385';
     let strokeWidth = edge.causalConfidence?.startsWith('L')
       ? Math.max(1, 8 - parseInt(edge.causalConfidence.slice(1)))
       : 1;
+
+    // Back edges get special styling - red/orange and dashed
+    if (isBackEdge) {
+      strokeColor = '#e36216'; // Orange for back edges (feedback loops)
+      strokeWidth = 1.5;
+    }
 
     if (isVariantEdge && activeVariant) {
       // Color based on effect direction
@@ -1210,10 +1660,126 @@ function convertEdges(
       strokeWidth = Math.max(2, Math.min(6, (activeVariant.effectMagnitude || 1) * 1.5));
     }
 
+    // For back edges, create waypoint nodes to route around the bottom of the graph
+    if (isBackEdge && nodePositions.size > 0) {
+      const sourcePos = nodePositions.get(edge.source);
+      const targetPos = nodePositions.get(edge.target);
+
+      if (sourcePos && targetPos) {
+        // Stagger each back edge lower to prevent overlap
+        const staggerY = backEdgeBaseY + (backEdgeIndex * 60);
+        backEdgeIndex++;
+
+        // Create two waypoint nodes: one below source, one below target
+        const waypoint1Id = `__waypoint_${edge.id}_1`;
+        const waypoint2Id = `__waypoint_${edge.id}_2`;
+
+        // Position waypoints: source side goes down first, then across, then up to target
+        waypointNodes.push({
+          id: waypoint1Id,
+          position: { x: sourcePos.x + 90, y: staggerY }, // Below source
+          data: { isWaypoint: true },
+          style: {
+            width: 1,
+            height: 1,
+            background: 'transparent',
+            border: 'none',
+            padding: 0,
+          },
+          sourcePosition: Position.Left,
+          targetPosition: Position.Right,
+        });
+
+        waypointNodes.push({
+          id: waypoint2Id,
+          position: { x: targetPos.x + 90, y: staggerY }, // Below target
+          data: { isWaypoint: true },
+          style: {
+            width: 1,
+            height: 1,
+            background: 'transparent',
+            border: 'none',
+            padding: 0,
+          },
+          sourcePosition: Position.Left,
+          targetPosition: Position.Right,
+        });
+
+        // Edge from source to waypoint1 (going down)
+        flowEdges.push({
+          id: `${edge.id}_seg1`,
+          source: edge.source,
+          target: waypoint1Id,
+          type: 'smoothstep',
+          style: {
+            stroke: strokeColor,
+            strokeWidth,
+            strokeDasharray: '6,4',
+          },
+        });
+
+        // Edge from waypoint1 to waypoint2 (horizontal, below the graph)
+        // This is where we put the label
+        flowEdges.push({
+          id: `${edge.id}_seg2`,
+          source: waypoint1Id,
+          target: waypoint2Id,
+          type: 'straight',
+          style: {
+            stroke: strokeColor,
+            strokeWidth,
+            strokeDasharray: '6,4',
+          },
+          label: edge.mechanismLabel?.slice(0, 25) || 'feedback',
+          labelStyle: {
+            fontSize: 9,
+            fill: strokeColor,
+            fontWeight: 500,
+          },
+          labelBgStyle: {
+            fill: 'rgba(255, 255, 255, 0.9)',
+          },
+          data: {
+            mechanismLabel: edge.mechanismLabel,
+            mechanismDescription: edge.mechanismDescription,
+            relation: edge.relation,
+            edgeType: edge.edgeType,
+            causalConfidence: edge.causalConfidence,
+            evidence: edge.evidence,
+            keyInsight: edge.keyInsight,
+            therapeuticImplication: edge.therapeuticImplication,
+            translationalGap: edge.translationalGap,
+            isBackEdge: true,
+          },
+        });
+
+        // Edge from waypoint2 to target (going up)
+        flowEdges.push({
+          id: `${edge.id}_seg3`,
+          source: waypoint2Id,
+          target: edge.target,
+          type: 'smoothstep',
+          style: {
+            stroke: strokeColor,
+            strokeWidth,
+            strokeDasharray: '6,4',
+          },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: strokeColor,
+          },
+        });
+
+        return; // Skip normal edge creation for back edges
+      }
+    }
+
+    // Normal edge creation (for non-back edges or when positions not available)
     flowEdges.push({
       id: edge.id,
       source: edge.source,
       target: edge.target,
+      type: 'default',
       animated: isVariantEdge || edge.relation === 'directlyIncreases' || edge.relation === 'directlyDecreases',
       style: {
         stroke: strokeColor,
@@ -1250,7 +1816,7 @@ function convertEdges(
     });
   });
 
-  return flowEdges;
+  return { edges: flowEdges, waypointNodes };
 }
 
 // Get unique modules for filter
@@ -1298,40 +1864,78 @@ interface MechanisticNetworkGraphProps {
   height?: string;
   showControls?: boolean;
   showMiniMap?: boolean;
+  /** Specific node IDs to highlight/include (useful for narrative-driven exploration) */
+  highlightNodes?: string[];
+  /** Initial modules to show (overrides default M01) */
+  initialModules?: string[];
 }
 
-// Initialize module filter state - start with M01 on, others off
+// Initialize module filter state - start with M01 on, BOUNDARY off, others off
 function getInitialModuleFilters(modules: { id: string }[]): Record<string, ModuleFilterState> {
   const filters: Record<string, ModuleFilterState> = {};
   modules.forEach(m => {
+    // Start with M01 on, BOUNDARY always off by default (too many connections)
     filters[m.id] = m.id === 'M01' ? 'on' : 'off';
   });
   return filters;
 }
 
-// Module checkbox component (simple on/off toggle)
+// Module categories for organized filtering
+type ModuleCategory = 'THEORY' | 'STRUCTURE' | 'GENE' | 'MINERAL' | 'OTHER';
+
+const moduleCategories: Record<string, ModuleCategory> = {
+  'BOUNDARY': 'OTHER',
+  'M01': 'STRUCTURE',   // Insulin/mTOR - cellular structure/signaling
+  'M02': 'STRUCTURE',   // Lysosomal - cellular structure
+  'M03': 'STRUCTURE',   // Mitochondrial - cellular structure
+  'M04': 'THEORY',      // Inflammasome - inflammation theory
+  'M05': 'THEORY',      // Microglial - neuroinflammation theory
+  'M06': 'THEORY',      // Amyloid - amyloid hypothesis
+  'M07': 'THEORY',      // Tau - tau hypothesis
+  'M08': 'THEORY',      // Complement - immune theory
+  'M09': 'MINERAL',     // Iron
+  'M10': 'GENE',        // APOE
+  'M11': 'GENE',        // TREM2
+  'M12': 'STRUCTURE',   // BBB/Glymphatic
+  'M13': 'THEORY',      // Cholinergic - cholinergic hypothesis
+  'M14': 'STRUCTURE',   // MAM/Calcium - cellular structure
+  'M15': 'OTHER',       // Interventions
+  'M16': 'OTHER',       // Sex/Ancestry
+  'M17': 'THEORY',      // Immunomodulatory
+};
+
+const categoryLabels: Record<ModuleCategory, string> = {
+  'THEORY': 'Theory',
+  'STRUCTURE': 'Structure',
+  'GENE': 'Gene',
+  'MINERAL': 'Mineral',
+  'OTHER': 'Other',
+};
+
+const categoryOrder: ModuleCategory[] = ['THEORY', 'STRUCTURE', 'GENE', 'MINERAL', 'OTHER'];
+
+// Module checkbox component (compact for category view)
 function ModuleCheckbox({
   state,
   onChange,
   color,
   label,
   count,
-  disabled,
+  compact = false,
 }: {
   state: ModuleFilterState;
   onChange: () => void;
   color: string;
   label: string;
   count: number;
-  disabled?: boolean;
+  compact?: boolean;
 }) {
-  // In focus mode, 'partial' means this module is shown but dimmed (connected to focused node)
   const isOn = state === 'on';
   const isPartial = state === 'partial';
 
   return (
     <label
-      className={`flex items-center gap-1.5 cursor-pointer group ${disabled ? 'pointer-events-none' : ''}`}
+      className="flex items-center gap-1 cursor-pointer group"
       style={{ opacity: state === 'off' ? 0.5 : isPartial ? 0.7 : 1 }}
     >
       <div className="relative">
@@ -1339,11 +1943,10 @@ function ModuleCheckbox({
           type="checkbox"
           checked={isOn || isPartial}
           onChange={onChange}
-          disabled={disabled}
           className="peer sr-only"
         />
         <div
-          className={`w-4 h-4 border-2 rounded transition-all ${
+          className={`w-3.5 h-3.5 border-2 rounded transition-all ${
             isOn || isPartial
               ? 'border-transparent'
               : 'border-[var(--border)] group-hover:border-[var(--accent-orange)]'
@@ -1354,20 +1957,120 @@ function ModuleCheckbox({
           }}
         >
           {isOn && (
-            <svg className="w-3 h-3 text-white absolute top-0.5 left-0.5" viewBox="0 0 12 12" fill="none">
+            <svg className="w-2.5 h-2.5 text-white absolute top-0.5 left-0.5" viewBox="0 0 12 12" fill="none">
               <path d="M2 6l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           )}
           {isPartial && (
-            <div className="w-2 h-0.5 bg-white absolute top-1.5 left-1" />
+            <div className="w-1.5 h-0.5 bg-white absolute top-1.5 left-1" />
           )}
         </div>
       </div>
-      <span className="text-[11px] text-[var(--text-body)] group-hover:text-[var(--text-primary)]">
+      <span className={`${compact ? 'text-[10px]' : 'text-[11px]'} text-[var(--text-body)] group-hover:text-[var(--text-primary)] whitespace-nowrap`}>
         {label}
       </span>
-      <span className="text-[10px] text-[var(--text-muted)]">({count})</span>
+      {!compact && <span className="text-[9px] text-[var(--text-muted)]">({count})</span>}
     </label>
+  );
+}
+
+// Category filter bar component
+function CategoryFilterBar({
+  modules,
+  moduleFilters,
+  toggleModuleFilter,
+  expandedCategories,
+  toggleCategory,
+}: {
+  modules: { id: string; label: string; count: number }[];
+  moduleFilters: Record<string, ModuleFilterState>;
+  toggleModuleFilter: (moduleId: string) => void;
+  expandedCategories: Set<ModuleCategory>;
+  toggleCategory: (category: ModuleCategory) => void;
+}) {
+  // Group modules by category
+  const modulesByCategory = useMemo(() => {
+    const grouped: Record<ModuleCategory, typeof modules> = {
+      'THEORY': [],
+      'STRUCTURE': [],
+      'GENE': [],
+      'MINERAL': [],
+      'OTHER': [],
+    };
+    modules.forEach(m => {
+      const cat = moduleCategories[m.id] || 'OTHER';
+      grouped[cat].push(m);
+    });
+    return grouped;
+  }, [modules]);
+
+  // Count active modules per category
+  const activeCounts = useMemo(() => {
+    const counts: Record<ModuleCategory, { active: number; total: number }> = {
+      'THEORY': { active: 0, total: 0 },
+      'STRUCTURE': { active: 0, total: 0 },
+      'GENE': { active: 0, total: 0 },
+      'MINERAL': { active: 0, total: 0 },
+      'OTHER': { active: 0, total: 0 },
+    };
+    modules.forEach(m => {
+      const cat = moduleCategories[m.id] || 'OTHER';
+      counts[cat].total++;
+      if (moduleFilters[m.id] === 'on' || moduleFilters[m.id] === 'partial') {
+        counts[cat].active++;
+      }
+    });
+    return counts;
+  }, [modules, moduleFilters]);
+
+  return (
+    <div className="flex items-center gap-0.5 overflow-x-auto">
+      {categoryOrder.map((category, idx) => {
+        const categoryModules = modulesByCategory[category];
+        if (categoryModules.length === 0) return null;
+
+        const isExpanded = expandedCategories.has(category);
+        const { active, total } = activeCounts[category];
+        const hasActive = active > 0;
+
+        return (
+          <div key={category} className="flex items-center">
+            {idx > 0 && <div className="w-px h-4 bg-[var(--border)] mx-1" />}
+            <button
+              onClick={() => toggleCategory(category)}
+              className={`px-2 py-1 text-[10px] font-medium rounded transition-all whitespace-nowrap ${
+                isExpanded
+                  ? 'bg-[var(--accent-orange)] text-white'
+                  : hasActive
+                    ? 'bg-[var(--accent-orange-light)] text-[var(--accent-orange)] hover:bg-[var(--accent-orange)] hover:text-white'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
+              }`}
+            >
+              {categoryLabels[category]}
+              {hasActive && !isExpanded && (
+                <span className="ml-1 text-[8px]">({active}/{total})</span>
+              )}
+            </button>
+            {/* Expanded module list */}
+            {isExpanded && (
+              <div className="flex items-center gap-2 ml-2 pl-2 border-l border-[var(--border)]">
+                {categoryModules.map(module => (
+                  <ModuleCheckbox
+                    key={module.id}
+                    state={moduleFilters[module.id]}
+                    onChange={() => toggleModuleFilter(module.id)}
+                    color={moduleColors[module.id]}
+                    label={module.label}
+                    count={module.count}
+                    compact
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -1399,16 +2102,73 @@ function MechanisticNetworkGraphInner({
   height = '600px',
   showControls = true,
   showMiniMap = true,
+  highlightNodes = [],
+  initialModules,
 }: MechanisticNetworkGraphProps) {
   const modules = useMemo(() => getModules(allNodes), []);
-  const [moduleFilters, setModuleFilters] = useState<Record<string, ModuleFilterState>>(() =>
-    getInitialModuleFilters(modules)
-  );
+  const [moduleFilters, setModuleFilters] = useState<Record<string, ModuleFilterState>>(() => {
+    if (initialModules && initialModules.length > 0) {
+      const filters: Record<string, ModuleFilterState> = {};
+      modules.forEach(m => {
+        filters[m.id] = initialModules.includes(m.id) ? 'on' : 'off';
+      });
+      return filters;
+    }
+    return getInitialModuleFilters(modules);
+  });
+
+  // Pinned nodes - specific nodes to always show regardless of module filter
+  const [pinnedNodes, setPinnedNodes] = useState<Set<string>>(new Set(highlightNodes));
+
+  // Node search state (for pinning)
+  const [nodeSearchQuery, setNodeSearchQuery] = useState('');
+  const [showNodeSearch, setShowNodeSearch] = useState(false);
+
+  // Find/focus search state (separate from pinning)
+  const [findSearchQuery, setFindSearchQuery] = useState('');
+  const [showFindSearch, setShowFindSearch] = useState(false);
+
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [hoveredVariant, setHoveredVariant] = useState<string | null>(null);
   const [activeVariantNodeId, setActiveVariantNodeId] = useState<string | null>(null);
+
+  // Tooltip state for node hover
+  const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+
+  // Fullscreen mode
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Boundary layer expansion state (input boundaries on left, output on right)
+  const [inputBoundariesExpanded, setInputBoundariesExpanded] = useState(false);
+  const [outputBoundariesExpanded, setOutputBoundariesExpanded] = useState(false);
+
+  // Expanded categories for collapsible filter UI (multiple can be open)
+  const [expandedCategories, setExpandedCategories] = useState<Set<ModuleCategory>>(new Set());
+
+  // Cross-module connections (pseudo-nodes) visibility
+  const [showCrossModuleConnections, setShowCrossModuleConnections] = useState(true);
+
+  // Show hidden module indicators on edge nodes (what hidden modules they connect to)
+  const [showHiddenModuleIndicators, setShowHiddenModuleIndicators] = useState(false);
+
+  // Show feedback loops (back edges that create cycles)
+  const [showFeedbackLoops, setShowFeedbackLoops] = useState(true);
+
+  // Toggle a category's expanded state
+  const toggleCategory = useCallback((category: ModuleCategory) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  }, []);
 
   // Focus mode state: stores the pre-focus filter state to restore when exiting
   const [focusMode, setFocusMode] = useState<{
@@ -1417,6 +2177,76 @@ function MechanisticNetworkGraphInner({
   } | null>(null);
 
   const { fitView } = useReactFlow();
+
+  // Fit view when fullscreen mode changes
+  useEffect(() => {
+    // Small delay to let the container resize first
+    const timer = setTimeout(() => {
+      fitView({ padding: 0.1 });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [isFullscreen, fitView]);
+
+  // Escape key to exit fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
+
+  // Search results for node search (pinning) - includes visibility status
+  const searchResults = useMemo(() => {
+    if (!nodeSearchQuery || nodeSearchQuery.length < 2) return [];
+    const query = nodeSearchQuery.toLowerCase();
+    return allNodes
+      .filter(n =>
+        n.label.toLowerCase().includes(query) ||
+        n.id.toLowerCase().includes(query) ||
+        n.description?.toLowerCase().includes(query)
+      )
+      .map(n => ({
+        ...n,
+        isHidden: moduleFilters[n.moduleId] === 'off' && !pinnedNodes.has(n.id),
+      }))
+      .slice(0, 10); // Limit to 10 results
+  }, [nodeSearchQuery, moduleFilters, pinnedNodes]);
+
+  // Search results for find/focus search - includes visibility status
+  const findSearchResults = useMemo(() => {
+    if (!findSearchQuery || findSearchQuery.length < 2) return [];
+    const query = findSearchQuery.toLowerCase();
+    return allNodes
+      .filter(n =>
+        n.label.toLowerCase().includes(query) ||
+        n.id.toLowerCase().includes(query) ||
+        n.description?.toLowerCase().includes(query)
+      )
+      .map(n => ({
+        ...n,
+        isHidden: moduleFilters[n.moduleId] === 'off' && !pinnedNodes.has(n.id),
+      }))
+      .slice(0, 10); // Limit to 10 results
+  }, [findSearchQuery, moduleFilters, pinnedNodes]);
+
+  // Pin a node (add to view)
+  const pinNode = useCallback((nodeId: string) => {
+    setPinnedNodes(prev => new Set([...prev, nodeId]));
+    setNodeSearchQuery('');
+    setShowNodeSearch(false);
+  }, []);
+
+  // Unpin a node
+  const unpinNode = useCallback((nodeId: string) => {
+    setPinnedNodes(prev => {
+      const next = new Set(prev);
+      next.delete(nodeId);
+      return next;
+    });
+  }, []);
 
   // Variant callbacks for custom nodes
   const handleVariantSelect = useCallback((variantId: string | null) => {
@@ -1444,29 +2274,92 @@ function MechanisticNetworkGraphInner({
     hoveredVariant: null as string | null,
   }), [handleVariantSelect, handleVariantHover]);
 
-  // Track pseudo-nodes and excluded edges for layout
+  // Boundary expansion callbacks
+  const toggleInputBoundaries = useCallback(() => {
+    setInputBoundariesExpanded(prev => !prev);
+  }, []);
+
+  const toggleOutputBoundaries = useCallback(() => {
+    setOutputBoundariesExpanded(prev => !prev);
+  }, []);
+
+  // Boundary expansion config for node conversion
+  const boundaryExpansionConfig: BoundaryExpansionConfig = useMemo(() => ({
+    inputExpanded: inputBoundariesExpanded,
+    outputExpanded: outputBoundariesExpanded,
+    onToggleInput: toggleInputBoundaries,
+    onToggleOutput: toggleOutputBoundaries,
+  }), [inputBoundariesExpanded, outputBoundariesExpanded, toggleInputBoundaries, toggleOutputBoundaries]);
+
+  // Track pseudo-nodes, excluded edges, and back edges for layout
   const [currentPseudoNodes, setCurrentPseudoNodes] = useState<PseudoNode[]>([]);
   const [currentExcludedEdges, setCurrentExcludedEdges] = useState<Set<string>>(new Set());
+  const [currentBackEdges, setCurrentBackEdges] = useState<Set<string>>(new Set());
 
-  const { flowNodes: initialFlowNodes, pseudoNodes: initialPseudoNodes, excludedEdges: initialExcludedEdges } = useMemo(
-    () => convertNodes(allNodes, moduleFilters, variantCallbacks),
+  const { flowNodes: initialFlowNodes, pseudoNodes: initialPseudoNodes, excludedEdges: initialExcludedEdges, backEdges: initialBackEdges, nodePositions: initialNodePositions } = useMemo(
+    () => convertNodes(allNodes, moduleFilters, variantCallbacks, pinnedNodes, boundaryExpansionConfig),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [moduleFilters] // Only recreate nodes when module filters change
+    [moduleFilters, pinnedNodes, boundaryExpansionConfig] // Recreate nodes when module filters, pinned nodes, or boundary expansion change
   );
 
-  const initialEdges = useMemo(
-    () => convertEdges(allEdges, moduleFilters, null, null, initialPseudoNodes, initialExcludedEdges),
-    [moduleFilters, initialPseudoNodes, initialExcludedEdges]
+  // Filter pseudo-nodes based on toggle
+  const effectivePseudoNodes = useMemo(
+    () => showCrossModuleConnections ? initialPseudoNodes : [],
+    [showCrossModuleConnections, initialPseudoNodes]
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialFlowNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  // Track node positions for back edge routing
+  const [currentNodePositions, setCurrentNodePositions] = useState<Map<string, LayoutPosition>>(new Map());
 
-  // Update pseudo-nodes and excluded edges tracking when initial changes
+  const { edges: initialEdgeList, waypointNodes: initialWaypointNodes } = useMemo(
+    () => convertEdges(allEdges, moduleFilters, null, null, effectivePseudoNodes, showCrossModuleConnections ? initialExcludedEdges : new Set(), initialBackEdges, pinnedNodes, initialNodePositions, showFeedbackLoops),
+    [moduleFilters, effectivePseudoNodes, showCrossModuleConnections, initialExcludedEdges, initialBackEdges, pinnedNodes, initialNodePositions, showFeedbackLoops]
+  );
+
+  // Combine flow nodes with waypoint nodes (filter out pseudo-nodes if toggle is off)
+  const initialCombinedNodes = useMemo(
+    () => {
+      const filteredFlowNodes = showCrossModuleConnections
+        ? initialFlowNodes
+        : initialFlowNodes.filter(n => !n.id.startsWith('__pseudo_'));
+      return [...filteredFlowNodes, ...initialWaypointNodes];
+    },
+    [initialFlowNodes, initialWaypointNodes, showCrossModuleConnections]
+  );
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialCombinedNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdgeList);
+
+  // Find and focus on a node - enable its module if hidden, then zoom to it
+  const findAndFocusNode = useCallback((nodeId: string) => {
+    const targetNode = allNodes.find(n => n.id === nodeId);
+    if (!targetNode) return;
+
+    // If the node's module is off, enable it
+    if (moduleFilters[targetNode.moduleId] === 'off') {
+      setModuleFilters(prev => ({ ...prev, [targetNode.moduleId]: 'on' }));
+    }
+
+    // Small delay to let the graph update, then zoom to the node
+    setTimeout(() => {
+      const flowNode = nodes.find(n => n.id === nodeId);
+      if (flowNode) {
+        fitView({ nodes: [{ id: nodeId }], padding: 0.5, duration: 500 });
+        setSelectedNode(flowNode);
+      }
+    }, 100);
+
+    setFindSearchQuery('');
+    setShowFindSearch(false);
+  }, [moduleFilters, nodes, fitView]);
+
+  // Update pseudo-nodes, excluded edges, back edges, and node positions tracking when initial changes
   useEffect(() => {
     setCurrentPseudoNodes(initialPseudoNodes);
     setCurrentExcludedEdges(initialExcludedEdges);
-  }, [initialPseudoNodes, initialExcludedEdges]);
+    setCurrentBackEdges(initialBackEdges);
+    setCurrentNodePositions(initialNodePositions);
+  }, [initialPseudoNodes, initialExcludedEdges, initialBackEdges, initialNodePositions]);
 
   // Update only node DATA (not positions) when variant hover/select changes
   useEffect(() => {
@@ -1487,57 +2380,81 @@ function MechanisticNetworkGraphInner({
     );
   }, [selectedVariant, hoveredVariant, setNodes]);
 
-  // Recreate all nodes only when module filters change
+  // Recreate all nodes when module filters, pinned nodes, boundary expansion, or cross-module toggle change
   useEffect(() => {
-    const { flowNodes: newFlowNodes, pseudoNodes: newPseudoNodes, excludedEdges: newExcludedEdges } = convertNodes(allNodes, moduleFilters, {
+    const { flowNodes: newFlowNodes, pseudoNodes: newPseudoNodes, excludedEdges: newExcludedEdges, backEdges: newBackEdges, nodePositions: newNodePositions } = convertNodes(allNodes, moduleFilters, {
       ...variantCallbacks,
       selectedVariant,
       hoveredVariant,
-    });
-    setNodes(newFlowNodes);
-    setCurrentPseudoNodes(newPseudoNodes);
-    setCurrentExcludedEdges(newExcludedEdges);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moduleFilters]); // Only on module filter changes
+    }, pinnedNodes, boundaryExpansionConfig);
 
-  // Update edges when variant or module filters change
+    // Filter pseudo-nodes based on toggle
+    const effectiveNewPseudoNodes = showCrossModuleConnections ? newPseudoNodes : [];
+    const effectiveExcludedEdges = showCrossModuleConnections ? newExcludedEdges : new Set<string>();
+
+    // Get edges with waypoint nodes for back edge routing
+    const { edges: newEdgeList, waypointNodes: newWaypointNodes } = convertEdges(
+      allEdges, moduleFilters, null, null, effectiveNewPseudoNodes, effectiveExcludedEdges, newBackEdges, pinnedNodes, newNodePositions, showFeedbackLoops
+    );
+
+    // Combine flow nodes with waypoint nodes (filter out pseudo-nodes if toggle is off)
+    const filteredFlowNodes = showCrossModuleConnections
+      ? newFlowNodes
+      : newFlowNodes.filter(n => !n.id.startsWith('__pseudo_'));
+    setNodes([...filteredFlowNodes, ...newWaypointNodes]);
+    setEdges(newEdgeList);
+    setCurrentPseudoNodes(newPseudoNodes); // Keep all pseudo-nodes in state for when toggle is enabled
+    setCurrentExcludedEdges(newExcludedEdges);
+    setCurrentBackEdges(newBackEdges);
+    setCurrentNodePositions(newNodePositions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moduleFilters, pinnedNodes, boundaryExpansionConfig, showCrossModuleConnections, showFeedbackLoops]); // On module filter, pinned nodes, boundary expansion, cross-module toggle, or feedback loops changes
+
+  // Update edges when variant or module filters change (but not for module filter changes which are handled above)
   useEffect(() => {
-    const newEdges = convertEdges(allEdges, moduleFilters, activeVariantNodeId, activeVariant, currentPseudoNodes, currentExcludedEdges);
-    setEdges(newEdges);
-  }, [moduleFilters, activeVariantNodeId, activeVariant, currentPseudoNodes, currentExcludedEdges, setEdges]);
+    // Filter pseudo-nodes based on toggle for edge updates
+    const effectiveCurrentPseudoNodes = showCrossModuleConnections ? currentPseudoNodes : [];
+    const effectiveCurrentExcludedEdges = showCrossModuleConnections ? currentExcludedEdges : new Set<string>();
+
+    const { edges: newEdgeList, waypointNodes: newWaypointNodes } = convertEdges(
+      allEdges, moduleFilters, activeVariantNodeId, activeVariant, effectiveCurrentPseudoNodes, effectiveCurrentExcludedEdges, currentBackEdges, pinnedNodes, currentNodePositions, showFeedbackLoops
+    );
+    setEdges(newEdgeList);
+    // Also update waypoint nodes in case positions changed
+    setNodes(currentNodes => {
+      // Remove old waypoint nodes and add new ones
+      const nonWaypointNodes = currentNodes.filter(n => !n.id.startsWith('__waypoint_'));
+      return [...nonWaypointNodes, ...newWaypointNodes];
+    });
+  }, [activeVariantNodeId, activeVariant, currentPseudoNodes, currentExcludedEdges, currentBackEdges, pinnedNodes, currentNodePositions, showCrossModuleConnections, showFeedbackLoops, setEdges, setNodes]);
 
   // Simple on/off toggle for module filter (no tri-state cycling)
   const toggleModuleFilter = useCallback((moduleId: string) => {
-    // Don't allow toggling while in focus mode
-    if (focusMode) return;
-
     setModuleFilters(prev => {
       const current = prev[moduleId];
       // Simple toggle: off -> on, on/partial -> off
       const next: ModuleFilterState = current === 'off' ? 'on' : 'off';
       return { ...prev, [moduleId]: next };
     });
-  }, [focusMode]);
+  }, []);
 
   // Select all modules
   const selectAllModules = useCallback(() => {
-    if (focusMode) return;
     setModuleFilters(prev => {
       const next: Record<string, ModuleFilterState> = {};
       Object.keys(prev).forEach(id => { next[id] = 'on'; });
       return next;
     });
-  }, [focusMode]);
+  }, []);
 
   // Clear all modules
   const clearAllModules = useCallback(() => {
-    if (focusMode) return;
     setModuleFilters(prev => {
       const next: Record<string, ModuleFilterState> = {};
       Object.keys(prev).forEach(id => { next[id] = 'off'; });
       return next;
     });
-  }, [focusMode]);
+  }, []);
 
   // Enter focus mode: show only the focused node and its connected pathway
   const enterFocusMode = useCallback((nodeId: string) => {
@@ -1616,60 +2533,434 @@ function MechanisticNetworkGraphInner({
     setSelectedNode(null);
   }, []);
 
+  // Node hover handlers for tooltip
+  const onNodeMouseEnter = useCallback((event: React.MouseEvent, node: Node) => {
+    // Don't show tooltip for pseudo-nodes or waypoint nodes
+    if (node.data?.isPseudo || node.data?.isWaypoint) return;
+    setHoveredNode(node);
+    setTooltipPosition({ x: event.clientX, y: event.clientY });
+  }, []);
+
+  const onNodeMouseLeave = useCallback(() => {
+    setHoveredNode(null);
+    setTooltipPosition(null);
+  }, []);
+
+  // Get full node data for tooltip (including unabbreviated name)
+  const getFullNodeData = useCallback((nodeId: string) => {
+    return allNodes.find(n => n.id === nodeId);
+  }, []);
+
   return (
-    <div className="border border-[var(--border)] bg-white" style={{ height }}>
-      {/* Module filter checkboxes */}
-      <div className="p-3 border-b border-[var(--border)] bg-[var(--bg-secondary)]">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-xs font-medium text-[var(--text-muted)]">Modules:</span>
+    <div
+      className={`border border-[var(--border)] bg-white ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
+      style={{ height: isFullscreen ? '100vh' : height }}
+    >
+      {/* Module filter - collapsible category bar */}
+      <div className="p-2 border-b border-[var(--border)] bg-[var(--bg-secondary)]">
+        <div className="flex items-center gap-2">
+          {/* Module label */}
+          <span className="text-[10px] font-medium text-[var(--text-muted)]">Module:</span>
+
+          {/* Category filter bar */}
+          <CategoryFilterBar
+            modules={modules}
+            moduleFilters={moduleFilters}
+            toggleModuleFilter={toggleModuleFilter}
+            expandedCategories={expandedCategories}
+            toggleCategory={toggleCategory}
+          />
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Quick actions */}
           {!focusMode ? (
-            <>
+            <div className="flex items-center gap-1">
               <button
                 onClick={selectAllModules}
-                className="text-[10px] text-[var(--accent-orange)] hover:underline"
+                className="text-[9px] px-1.5 py-0.5 text-[var(--accent-orange)] hover:bg-[var(--accent-orange-light)] rounded"
               >
-                All On
+                All
               </button>
               <button
                 onClick={clearAllModules}
-                className="text-[10px] text-[var(--text-muted)] hover:underline"
+                className="text-[9px] px-1.5 py-0.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] rounded"
               >
-                All Off
+                Clear
               </button>
-            </>
+            </div>
           ) : (
             <button
               onClick={exitFocusMode}
-              className="text-[10px] px-2 py-0.5 bg-[var(--accent-orange)] text-white rounded hover:bg-[var(--accent-orange)]/80"
+              className="text-[9px] px-2 py-0.5 bg-[var(--accent-orange)] text-white rounded hover:bg-[var(--accent-orange)]/80"
             >
-              Exit Focus Mode
+              Exit Focus
             </button>
           )}
+
+          {/* Fullscreen toggle */}
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="text-[10px] px-1.5 py-0.5 bg-white border border-[var(--border)] rounded hover:border-[var(--accent-orange)] flex items-center gap-1"
+            title={isFullscreen ? 'Exit fullscreen (Esc)' : 'Fullscreen'}
+          >
+            {isFullscreen ? (
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            )}
+          </button>
         </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-          {modules.map(module => (
-            <ModuleCheckbox
-              key={module.id}
-              state={moduleFilters[module.id]}
-              onChange={() => toggleModuleFilter(module.id)}
-              color={moduleColors[module.id]}
-              label={module.label}
-              count={module.count}
-              disabled={!!focusMode}
-            />
-          ))}
+        {/* Second row: find search on left, stats, pinned nodes in middle, add node on right */}
+        <div className="mt-1.5 flex items-center gap-2 text-[9px]">
+          {/* Left: Find search */}
+          <div className="relative">
+            <button
+              onClick={() => setShowFindSearch(!showFindSearch)}
+              className="px-1.5 py-0.5 bg-white border border-[var(--border)] rounded hover:border-[var(--accent-orange)] flex items-center gap-1"
+              title="Find node (Ctrl+F)"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Find
+            </button>
+            {showFindSearch && (
+              <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-[var(--border)] rounded shadow-lg w-64">
+                <input
+                  type="text"
+                  value={findSearchQuery}
+                  onChange={(e) => setFindSearchQuery(e.target.value)}
+                  placeholder="Search to find and focus..."
+                  className="w-full px-2 py-1.5 text-xs border-b border-[var(--border)] outline-none focus:ring-1 focus:ring-[var(--accent-orange)]"
+                  autoFocus
+                />
+                {findSearchResults.length > 0 && (
+                  <div className="max-h-48 overflow-y-auto">
+                    {findSearchResults.map(node => (
+                      <button
+                        key={node.id}
+                        onClick={() => findAndFocusNode(node.id)}
+                        className={`w-full px-2 py-1.5 text-left text-xs hover:bg-[var(--bg-secondary)] flex items-center gap-2 ${
+                          node.isHidden ? 'bg-[var(--danger-light)]' : ''
+                        }`}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: moduleColors[node.moduleId] || '#787473' }}
+                        />
+                        <span className={`truncate ${node.isHidden ? 'text-[var(--text-muted)]' : ''}`}>
+                          {node.label}
+                        </span>
+                        {node.isHidden && (
+                          <span className="text-[var(--danger)] text-[8px] flex-shrink-0">
+                            (will show)
+                          </span>
+                        )}
+                        <span className="text-[var(--text-muted)] text-[9px] ml-auto flex-shrink-0">{node.moduleId}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {findSearchQuery.length >= 2 && findSearchResults.length === 0 && (
+                  <div className="px-2 py-2 text-xs text-[var(--text-muted)]">No nodes found</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Stats and hint */}
+          <span className="text-[var(--text-muted)]">
+            {nodes.length} nodes, {edges.length} edges
+            {focusMode
+              ? ` • Focus: ${allNodes.find(n => n.id === focusMode.focusedNodeId)?.label}`
+              : ' • Ctrl+click to focus'}
+          </span>
+
+          {/* Middle: Pinned nodes */}
+          {pinnedNodes.size > 0 && (
+            <>
+              <span className="text-[var(--text-muted)]">|</span>
+              <div className="flex items-center gap-1 flex-wrap">
+                <span className="text-[var(--text-muted)]">Pinned:</span>
+                {Array.from(pinnedNodes).map(nodeId => {
+                  const node = allNodes.find(n => n.id === nodeId);
+                  if (!node) return null;
+                  return (
+                    <span
+                      key={nodeId}
+                      className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-white border border-[var(--border)] rounded"
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: moduleColors[node.moduleId] || '#787473' }}
+                      />
+                      {node.label}
+                      <button
+                        onClick={() => unpinNode(nodeId)}
+                        className="ml-0.5 text-[var(--text-muted)] hover:text-[var(--danger)]"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Toggle checkboxes - before Add Node button */}
+          {(() => {
+            // Compute whether Cross should be shown: more than one module on but not all
+            const moduleStates = Object.values(moduleFilters);
+            const onCount = moduleStates.filter(s => s === 'on' || s === 'partial').length;
+            const totalModules = moduleStates.length;
+            const showCrossCheckbox = onCount > 1 && onCount < totalModules;
+
+            return (
+              <div className="flex items-center gap-2">
+                {/* Cross-module connections toggle - only show if more than one but not all modules */}
+                {showCrossCheckbox && (
+                  <label
+                    className="flex items-center gap-1 cursor-pointer group"
+                    title="Show connections that pass through hidden modules as waypoints"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={showCrossModuleConnections}
+                      onChange={() => setShowCrossModuleConnections(!showCrossModuleConnections)}
+                      className="sr-only peer"
+                    />
+                    <div className={`w-3 h-3 border-2 border-dashed rounded transition-all ${
+                      showCrossModuleConnections
+                        ? 'bg-[var(--accent-orange)] border-transparent'
+                        : 'bg-white border-[var(--border)] group-hover:border-[var(--accent-orange)]'
+                    }`}>
+                      {showCrossModuleConnections && (
+                        <svg className="w-2 h-2 text-white" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 6l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-[9px] text-[var(--text-muted)] group-hover:text-[var(--text-primary)]">
+                      Cross
+                    </span>
+                  </label>
+                )}
+
+                {/* Hidden module indicators toggle */}
+                <label
+                  className="flex items-center gap-1 cursor-pointer group"
+                  title="Show indicators on nodes that connect to hidden (disabled) modules"
+                >
+                  <input
+                    type="checkbox"
+                    checked={showHiddenModuleIndicators}
+                    onChange={() => setShowHiddenModuleIndicators(!showHiddenModuleIndicators)}
+                    className="sr-only peer"
+                  />
+                  <div className={`w-3 h-3 border-2 rounded transition-all ${
+                    showHiddenModuleIndicators
+                      ? 'bg-[var(--chart-secondary)] border-transparent'
+                      : 'bg-white border-[var(--border)] group-hover:border-[var(--chart-secondary)]'
+                  }`}>
+                    {showHiddenModuleIndicators && (
+                      <svg className="w-2 h-2 text-white" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-[9px] text-[var(--text-muted)] group-hover:text-[var(--text-primary)]">
+                    Hidden
+                  </span>
+                </label>
+
+                {/* Feedback loops toggle */}
+                <label
+                  className="flex items-center gap-1 cursor-pointer group"
+                  title="Show feedback loops (back edges that create cycles)"
+                >
+                  <input
+                    type="checkbox"
+                    checked={showFeedbackLoops}
+                    onChange={() => setShowFeedbackLoops(!showFeedbackLoops)}
+                    className="sr-only peer"
+                  />
+                  <div className={`w-3 h-3 border-2 rounded transition-all ${
+                    showFeedbackLoops
+                      ? 'bg-[#e36216] border-transparent'
+                      : 'bg-white border-[var(--border)] group-hover:border-[#e36216]'
+                  }`}>
+                    {showFeedbackLoops && (
+                      <svg className="w-2 h-2 text-white" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-[9px] text-[var(--text-muted)] group-hover:text-[var(--text-primary)]">
+                    Feedback
+                  </span>
+                </label>
+              </div>
+            );
+          })()}
+
+          {/* Right: Add node button */}
+          <div className="relative ml-auto">
+            <button
+              onClick={() => setShowNodeSearch(!showNodeSearch)}
+              className="px-1.5 py-0.5 bg-white border border-[var(--border)] rounded hover:border-[var(--accent-orange)]"
+            >
+              + Add Node
+            </button>
+            {showNodeSearch && (
+              <div className="absolute top-full right-0 mt-1 z-50 bg-white border border-[var(--border)] rounded shadow-lg w-56">
+                <input
+                  type="text"
+                  value={nodeSearchQuery}
+                  onChange={(e) => setNodeSearchQuery(e.target.value)}
+                  placeholder="Search nodes..."
+                  className="w-full px-2 py-1.5 text-xs border-b border-[var(--border)] outline-none focus:ring-1 focus:ring-[var(--accent-orange)]"
+                  autoFocus
+                />
+                {searchResults.length > 0 && (
+                  <div className="max-h-48 overflow-y-auto">
+                    {searchResults.map(node => (
+                      <div
+                        key={node.id}
+                        className={`w-full px-2 py-1.5 text-left text-xs hover:bg-[var(--bg-secondary)] flex items-center gap-2 ${
+                          node.isHidden ? 'bg-[var(--danger-light)]' : ''
+                        }`}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: moduleColors[node.moduleId] || '#787473' }}
+                        />
+                        <span className={`truncate ${node.isHidden ? 'text-[var(--text-muted)]' : ''}`}>
+                          {node.label}
+                        </span>
+                        {node.isHidden && (
+                          <span className="text-[var(--danger)] text-[8px] flex-shrink-0">
+                            (hidden)
+                          </span>
+                        )}
+                        <span className="text-[var(--text-muted)] text-[9px] ml-auto flex-shrink-0">{node.moduleId}</span>
+                        {node.isHidden ? (
+                          <button
+                            onClick={() => {
+                              setModuleFilters(prev => ({ ...prev, [node.moduleId]: 'on' }));
+                            }}
+                            className="text-[8px] px-1 py-0.5 bg-[var(--accent-orange)] text-white rounded hover:bg-[var(--accent-orange)]/80 flex-shrink-0"
+                            title="Show module"
+                          >
+                            Show
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => pinNode(node.id)}
+                            className="text-[8px] px-1 py-0.5 bg-[var(--success)] text-white rounded hover:bg-[var(--success)]/80 flex-shrink-0"
+                            title="Pin node"
+                          >
+                            Pin
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {nodeSearchQuery.length >= 2 && searchResults.length === 0 && (
+                  <div className="px-2 py-2 text-xs text-[var(--text-muted)]">No nodes found</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <p className="mt-2 text-[10px] text-[var(--text-muted)]">
-          {nodes.length} nodes, {edges.length} edges
-          {focusMode
-            ? ` • Focus mode: showing pathways for "${allNodes.find(n => n.id === focusMode.focusedNodeId)?.label}"`
-            : ' • Ctrl+click a node to focus on its pathways'}
-        </p>
+      </div>
+
+      {/* Legend */}
+      <div className="px-4 py-2 border-b border-[var(--border)] bg-[var(--bg-secondary)] flex flex-wrap items-center gap-4 text-[10px]">
+        <span className="text-[var(--text-muted)] font-medium">Legend:</span>
+
+        {/* Edge types */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <svg width="24" height="8" className="inline-block">
+              <line x1="0" y1="4" x2="20" y2="4" stroke="#007385" strokeWidth="2" markerEnd="url(#arrow-teal)" />
+              <defs>
+                <marker id="arrow-teal" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6 Z" fill="#007385" />
+                </marker>
+              </defs>
+            </svg>
+            <span className="text-[var(--text-body)]">Increases</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <svg width="24" height="8" className="inline-block">
+              <line x1="0" y1="4" x2="20" y2="4" stroke="#c75146" strokeWidth="2" markerEnd="url(#arrow-red)" />
+              <defs>
+                <marker id="arrow-red" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6 Z" fill="#c75146" />
+                </marker>
+              </defs>
+            </svg>
+            <span className="text-[var(--text-body)]">Decreases</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <svg width="24" height="8" className="inline-block" style={{ overflow: 'visible' }}>
+              <line x1="20" y1="4" x2="4" y2="4" stroke="#e36216" strokeWidth="1.5" strokeDasharray="4,4" markerEnd="url(#arrow-back)" />
+              <defs>
+                <marker id="arrow-back" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6 Z" fill="#e36216" />
+                </marker>
+              </defs>
+            </svg>
+            <span className="text-[var(--text-body)]">Feedback loop</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <svg width="24" height="8" className="inline-block">
+              <line x1="0" y1="4" x2="20" y2="4" stroke="#787473" strokeWidth="1" strokeDasharray="5,5" markerEnd="url(#arrow-pseudo)" />
+              <defs>
+                <marker id="arrow-pseudo" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6 Z" fill="#787473" />
+                </marker>
+              </defs>
+            </svg>
+            <span className="text-[var(--text-body)]">Via hidden module</span>
+          </div>
+        </div>
+
+        {/* Node types */}
+        <div className="flex items-center gap-3 border-l border-[var(--border)] pl-3">
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-[#007385]" />
+            <span className="text-[var(--text-body)]">Stock</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-3 rounded bg-[#486393]" />
+            <span className="text-[var(--text-body)]">State</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-3 border-2 border-dashed border-[#787473] rounded-full bg-transparent" />
+            <span className="text-[var(--text-body)]">Hidden module</span>
+          </div>
+        </div>
       </div>
 
       {/* Graph */}
-      <div style={{ height: `calc(${height} - ${selectedNode || selectedEdge ? '220px' : '100px'})` }}>
+      <div
+        style={{
+          height: isFullscreen
+            ? `calc(100vh - ${selectedNode || selectedEdge ? '260px' : '140px'})`
+            : `calc(${height} - ${selectedNode || selectedEdge ? '260px' : '140px'})`
+        }}
+      >
         <ReactFlow
+          key={isFullscreen ? 'fullscreen' : 'normal'}
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
@@ -1677,7 +2968,11 @@ function MechanisticNetworkGraphInner({
           onEdgesChange={onEdgesChange}
           onNodeClick={onNodeClick}
           onEdgeClick={onEdgeClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseLeave={onNodeMouseLeave}
           fitView
+          minZoom={0.05}
+          maxZoom={2}
           attributionPosition="bottom-left"
         >
           <Background color="#e5e2dd" gap={20} />
@@ -1691,17 +2986,66 @@ function MechanisticNetworkGraphInner({
                 }
                 return moduleColors[node.data?.moduleId as string] || '#787473';
               }}
-              maskColor="rgba(250, 249, 247, 0.7)"
+              maskColor="rgba(250, 249, 247, 0.6)"
               pannable
               zoomable
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
                 border: '1px solid var(--border)',
                 borderRadius: '4px',
               }}
+              className="minimap-with-viewport"
             />
           )}
         </ReactFlow>
+
+        {/* Node hover tooltip */}
+        {hoveredNode && tooltipPosition && (() => {
+          const fullNodeData = getFullNodeData(hoveredNode.id);
+          const label = (hoveredNode.data?.label as string) || hoveredNode.id;
+          const description = fullNodeData?.description || (hoveredNode.data?.description as string | undefined);
+          const mechanism = fullNodeData?.mechanism || (hoveredNode.data?.mechanism as string | undefined);
+          const category = fullNodeData?.category || (hoveredNode.data?.category as string | undefined);
+          const moduleId = (fullNodeData?.moduleId || hoveredNode.data?.moduleId) as string | undefined;
+          const roles = fullNodeData?.roles || (hoveredNode.data?.roles as string[] | undefined);
+
+          return (
+            <div
+              className="fixed z-[100] pointer-events-none bg-white border border-[var(--border)] shadow-lg rounded p-3 max-w-xs"
+              style={{
+                left: Math.min(tooltipPosition.x + 12, window.innerWidth - 320),
+                top: Math.min(tooltipPosition.y + 12, window.innerHeight - 200),
+              }}
+            >
+              <div className="font-semibold text-sm text-[var(--text-primary)] mb-1">{label}</div>
+              {category && (
+                <div className="flex items-center gap-2 text-[10px] text-[var(--text-muted)] mb-2">
+                  <span className="px-1.5 py-0.5 rounded"
+                    style={{ backgroundColor: (moduleId ? moduleColors[moduleId] : '#787473') + '20', color: moduleId ? moduleColors[moduleId] : '#787473' }}
+                  >
+                    {category}
+                  </span>
+                  {moduleId && <span>{moduleId}</span>}
+                </div>
+              )}
+              {description && (
+                <p className="text-xs text-[var(--text-body)] mb-1">{description}</p>
+              )}
+              {mechanism && (
+                <p className="text-[10px] text-[var(--text-muted)] italic">{mechanism}</p>
+              )}
+              {roles && roles.length > 0 && (
+                <div className="flex gap-1 mt-2 flex-wrap">
+                  {roles.map(role => (
+                    <span key={role} className="px-1 py-0.5 text-[9px] bg-[var(--accent-orange-light)] text-[var(--accent-orange)] rounded">
+                      {role}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Selected node details - only show for non-boundaryVariant nodes */}

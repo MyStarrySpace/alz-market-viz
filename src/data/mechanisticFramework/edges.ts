@@ -15,7 +15,7 @@ export const module1Edges: MechanisticEdge[] = [
   {
     id: 'E01.001',
     source: 'insulin_resistance',
-    target: 'mTORC1_hyperactive',
+    target: 'mtorc1_hyperactive',
     relation: 'increases',
     moduleId: 'M01',
     edgeType: 'INFLUENCE', // SBSF v2.0: Indirect downstream effect
@@ -44,8 +44,8 @@ export const module1Edges: MechanisticEdge[] = [
   },
   {
     id: 'E01.002',
-    source: 'mTORC1_hyperactive',
-    target: 'TFEB_phosphorylated',
+    source: 'mtorc1_hyperactive',
+    target: 'tfeb_phosphorylated',
     relation: 'directlyIncreases',
     moduleId: 'M01',
     edgeType: 'MODULATION', // SBSF v2.0: Rate control (kinase → substrate)
@@ -74,7 +74,7 @@ export const module1Edges: MechanisticEdge[] = [
   },
   {
     id: 'E01.003',
-    source: 'TFEB_phosphorylated',
+    source: 'tfeb_phosphorylated',
     target: 'lysosomal_genes_down',
     relation: 'increases',
     moduleId: 'M01',
@@ -104,11 +104,43 @@ export const module1Edges: MechanisticEdge[] = [
   {
     id: 'E01.004',
     source: 'lysosomal_genes_down',
-    target: 'lysosomal_dysfunction',
-    relation: 'increases',
+    target: 'lysosome_pool',
+    relation: 'decreases',
     moduleId: 'M01',
-    mechanismLabel: 'gene_function_consequence',
-    mechanismDescription: '↓v-ATPase subunits → pH rises >5.5. ↓Cathepsins → reduced proteolysis. ↓LAMP proteins → membrane instability',
+    edgeType: 'MODULATION', // Gene expression state modulates lysosome biogenesis rate
+    mechanismLabel: 'reduced_lysosome_biogenesis',
+    mechanismDescription: '↓v-ATPase subunits, ↓LAMP proteins, ↓cathepsins → reduced lysosome biogenesis and functional capacity',
+    causalConfidence: 'L4',
+    crossModule: 'M01 → M02',
+    evidence: [
+      {
+        pmid: '35654956',
+        doi: '10.1038/s41593-022-01084-8',
+        firstAuthor: 'Lee',
+        year: 2022,
+        title: 'Faulty autolysosome acidification in Alzheimer\'s disease mouse models induces autophagic build-up of Aβ in neurons, yielding senile plaques',
+        quote: 'Autolysosome acidification declines in neurons well before extracellular amyloid deposition, associated with markedly lowered vATPase activity',
+        methodType: 'intervention_animal',
+        methodDetails: 'Multiple AD mouse models (5xFAD, PS1/APP, 3xTg-AD, PS19, APPNL-G-F) with pH probes',
+        causalConfidence: 'L4',
+        species: {
+          ncbiTaxon: 'NCBITaxon:10090',
+          commonName: 'mouse',
+          model: '5xFAD, PS1/APP, 3xTg-AD, PS19, APPNL-G-F'
+        },
+      },
+    ],
+    keyInsight: 'Lysosome pool depleted when TFEB-driven biogenesis is suppressed',
+  },
+  {
+    id: 'E01.004b',
+    source: 'lysosome_pool',
+    target: 'lysosomal_dysfunction',
+    relation: 'decreases', // Lower lysosome pool = more dysfunction (inverse relationship)
+    moduleId: 'M02',
+    edgeType: 'INFLUENCE', // Stock level influences dysfunction state (inverse: low stock → high dysfunction)
+    mechanismLabel: 'lysosome_depletion_dysfunction',
+    mechanismDescription: 'Depleted lysosome pool → insufficient degradation capacity → pH rises >5.5, ↓cathepsin activity, cargo accumulation. NOTE: This is an inverse relationship - low lysosome stock increases dysfunction',
     causalConfidence: 'L4',
     evidence: [
       {
@@ -128,17 +160,12 @@ export const module1Edges: MechanisticEdge[] = [
         },
       },
     ],
-    quantitative: {
-      foldChange: undefined,
-      direction: undefined,
-      confidenceInterval: undefined,
-    },
     keyInsight: 'PANTHOS pattern - autolysosomes fail to acidify, becoming Aβ storage depots',
   },
   {
     id: 'E01.005',
-    source: 'mTORC1_hyperactive',
-    target: 'ULK1_phosphorylated',
+    source: 'mtorc1_hyperactive',
+    target: 'ulk1_phosphorylated',
     relation: 'directlyIncreases',
     moduleId: 'M01',
     mechanismLabel: 'mTORC1_ULK1_phosphorylation',
@@ -165,7 +192,7 @@ export const module1Edges: MechanisticEdge[] = [
   },
   {
     id: 'E01.006',
-    source: 'ULK1_phosphorylated',
+    source: 'ulk1_phosphorylated',
     target: 'mitophagy_rate_reduced',
     relation: 'increases',
     moduleId: 'M01',
@@ -222,8 +249,8 @@ export const module1Edges: MechanisticEdge[] = [
   // S6K1-IRS1 feedback loop edges
   {
     id: 'E01.008',
-    source: 'mTORC1_hyperactive',
-    target: 'S6K1_active',
+    source: 'mtorc1_hyperactive',
+    target: 's6k1_active',
     relation: 'directlyIncreases',
     moduleId: 'M01',
     mechanismLabel: 'mTORC1_S6K1_phosphorylation',
@@ -246,8 +273,8 @@ export const module1Edges: MechanisticEdge[] = [
   },
   {
     id: 'E01.009',
-    source: 'S6K1_active',
-    target: 'IRS1_serine_phosphorylated',
+    source: 's6k1_active',
+    target: 'irs1_serine_phosphorylated',
     relation: 'directlyIncreases',
     moduleId: 'M01',
     mechanismLabel: 'S6K1_IRS1_phosphorylation',
@@ -275,7 +302,7 @@ export const module1Edges: MechanisticEdge[] = [
   },
   {
     id: 'E01.010',
-    source: 'IRS1_serine_phosphorylated',
+    source: 'irs1_serine_phosphorylated',
     target: 'insulin_resistance',
     relation: 'increases',
     moduleId: 'M01',
@@ -320,8 +347,8 @@ export const module1Edges: MechanisticEdge[] = [
   // Additional M01 edges for connecting unconnected nodes
   {
     id: 'E01.020',
-    source: 'mTORC1_hyperactive',
-    target: 'AMPK_phosphorylated',
+    source: 'mtorc1_hyperactive',
+    target: 'ampk_phosphorylated',
     relation: 'increases',
     moduleId: 'M01',
     mechanismLabel: 'mTORC1_AMPK_inhibition',
@@ -339,8 +366,8 @@ export const module1Edges: MechanisticEdge[] = [
   },
   {
     id: 'E01.021',
-    source: 'AMPK_phosphorylated',
-    target: 'ULK1_phosphorylated',
+    source: 'ampk_phosphorylated',
+    target: 'ulk1_phosphorylated',
     relation: 'increases',
     moduleId: 'M01',
     mechanismLabel: 'AMPK_autophagy_block',
@@ -426,7 +453,7 @@ export const module2Edges: MechanisticEdge[] = [
   {
     id: 'E02.003',
     source: 'lipofuscin',
-    target: 'LMP',
+    target: 'lmp',
     relation: 'directlyIncreases',
     moduleId: 'M02',
     mechanismLabel: 'lipofuscin_membrane_damage',
@@ -454,8 +481,8 @@ export const module2Edges: MechanisticEdge[] = [
   },
   {
     id: 'E02.004',
-    source: 'LMP',
-    target: 'cathepsin_B_cytosolic',
+    source: 'lmp',
+    target: 'cathepsin_b_cytosolic',
     relation: 'directlyIncreases',
     moduleId: 'M02',
     mechanismLabel: 'compartment_breach',
@@ -477,8 +504,8 @@ export const module2Edges: MechanisticEdge[] = [
   },
   {
     id: 'E02.005',
-    source: 'cathepsin_B_cytosolic',
-    target: 'NLRP3_active',
+    source: 'cathepsin_b_cytosolic',
+    target: 'nlrp3_active',
     relation: 'directlyIncreases',
     moduleId: 'M02',
     mechanismLabel: 'cathepsin_NLRP3_activation',
@@ -555,7 +582,7 @@ export const module2Edges: MechanisticEdge[] = [
   {
     id: 'E02.008',
     source: 'lysosomal_dysfunction',
-    target: 'mtDNA_undegraded',
+    target: 'mtdna_undegraded',
     relation: 'increases',
     moduleId: 'M02',
     mechanismLabel: 'DNase_II_pH_failure',
@@ -583,8 +610,8 @@ export const module2Edges: MechanisticEdge[] = [
   },
   {
     id: 'E02.009',
-    source: 'mtDNA_undegraded',
-    target: 'mtDNA_from_lysosome',
+    source: 'mtdna_undegraded',
+    target: 'mtdna_from_lysosome',
     relation: 'increases',
     moduleId: 'M02',
     mechanismLabel: 'mtDNA_lysosomal_escape',
@@ -604,8 +631,8 @@ export const module2Edges: MechanisticEdge[] = [
   },
   {
     id: 'E02.010',
-    source: 'mtDNA_from_lysosome',
-    target: 'cGAS_active',
+    source: 'mtdna_from_lysosome',
+    target: 'cgas_active',
     relation: 'directlyIncreases',
     moduleId: 'M02',
     mechanismLabel: 'mtDNA_cGAS_sensing',
@@ -641,7 +668,7 @@ export const module3Edges: MechanisticEdge[] = [
   {
     id: 'E03.001',
     source: 'damaged_mito_pool',
-    target: 'mito_ROS',
+    target: 'mito_ros',
     relation: 'increases',
     moduleId: 'M03',
     mechanismLabel: 'ETC_dysfunction_ROS',
@@ -668,8 +695,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.002',
-    source: 'mito_ROS',
-    target: 'mtDNA_oxidized',
+    source: 'mito_ros',
+    target: 'mtdna_oxidized',
     relation: 'directlyIncreases',
     moduleId: 'M03',
     mechanismLabel: 'ROS_DNA_oxidation',
@@ -690,8 +717,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.003',
-    source: 'mito_ROS',
-    target: 'Ca_overload',
+    source: 'mito_ros',
+    target: 'ca_overload',
     relation: 'increases',
     moduleId: 'M03',
     mechanismLabel: 'ROS_calcium_dysregulation',
@@ -712,8 +739,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.004',
-    source: 'Ca_overload',
-    target: 'mPTP_open',
+    source: 'ca_overload',
+    target: 'mptp_open',
     relation: 'directlyIncreases',
     moduleId: 'M03',
     mechanismLabel: 'calcium_mPTP_trigger',
@@ -736,8 +763,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.005',
-    source: 'mPTP_open',
-    target: 'VDAC_oligomer',
+    source: 'mptp_open',
+    target: 'vdac_oligomer',
     relation: 'increases',
     moduleId: 'M03',
     mechanismLabel: 'mPTP_VDAC_coordination',
@@ -760,8 +787,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.006',
-    source: 'mtDNA_oxidized',
-    target: 'ox_mtDNA_cytosolic',
+    source: 'mtdna_oxidized',
+    target: 'ox_mtdna_cytosolic',
     relation: 'increases',
     moduleId: 'M03',
     mechanismLabel: 'FEN1_cleavage_release',
@@ -784,8 +811,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.007',
-    source: 'VDAC_oligomer',
-    target: 'ox_mtDNA_cytosolic',
+    source: 'vdac_oligomer',
+    target: 'ox_mtdna_cytosolic',
     relation: 'directlyIncreases',
     moduleId: 'M03',
     mechanismLabel: 'VDAC_pore_transport',
@@ -807,8 +834,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.008',
-    source: 'ox_mtDNA_cytosolic',
-    target: 'NLRP3_active',
+    source: 'ox_mtdna_cytosolic',
+    target: 'nlrp3_active',
     relation: 'directlyIncreases',
     moduleId: 'M03',
     mechanismLabel: 'ox_mtDNA_NLRP3_binding',
@@ -832,8 +859,8 @@ export const module3Edges: MechanisticEdge[] = [
   },
   {
     id: 'E03.009',
-    source: 'mtDNA_cytosolic',
-    target: 'cGAS_active',
+    source: 'mtdna_cytosolic',
+    target: 'cgas_active',
     relation: 'directlyIncreases',
     moduleId: 'M03',
     mechanismLabel: 'mtDNA_cGAS_sensing',
@@ -856,8 +883,8 @@ export const module3Edges: MechanisticEdge[] = [
   // Protective edge
   {
     id: 'E03.010',
-    source: 'PINK1_Parkin',
-    target: 'mtDNA_cytosolic',
+    source: 'pink1_parkin',
+    target: 'mtdna_cytosolic',
     relation: 'decreases',
     moduleId: 'M03',
     mechanismLabel: 'mitophagy_prevents_mtDNA_release',
@@ -903,7 +930,7 @@ export const module3Edges: MechanisticEdge[] = [
 export const module4Edges: MechanisticEdge[] = [
   {
     id: 'E04.001',
-    source: 'NLRP3_active',
+    source: 'nlrp3_active',
     target: 'caspase1_active',
     relation: 'directlyIncreases',
     moduleId: 'M04',
@@ -933,7 +960,7 @@ export const module4Edges: MechanisticEdge[] = [
   {
     id: 'E04.002',
     source: 'caspase1_active',
-    target: 'IL1B',
+    target: 'il1b',
     relation: 'directlyIncreases',
     moduleId: 'M04',
     mechanismLabel: 'IL1B_cleavage',
@@ -955,8 +982,8 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.003',
-    source: 'cGAS_active',
-    target: 'STING_active',
+    source: 'cgas_active',
+    target: 'sting_active',
     relation: 'directlyIncreases',
     moduleId: 'M04',
     mechanismLabel: 'cGAMP_STING_activation',
@@ -976,8 +1003,8 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.004',
-    source: 'STING_active',
-    target: 'type_I_IFN',
+    source: 'sting_active',
+    target: 'type_i_ifn',
     relation: 'increases',
     moduleId: 'M04',
     mechanismLabel: 'STING_IFN_induction',
@@ -1000,8 +1027,8 @@ export const module4Edges: MechanisticEdge[] = [
   // NLRP3 → tau hyperphosphorylation pathway
   {
     id: 'E04.005',
-    source: 'NLRP3_active',
-    target: 'GSK3B_active',
+    source: 'nlrp3_active',
+    target: 'gsk3b_active',
     relation: 'increases',
     moduleId: 'M04',
     mechanismLabel: 'NLRP3_GSK3B_activation',
@@ -1029,8 +1056,8 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.006',
-    source: 'NLRP3_active',
-    target: 'PP2A_activity',
+    source: 'nlrp3_active',
+    target: 'pp2a_activity',
     relation: 'decreases',
     moduleId: 'M04',
     mechanismLabel: 'NLRP3_PP2A_inhibition',
@@ -1050,7 +1077,7 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.007',
-    source: 'GSK3B_active',
+    source: 'gsk3b_active',
     target: 'tau_hyperphosphorylated',
     relation: 'directlyIncreases',
     moduleId: 'M04',
@@ -1072,7 +1099,7 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.008',
-    source: 'PP2A_activity',
+    source: 'pp2a_activity',
     target: 'tau_hyperphosphorylated',
     relation: 'decreases',
     moduleId: 'M04',
@@ -1095,8 +1122,8 @@ export const module4Edges: MechanisticEdge[] = [
   // Feedback loops (Aβ and tau → NLRP3)
   {
     id: 'E04.009',
-    source: 'Abeta_oligomers',
-    target: 'NLRP3_active',
+    source: 'abeta_oligomers',
+    target: 'nlrp3_active',
     relation: 'increases',
     moduleId: 'M04',
     mechanismLabel: 'Abeta_NLRP3_activation',
@@ -1118,7 +1145,7 @@ export const module4Edges: MechanisticEdge[] = [
   {
     id: 'E04.010',
     source: 'tau_aggregated',
-    target: 'NLRP3_active',
+    target: 'nlrp3_active',
     relation: 'increases',
     moduleId: 'M04',
     mechanismLabel: 'tau_NLRP3_activation',
@@ -1145,7 +1172,7 @@ export const module4Edges: MechanisticEdge[] = [
   {
     id: 'E04.011',
     source: 'caspase1_active',
-    target: 'IL18',
+    target: 'il18',
     relation: 'directlyIncreases',
     moduleId: 'M04',
     mechanismLabel: 'IL18_maturation',
@@ -1163,7 +1190,7 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.012',
-    source: 'IL18',
+    source: 'il18',
     target: 'neuroinflammation',
     relation: 'increases',
     moduleId: 'M04',
@@ -1183,7 +1210,7 @@ export const module4Edges: MechanisticEdge[] = [
   {
     id: 'E04.013',
     source: 'neuroinflammation',
-    target: 'ISG_expression',
+    target: 'isg_expression',
     relation: 'increases',
     moduleId: 'M04',
     mechanismLabel: 'IFN_ISG_induction',
@@ -1202,7 +1229,7 @@ export const module4Edges: MechanisticEdge[] = [
   },
   {
     id: 'E04.014',
-    source: 'ISG_expression',
+    source: 'isg_expression',
     target: 'microglia_activated',
     relation: 'increases',
     moduleId: 'M04',
@@ -1253,7 +1280,7 @@ export const module5Edges: MechanisticEdge[] = [
   {
     id: 'E05.002',
     source: 'microglia_activated',
-    target: 'NF_kB_active',
+    target: 'nf_kb_active',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'activation_NFkB',
@@ -1275,8 +1302,8 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.003',
-    source: 'NF_kB_active',
-    target: 'HIF1A_stabilized',
+    source: 'nf_kb_active',
+    target: 'hif1a_stabilized',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'NFkB_HIF1A_stabilization',
@@ -1298,7 +1325,7 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.004',
-    source: 'HIF1A_stabilized',
+    source: 'hif1a_stabilized',
     target: 'glycolytic_switch',
     relation: 'increases',
     moduleId: 'M05',
@@ -1322,7 +1349,7 @@ export const module5Edges: MechanisticEdge[] = [
   {
     id: 'E05.005',
     source: 'glycolytic_switch',
-    target: 'SREBP1_active',
+    target: 'srebp1_active',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'glycolysis_SREBP1',
@@ -1342,7 +1369,7 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.006',
-    source: 'SREBP1_active',
+    source: 'srebp1_active',
     target: 'lipid_droplets',
     relation: 'increases',
     moduleId: 'M05',
@@ -1364,7 +1391,7 @@ export const module5Edges: MechanisticEdge[] = [
   {
     id: 'E05.007',
     source: 'lipid_droplets',
-    target: 'LDAM',
+    target: 'ldam',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'LD_LDAM_phenotype',
@@ -1387,7 +1414,7 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.008',
-    source: 'LDAM',
+    source: 'ldam',
     target: 'phagocytosis_impaired',
     relation: 'increases',
     moduleId: 'M05',
@@ -1410,8 +1437,8 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.009',
-    source: 'LDAM',
-    target: 'C1q',
+    source: 'ldam',
+    target: 'c1q',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'LDAM_C1q_production',
@@ -1434,7 +1461,7 @@ export const module5Edges: MechanisticEdge[] = [
   {
     id: 'E05.010',
     source: 'microglia_activated',
-    target: 'IL1A',
+    target: 'il1a',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'microglia_IL1A',
@@ -1455,7 +1482,7 @@ export const module5Edges: MechanisticEdge[] = [
   {
     id: 'E05.011',
     source: 'microglia_activated',
-    target: 'TNF',
+    target: 'tnf',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'microglia_TNF',
@@ -1475,8 +1502,8 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.012',
-    source: 'IL1A',
-    target: 'A1_astrocytes',
+    source: 'il1a',
+    target: 'a1_astrocytes',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'IL1A_A1_induction',
@@ -1504,8 +1531,8 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.013',
-    source: 'TNF',
-    target: 'A1_astrocytes',
+    source: 'tnf',
+    target: 'a1_astrocytes',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'TNF_A1_induction',
@@ -1525,8 +1552,8 @@ export const module5Edges: MechanisticEdge[] = [
   },
   {
     id: 'E05.014',
-    source: 'C1q',
-    target: 'A1_astrocytes',
+    source: 'c1q',
+    target: 'a1_astrocytes',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'C1q_A1_induction',
@@ -1556,7 +1583,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // IL-1β → neuroinflammation (M04 → M05)
   {
     id: 'E_CM.001',
-    source: 'IL1B',
+    source: 'il1b',
     target: 'neuroinflammation',
     relation: 'increases',
     moduleId: 'M04',
@@ -1579,7 +1606,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // Type I IFN → neuroinflammation (M04 → M05)
   {
     id: 'E_CM.002',
-    source: 'type_I_IFN',
+    source: 'type_i_ifn',
     target: 'neuroinflammation',
     relation: 'increases',
     moduleId: 'M04',
@@ -1602,7 +1629,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // A1 astrocytes → neuronal dysfunction (M05 → M07)
   {
     id: 'E_CM.003',
-    source: 'A1_astrocytes',
+    source: 'a1_astrocytes',
     target: 'neuronal_dysfunction',
     relation: 'increases',
     moduleId: 'M05',
@@ -1626,8 +1653,8 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // NF-κB → BACE1 upregulation (M05 → M06)
   {
     id: 'E_CM.004',
-    source: 'NF_kB_active',
-    target: 'BACE1_upregulated',
+    source: 'nf_kb_active',
+    target: 'bace1_upregulated',
     relation: 'increases',
     moduleId: 'M05',
     mechanismLabel: 'NFkB_BACE1_transcription',
@@ -1716,7 +1743,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // LTP inhibition → cognitive score (M06 → BOUNDARY)
   {
     id: 'E_CM.008',
-    source: 'LTP_inhibition',
+    source: 'ltp_inhibition',
     target: 'cognitive_score',
     relation: 'decreases',
     moduleId: 'M06',
@@ -1739,7 +1766,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // BBB breakdown → neuroinflammation (M12 → M05)
   {
     id: 'E_CM.009',
-    source: 'BBB_breakdown',
+    source: 'bbb_breakdown',
     target: 'neuroinflammation',
     relation: 'increases',
     moduleId: 'M12',
@@ -1762,8 +1789,8 @@ export const crossModuleEdges: MechanisticEdge[] = [
   // APOE4 → Aβ clearance reduced (M10 → M06)
   {
     id: 'E_CM.010',
-    source: 'APOE_lipidation_reduced',
-    target: 'Abeta_clearance',
+    source: 'apoe_lipidation_reduced',
+    target: 'abeta_clearance',
     relation: 'decreases',
     moduleId: 'M10',
     mechanismLabel: 'APOE4_clearance_impairment',
@@ -1844,8 +1871,8 @@ export const crossModuleEdges: MechanisticEdge[] = [
   },
   {
     id: 'E_CM.014',
-    source: 'Abeta_oligomers',
-    target: 'CSF_biomarkers',
+    source: 'abeta_oligomers',
+    target: 'csf_biomarkers',
     relation: 'regulates',
     moduleId: 'BOUNDARY',
     mechanismLabel: 'abeta_CSF',
@@ -1865,7 +1892,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   {
     id: 'E_CM.015',
     source: 'tau_hyperphosphorylated',
-    target: 'CSF_biomarkers',
+    target: 'csf_biomarkers',
     relation: 'increases',
     moduleId: 'BOUNDARY',
     mechanismLabel: 'ptau_CSF',
@@ -1885,7 +1912,7 @@ export const crossModuleEdges: MechanisticEdge[] = [
   },
   {
     id: 'E_CM.016',
-    source: 'CSF_biomarkers',
+    source: 'csf_biomarkers',
     target: 'clinical_benefit',
     relation: 'regulates',
     moduleId: 'BOUNDARY',
@@ -1912,8 +1939,8 @@ export const crossModuleEdges: MechanisticEdge[] = [
 export const module6Edges: MechanisticEdge[] = [
   {
     id: 'E06.001',
-    source: 'BACE1_upregulated',
-    target: 'APP_betaCTF',
+    source: 'bace1_upregulated',
+    target: 'app_betactf',
     relation: 'directlyIncreases',
     moduleId: 'M06',
     mechanismLabel: 'BACE1_APP_cleavage',
@@ -1936,8 +1963,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.002',
-    source: 'APP_betaCTF',
-    target: 'Abeta_monomers',
+    source: 'app_betactf',
+    target: 'abeta_monomers',
     relation: 'directlyIncreases',
     moduleId: 'M06',
     mechanismLabel: 'gamma_secretase_cleavage',
@@ -1956,8 +1983,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.003',
-    source: 'Abeta_monomers',
-    target: 'Abeta_oligomers',
+    source: 'abeta_monomers',
+    target: 'abeta_oligomers',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'oligomerization',
@@ -1980,8 +2007,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.004',
-    source: 'Abeta_oligomers',
-    target: 'Abeta_plaques',
+    source: 'abeta_oligomers',
+    target: 'abeta_plaques',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'plaque_deposition',
@@ -2000,8 +2027,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.005',
-    source: 'Abeta_oligomers',
-    target: 'LTP_inhibition',
+    source: 'abeta_oligomers',
+    target: 'ltp_inhibition',
     relation: 'directlyIncreases',
     moduleId: 'M06',
     mechanismLabel: 'synaptic_toxicity',
@@ -2022,11 +2049,12 @@ export const module6Edges: MechanisticEdge[] = [
   {
     id: 'E06.006',
     source: 'phagocytosis_impaired',
-    target: 'Abeta_oligomers',
-    relation: 'increases',
+    target: 'abeta_clearance',
+    relation: 'decreases',
     moduleId: 'M06',
-    mechanismLabel: 'clearance_failure',
-    mechanismDescription: 'Impaired microglial phagocytosis (from LDAM phenotype) → reduced Aβ clearance → oligomers accumulate',
+    edgeType: 'MODULATION', // Phagocytosis regulates the clearance rate
+    mechanismLabel: 'LDAM_clearance_failure',
+    mechanismDescription: 'Impaired microglial phagocytosis (from LDAM phenotype) reduces Aβ clearance rate',
     causalConfidence: 'L4',
     crossModule: 'Input from Module 5 (LDAM)',
     evidence: [
@@ -2034,16 +2062,18 @@ export const module6Edges: MechanisticEdge[] = [
         pmid: '31959936',
         firstAuthor: 'Marschallinger',
         year: 2020,
-        title: 'Lipid-droplet-accumulating microglia...',
+        title: 'Lipid-droplet-accumulating microglia represent a dysfunctional state in the aging brain',
+        quote: 'LDAM...are defective in phagocytosis',
         methodType: 'in_vitro',
         causalConfidence: 'L4',
       },
     ],
+    keyInsight: 'LDAM impairs microglial Aβ clearance capacity',
   },
   {
     id: 'E06.007',
     source: 'lysosomal_dysfunction',
-    target: 'Abeta_monomers',
+    target: 'abeta_monomers',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'PANTHOS_pathway',
@@ -2067,8 +2097,8 @@ export const module6Edges: MechanisticEdge[] = [
   // Additional M06 edges for connecting unconnected nodes
   {
     id: 'E06.008',
-    source: 'APP_processing_amyloidogenic',
-    target: 'APP_betaCTF',
+    source: 'app_processing_amyloidogenic',
+    target: 'app_betactf',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'amyloidogenic_pathway',
@@ -2086,8 +2116,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.009',
-    source: 'BACE1_upregulated',
-    target: 'APP_processing_amyloidogenic',
+    source: 'bace1_upregulated',
+    target: 'app_processing_amyloidogenic',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'BACE1_amyloidogenic',
@@ -2105,8 +2135,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.010',
-    source: 'APP_processing_amyloidogenic',
-    target: 'Abeta_production',
+    source: 'app_processing_amyloidogenic',
+    target: 'abeta_production',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'abeta_generation',
@@ -2124,8 +2154,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.011',
-    source: 'Abeta_production',
-    target: 'Abeta_monomers',
+    source: 'abeta_production',
+    target: 'abeta_monomers',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'monomer_release',
@@ -2143,7 +2173,7 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.012',
-    source: 'TREM2_surface',
+    source: 'trem2_surface',
     target: 'plaque_compaction',
     relation: 'increases',
     moduleId: 'M06',
@@ -2183,8 +2213,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.014',
-    source: 'Abeta_oligomers',
-    target: 'synaptic_Abeta_binding',
+    source: 'abeta_oligomers',
+    target: 'synaptic_abeta_binding',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'synaptic_toxicity_binding',
@@ -2202,8 +2232,8 @@ export const module6Edges: MechanisticEdge[] = [
   },
   {
     id: 'E06.015',
-    source: 'synaptic_Abeta_binding',
-    target: 'LTP_inhibition',
+    source: 'synaptic_abeta_binding',
+    target: 'ltp_inhibition',
     relation: 'increases',
     moduleId: 'M06',
     mechanismLabel: 'LTP_blockade',
@@ -2310,8 +2340,8 @@ export const module7Edges: MechanisticEdge[] = [
   // 7B: Transsulfuration pathway (CSE/H2S)
   {
     id: 'E07.005',
-    source: 'CSE_enzyme',
-    target: 'H2S_production',
+    source: 'cse_enzyme',
+    target: 'h2s_production',
     relation: 'directlyIncreases',
     moduleId: 'M07',
     mechanismLabel: 'H2S_production',
@@ -2330,8 +2360,8 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.006',
-    source: 'H2S_production',
-    target: 'GSK3B_active',
+    source: 'h2s_production',
+    target: 'gsk3b_active',
     relation: 'decreases',
     moduleId: 'M07',
     mechanismLabel: 'H2S_GSK3B_sulfhydration',
@@ -2352,8 +2382,8 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.007',
-    source: 'CSE_enzyme',
-    target: 'glutathione_GSH',
+    source: 'cse_enzyme',
+    target: 'glutathione_gsh',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'cysteine_GSH_synthesis',
@@ -2375,7 +2405,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.008',
     source: 'aging',
-    target: 'CSE_enzyme',
+    target: 'cse_enzyme',
     relation: 'decreases',
     moduleId: 'M07',
     mechanismLabel: 'age_CSE_decline',
@@ -2397,7 +2427,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.009',
     source: 'neuroinflammation',
-    target: 'p38_MAPK_active',
+    target: 'p38_mapk_active',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'inflammation_p38_activation',
@@ -2415,7 +2445,7 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.010',
-    source: 'p38_MAPK_active',
+    source: 'p38_mapk_active',
     target: 'tau_hyperphosphorylated',
     relation: 'increases',
     moduleId: 'M07',
@@ -2434,8 +2464,8 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.011',
-    source: 'Abeta_oligomers',
-    target: 'PP2A_inhibited',
+    source: 'abeta_oligomers',
+    target: 'pp2a_inhibited',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'abeta_PP2A_inhibition',
@@ -2454,7 +2484,7 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.012',
-    source: 'PP2A_inhibited',
+    source: 'pp2a_inhibited',
     target: 'tau_hyperphosphorylated',
     relation: 'increases',
     moduleId: 'M07',
@@ -2475,7 +2505,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.013',
     source: 'tau_aggregated',
-    target: 'tau_aggregated_PHF',
+    target: 'tau_aggregated_phf',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'PHF_formation',
@@ -2495,8 +2525,8 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.014',
-    source: 'tau_aggregated_PHF',
-    target: 'NFT_formation',
+    source: 'tau_aggregated_phf',
+    target: 'nft_formation',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'NFT_maturation',
@@ -2515,7 +2545,7 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.015',
-    source: 'NFT_formation',
+    source: 'nft_formation',
     target: 'neuronal_dysfunction',
     relation: 'increases',
     moduleId: 'M07',
@@ -2574,7 +2604,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.018',
     source: 'homocysteine',
-    target: 'CBS_enzyme',
+    target: 'cbs_enzyme',
     relation: 'substrateof',
     moduleId: 'M07',
     mechanismLabel: 'CBS_substrate',
@@ -2593,7 +2623,7 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.019',
-    source: 'CBS_enzyme',
+    source: 'cbs_enzyme',
     target: 'cystathionine',
     relation: 'directlyIncreases',
     moduleId: 'M07',
@@ -2612,7 +2642,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.020',
     source: 'cystathionine',
-    target: 'CSE_enzyme',
+    target: 'cse_enzyme',
     relation: 'substrateof',
     moduleId: 'M07',
     mechanismLabel: 'CSE_substrate',
@@ -2629,7 +2659,7 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.021',
-    source: 'CSE_enzyme',
+    source: 'cse_enzyme',
     target: 'cysteine',
     relation: 'directlyIncreases',
     moduleId: 'M07',
@@ -2648,7 +2678,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.022',
     source: 'cysteine',
-    target: 'glutathione_GSH',
+    target: 'glutathione_gsh',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'cysteine_GSH',
@@ -2666,7 +2696,7 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.023',
-    source: 'H2S_production',
+    source: 'h2s_production',
     target: 'sulfhydration',
     relation: 'directlyIncreases',
     moduleId: 'M07',
@@ -2686,7 +2716,7 @@ export const module7Edges: MechanisticEdge[] = [
   {
     id: 'E07.024',
     source: 'sulfhydration',
-    target: 'GSK3beta_sulfhydrated',
+    target: 'gsk3beta_sulfhydrated',
     relation: 'increases',
     moduleId: 'M07',
     mechanismLabel: 'GSK3B_sulfhydration',
@@ -2704,8 +2734,8 @@ export const module7Edges: MechanisticEdge[] = [
   },
   {
     id: 'E07.025',
-    source: 'GSK3beta_sulfhydrated',
-    target: 'GSK3B_active',
+    source: 'gsk3beta_sulfhydrated',
+    target: 'gsk3b_active',
     relation: 'decreases',
     moduleId: 'M07',
     mechanismLabel: 'GSK3B_inactivation',
@@ -2732,7 +2762,7 @@ export const module8Edges: MechanisticEdge[] = [
   {
     id: 'E08.001',
     source: 'aging',
-    target: 'C1q',
+    target: 'c1q',
     relation: 'increases',
     moduleId: 'M08',
     mechanismLabel: 'age_C1q_upregulation',
@@ -2755,8 +2785,8 @@ export const module8Edges: MechanisticEdge[] = [
   },
   {
     id: 'E08.002',
-    source: 'C1q',
-    target: 'C3_opsonization',
+    source: 'c1q',
+    target: 'c3_opsonization',
     relation: 'directlyIncreases',
     moduleId: 'M08',
     mechanismLabel: 'complement_cascade_initiation',
@@ -2777,8 +2807,8 @@ export const module8Edges: MechanisticEdge[] = [
   },
   {
     id: 'E08.003',
-    source: 'C3_opsonization',
-    target: 'CR3_mediated_pruning',
+    source: 'c3_opsonization',
+    target: 'cr3_mediated_pruning',
     relation: 'increases',
     moduleId: 'M08',
     mechanismLabel: 'C3_iC3b_opsonization',
@@ -2800,7 +2830,7 @@ export const module8Edges: MechanisticEdge[] = [
   },
   {
     id: 'E08.004',
-    source: 'CR3_mediated_pruning',
+    source: 'cr3_mediated_pruning',
     target: 'synapse_elimination',
     relation: 'directlyIncreases',
     moduleId: 'M08',
@@ -2865,8 +2895,8 @@ export const module8Edges: MechanisticEdge[] = [
   },
   {
     id: 'E08.007',
-    source: 'Abeta_oligomers',
-    target: 'C1q',
+    source: 'abeta_oligomers',
+    target: 'c1q',
     relation: 'increases',
     moduleId: 'M08',
     mechanismLabel: 'Abeta_C1q_induction',
@@ -2887,7 +2917,7 @@ export const module8Edges: MechanisticEdge[] = [
   {
     id: 'E08.008',
     source: 'aging',
-    target: 'C1q_elevated',
+    target: 'c1q_elevated',
     relation: 'increases',
     moduleId: 'M08',
     mechanismLabel: 'aging_C1q_elevation',
@@ -2905,8 +2935,8 @@ export const module8Edges: MechanisticEdge[] = [
   },
   {
     id: 'E08.009',
-    source: 'C1q_elevated',
-    target: 'C3_opsonization',
+    source: 'c1q_elevated',
+    target: 'c3_opsonization',
     relation: 'increases',
     moduleId: 'M08',
     mechanismLabel: 'elevated_C1q_cascade',
@@ -2932,7 +2962,7 @@ export const module8Edges: MechanisticEdge[] = [
 export const module9Edges: MechanisticEdge[] = [
   {
     id: 'E09.001',
-    source: 'IL1B',
+    source: 'il1b',
     target: 'hepcidin_elevated',
     relation: 'increases',
     moduleId: 'M09',
@@ -3019,7 +3049,7 @@ export const module9Edges: MechanisticEdge[] = [
   },
   {
     id: 'E09.005',
-    source: 'GPX4_activity',
+    source: 'gpx4_activity',
     target: 'lipid_peroxidation',
     relation: 'decreases',
     moduleId: 'M09',
@@ -3061,8 +3091,8 @@ export const module9Edges: MechanisticEdge[] = [
   },
   {
     id: 'E09.007',
-    source: 'glutathione_GSH',
-    target: 'GPX4_activity',
+    source: 'glutathione_gsh',
+    target: 'gpx4_activity',
     relation: 'increases',
     moduleId: 'M09',
     mechanismLabel: 'GSH_GPX4_cofactor',
@@ -3081,13 +3111,40 @@ export const module9Edges: MechanisticEdge[] = [
   },
   {
     id: 'E09.008',
-    source: 'senescent_cells',
-    target: 'SASP',
+    source: 'aging',
+    target: 'senescent_cells',
     relation: 'increases',
     moduleId: 'M09',
-    mechanismLabel: 'iron_driven_SASP',
-    mechanismDescription: 'Iron-loaded senescent cells produce SASP factors. Iron accumulation DRIVES SASP',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'aging_drives_senescence',
+    mechanismDescription: 'Chronological aging drives accumulation of senescent cells through replicative exhaustion, oxidative damage, and iron accumulation',
+    causalConfidence: 'L5',
+    crossModule: 'BOUNDARY → M09',
+    evidence: [
+      {
+        pmid: '38036770',
+        doi: '10.1038/s42255-023-00928-2',
+        firstAuthor: 'Maus',
+        year: 2023,
+        title: 'Iron accumulation drives fibrosis, senescence and the SASP',
+        quote: 'Iron accumulation drives fibrosis, senescence and the senescence-associated secretory phenotype',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight: 'Age is the primary driver of cellular senescence',
+  },
+  {
+    id: 'E09.008b',
+    source: 'senescent_cells',
+    target: 'il1b',
+    relation: 'increases',
+    moduleId: 'M09',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'senescence_inflammation',
+    mechanismDescription: 'Senescent cells secrete pro-inflammatory cytokines (IL-6, IL-8, IL-1β, TNF-α) as part of SASP phenotype',
     causalConfidence: 'L4',
+    crossModule: 'M09 → M04',
     evidence: [
       {
         pmid: '38036770',
@@ -3221,6 +3278,30 @@ export const module9Edges: MechanisticEdge[] = [
     ],
     keyInsight: 'Iron paradox: high total iron but low available iron; neither extreme is good',
   },
+  {
+    id: 'E09.015',
+    source: 'iron_accumulation',
+    target: 'senescent_cells',
+    relation: 'increases',
+    moduleId: 'M09',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'iron_drives_senescence',
+    mechanismDescription: 'Iron accumulation directly drives cellular senescence; iron chelation reverses senescent phenotype',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '38036770',
+        doi: '10.1038/s42255-023-00928-2',
+        firstAuthor: 'Maus',
+        year: 2023,
+        title: 'Iron accumulation drives fibrosis, senescence and the SASP',
+        quote: 'Iron accumulation drives fibrosis, senescence and the senescence-associated secretory phenotype',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight: 'Iron chelation or ferroptosis induction in senescent cells is therapeutic',
+  },
 ];
 
 // ============================================================================
@@ -3230,8 +3311,8 @@ export const module9Edges: MechanisticEdge[] = [
 export const module10Edges: MechanisticEdge[] = [
   {
     id: 'E10.001',
-    source: 'APOE_genotype',
-    target: 'APOE4_domain_interaction',
+    source: 'apoe_genotype',
+    target: 'apoe4_domain_interaction',
     relation: 'directlyIncreases',
     moduleId: 'M10',
     mechanismLabel: 'APOE4_structural_defect',
@@ -3249,8 +3330,8 @@ export const module10Edges: MechanisticEdge[] = [
   },
   {
     id: 'E10.002',
-    source: 'APOE4_domain_interaction',
-    target: 'APOE_lipidation_reduced',
+    source: 'apoe4_domain_interaction',
+    target: 'apoe_lipidation_reduced',
     relation: 'increases',
     moduleId: 'M10',
     mechanismLabel: 'domain_interaction_lipidation',
@@ -3268,8 +3349,8 @@ export const module10Edges: MechanisticEdge[] = [
   },
   {
     id: 'E10.003',
-    source: 'APOE_lipidation_reduced',
-    target: 'Abeta_clearance',
+    source: 'apoe_lipidation_reduced',
+    target: 'abeta_clearance',
     relation: 'increases',
     moduleId: 'M10',
     mechanismLabel: 'APOE4_Abeta_clearance',
@@ -3289,7 +3370,7 @@ export const module10Edges: MechanisticEdge[] = [
   {
     id: 'E10.004',
     source: 'aging',
-    target: 'REST_nuclear',
+    target: 'rest_nuclear',
     relation: 'decreases',
     moduleId: 'M10',
     mechanismLabel: 'age_REST_depletion',
@@ -3312,8 +3393,8 @@ export const module10Edges: MechanisticEdge[] = [
   },
   {
     id: 'E10.005',
-    source: 'REST_nuclear',
-    target: 'Nrf2_pathway',
+    source: 'rest_nuclear',
+    target: 'nrf2_pathway',
     relation: 'increases',
     moduleId: 'M10',
     mechanismLabel: 'REST_Nrf2_coordination',
@@ -3331,8 +3412,8 @@ export const module10Edges: MechanisticEdge[] = [
   },
   {
     id: 'E10.006',
-    source: 'Nrf2_pathway',
-    target: 'GPX4_activity',
+    source: 'nrf2_pathway',
+    target: 'gpx4_activity',
     relation: 'increases',
     moduleId: 'M10',
     mechanismLabel: 'Nrf2_GPX4_induction',
@@ -3353,7 +3434,7 @@ export const module10Edges: MechanisticEdge[] = [
   // Additional M10 edges for connecting unconnected nodes
   {
     id: 'E10.007',
-    source: 'APOE4_domain_interaction',
+    source: 'apoe4_domain_interaction',
     target: 'lysosomal_cholesterol_sequestration',
     relation: 'increases',
     moduleId: 'M10',
@@ -3393,7 +3474,7 @@ export const module10Edges: MechanisticEdge[] = [
   },
   {
     id: 'E10.009',
-    source: 'APOE_lipidation_reduced',
+    source: 'apoe_lipidation_reduced',
     target: 'astrocyte_lipid_droplets',
     relation: 'increases',
     moduleId: 'M10',
@@ -3434,7 +3515,7 @@ export const module10Edges: MechanisticEdge[] = [
   {
     id: 'E10.011',
     source: 'aging',
-    target: 'REST_depleted',
+    target: 'rest_depleted',
     relation: 'increases',
     moduleId: 'M10',
     mechanismLabel: 'age_REST_loss',
@@ -3452,7 +3533,7 @@ export const module10Edges: MechanisticEdge[] = [
   },
   {
     id: 'E10.012',
-    source: 'REST_depleted',
+    source: 'rest_depleted',
     target: 'neuronal_dysfunction',
     relation: 'increases',
     moduleId: 'M10',
@@ -3479,8 +3560,8 @@ export const module10Edges: MechanisticEdge[] = [
 export const module11Edges: MechanisticEdge[] = [
   {
     id: 'E11.001',
-    source: 'TREM2_surface',
-    target: 'DAM_stage1',
+    source: 'trem2_surface',
+    target: 'dam_stage1',
     relation: 'increases',
     moduleId: 'M11',
     mechanismLabel: 'TREM2_DAM_transition',
@@ -3502,8 +3583,8 @@ export const module11Edges: MechanisticEdge[] = [
   },
   {
     id: 'E11.002',
-    source: 'DAM_stage1',
-    target: 'DAM_stage2',
+    source: 'dam_stage1',
+    target: 'dam_stage2',
     relation: 'increases',
     moduleId: 'M11',
     mechanismLabel: 'DAM_progression',
@@ -3521,7 +3602,7 @@ export const module11Edges: MechanisticEdge[] = [
   },
   {
     id: 'E11.003',
-    source: 'DAM_stage2',
+    source: 'dam_stage2',
     target: 'plaque_barrier_function',
     relation: 'increases',
     moduleId: 'M11',
@@ -3542,8 +3623,8 @@ export const module11Edges: MechanisticEdge[] = [
   },
   {
     id: 'E11.004',
-    source: 'TREM2_variants',
-    target: 'TREM2_surface',
+    source: 'trem2_variants',
+    target: 'trem2_surface',
     relation: 'decreases',
     moduleId: 'M11',
     mechanismLabel: 'TREM2_variant_hypomorph',
@@ -3563,8 +3644,8 @@ export const module11Edges: MechanisticEdge[] = [
   },
   {
     id: 'E11.005',
-    source: 'TREM2_surface',
-    target: 'sTREM2',
+    source: 'trem2_surface',
+    target: 'strem2',
     relation: 'increases',
     moduleId: 'M11',
     mechanismLabel: 'TREM2_shedding',
@@ -3584,8 +3665,8 @@ export const module11Edges: MechanisticEdge[] = [
   // Additional M11 edges for connecting unconnected nodes
   {
     id: 'E11.006',
-    source: 'TREM2_variants',
-    target: 'DAM_transition_blocked',
+    source: 'trem2_variants',
+    target: 'dam_transition_blocked',
     relation: 'increases',
     moduleId: 'M11',
     mechanismLabel: 'TREM2_DAM_block',
@@ -3603,8 +3684,8 @@ export const module11Edges: MechanisticEdge[] = [
   },
   {
     id: 'E11.007',
-    source: 'DAM_transition_blocked',
-    target: 'Abeta_clearance',
+    source: 'dam_transition_blocked',
+    target: 'abeta_clearance',
     relation: 'decreases',
     moduleId: 'M11',
     mechanismLabel: 'blocked_DAM_clearance_failure',
@@ -3625,7 +3706,7 @@ export const module11Edges: MechanisticEdge[] = [
   {
     id: 'E11.008',
     source: 'aging',
-    target: 'senescent_TREM2_microglia',
+    target: 'senescent_trem2_microglia',
     relation: 'increases',
     moduleId: 'M11',
     mechanismLabel: 'age_TREM2_senescence',
@@ -3644,7 +3725,7 @@ export const module11Edges: MechanisticEdge[] = [
   },
   {
     id: 'E11.009',
-    source: 'senescent_TREM2_microglia',
+    source: 'senescent_trem2_microglia',
     target: 'neuroinflammation',
     relation: 'increases',
     moduleId: 'M11',
@@ -3671,8 +3752,8 @@ export const module11Edges: MechanisticEdge[] = [
 export const module12Edges: MechanisticEdge[] = [
   {
     id: 'E12.001',
-    source: 'APOE_genotype',
-    target: 'CypA_elevated',
+    source: 'apoe_genotype',
+    target: 'cypa_elevated',
     relation: 'increases',
     moduleId: 'M12',
     mechanismLabel: 'APOE4_CypA_upregulation',
@@ -3694,8 +3775,8 @@ export const module12Edges: MechanisticEdge[] = [
   },
   {
     id: 'E12.002',
-    source: 'CypA_elevated',
-    target: 'MMP9_elevated',
+    source: 'cypa_elevated',
+    target: 'mmp9_elevated',
     relation: 'directlyIncreases',
     moduleId: 'M12',
     mechanismLabel: 'CypA_MMP9_activation',
@@ -3713,8 +3794,8 @@ export const module12Edges: MechanisticEdge[] = [
   },
   {
     id: 'E12.003',
-    source: 'MMP9_elevated',
-    target: 'BBB_breakdown',
+    source: 'mmp9_elevated',
+    target: 'bbb_breakdown',
     relation: 'directlyIncreases',
     moduleId: 'M12',
     mechanismLabel: 'MMP9_tight_junction_degradation',
@@ -3756,7 +3837,7 @@ export const module12Edges: MechanisticEdge[] = [
   {
     id: 'E12.005',
     source: 'glymphatic_clearance',
-    target: 'Abeta_oligomers',
+    target: 'abeta_oligomers',
     relation: 'decreases',
     moduleId: 'M12',
     mechanismLabel: 'glymphatic_Abeta_clearance',
@@ -3797,7 +3878,7 @@ export const module12Edges: MechanisticEdge[] = [
   // Additional M12 edges for connecting unconnected nodes
   {
     id: 'E12.007',
-    source: 'MMP9_elevated',
+    source: 'mmp9_elevated',
     target: 'pericyte_injury',
     relation: 'increases',
     moduleId: 'M12',
@@ -3818,7 +3899,7 @@ export const module12Edges: MechanisticEdge[] = [
   {
     id: 'E12.008',
     source: 'pericyte_injury',
-    target: 'BBB_breakdown',
+    target: 'bbb_breakdown',
     relation: 'increases',
     moduleId: 'M12',
     mechanismLabel: 'pericyte_BBB_integrity',
@@ -3876,7 +3957,7 @@ export const module12Edges: MechanisticEdge[] = [
   {
     id: 'E12.011',
     source: 'glymphatic_clearance',
-    target: 'ISF_Abeta_clearance',
+    target: 'isf_abeta_clearance',
     relation: 'increases',
     moduleId: 'M12',
     mechanismLabel: 'glymphatic_ISF_drainage',
@@ -3894,8 +3975,8 @@ export const module12Edges: MechanisticEdge[] = [
   },
   {
     id: 'E12.012',
-    source: 'ISF_Abeta_clearance',
-    target: 'Abeta_oligomers',
+    source: 'isf_abeta_clearance',
+    target: 'abeta_oligomers',
     relation: 'decreases',
     moduleId: 'M12',
     mechanismLabel: 'ISF_clearance_Abeta',
@@ -3941,7 +4022,7 @@ export const module13Edges: MechanisticEdge[] = [
   {
     id: 'E13.002',
     source: 'cholinergic_degeneration',
-    target: 'ACh_reduced',
+    target: 'ach_reduced',
     relation: 'increases',
     moduleId: 'M13',
     mechanismLabel: 'cholinergic_loss_ACh',
@@ -3959,7 +4040,7 @@ export const module13Edges: MechanisticEdge[] = [
   },
   {
     id: 'E13.003',
-    source: 'ACh_reduced',
+    source: 'ach_reduced',
     target: 'cognitive_score',
     relation: 'increases',
     moduleId: 'M13',
@@ -4037,6 +4118,422 @@ export const module13Edges: MechanisticEdge[] = [
     ],
     keyInsight: 'Myelin-focused AD hypothesis: late-myelinating regions most vulnerable',
   },
+
+  // ============================================================================
+  // OPC DIFFERENTIATION & MYELINATION (added 2026-01-15)
+  // ============================================================================
+
+  {
+    id: 'E13.010',
+    source: 'opcs',
+    target: 'mature_oligodendrocytes',
+    relation: 'increases',
+    moduleId: 'M13',
+    edgeType: 'TRANSITION',
+    mechanismLabel: 'OPC_differentiation',
+    mechanismDescription: 'OPCs differentiate into mature myelinating oligodendrocytes. Process requires: (1) exit from cell cycle, (2) expression of MBP/MOG/PLP1, (3) cholesterol availability for myelin synthesis. Declines with age due to OPC senescence, LINGO1↑, Nogo receptor activation.',
+    timescale: 'weeks',
+    interventionWindow: 'prevention',
+    evidence: [
+      {
+        pmid: '31497960',
+        firstAuthor: 'Neumann',
+        year: 2019,
+        quote: 'Remyelination efficiency declines with age due to impaired OPC differentiation',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    causalConfidence: 'L4',
+    therapeuticImplication: 'Anti-LINGO1 antibodies, clemastine enhance OPC differentiation',
+  },
+
+  {
+    id: 'E13.011',
+    source: 'ol_cholesterol_synthesis',
+    target: 'mature_oligodendrocytes',
+    relation: 'increases',
+    moduleId: 'M13',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'cholesterol_myelination_coupling',
+    mechanismDescription: 'Oligodendrocytes require massive cholesterol for myelin synthesis (myelin is 70% lipid, mostly cholesterol). OLs can synthesize de novo OR receive from astrocytes via APOE. Rate-limiting for remyelination.',
+    timescale: 'days',
+    evidence: [
+      {
+        pmid: '36385529',
+        firstAuthor: 'Blanchard',
+        year: 2022,
+        quote: 'Cholesterol is essential for myelin membrane synthesis',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'in_vitro',
+        causalConfidence: 'L4',
+      },
+    ],
+    causalConfidence: 'L4',
+  },
+
+  {
+    id: 'E13.012',
+    source: 'mature_oligodendrocytes',
+    target: 'myelin_breakdown',
+    relation: 'decreases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'OL_myelin_maintenance',
+    mechanismDescription: 'Mature oligodendrocytes maintain myelin sheaths. When OLs die (A1 astrocyte toxicity, APOE4 cholesterol failure), myelin degenerates. Loss of mature OLs → myelin breakdown → axonal dysfunction.',
+    timescale: 'months',
+    evidence: [
+      {
+        pmid: '36385529',
+        firstAuthor: 'Blanchard',
+        year: 2022,
+        quote: 'APOE4 oligodendrocytes fail to maintain myelin integrity',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'in_vitro',
+        causalConfidence: 'L5',
+      },
+    ],
+    causalConfidence: 'L5',
+    keyInsight: 'OL death precedes myelin loss; myelin is stable short-term even without OLs',
+  },
+
+  // ============================================================================
+  // APOE4 → OLIGODENDROCYTE CHOLESTEROL (Cross-module from M10)
+  // ============================================================================
+
+  {
+    id: 'E13.013',
+    source: 'apoe_genotype', // APOE4 variant specifically
+    target: 'ol_cholesterol_synthesis',
+    relation: 'decreases',
+    moduleId: 'M13',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'APOE4_OL_cholesterol_deficit',
+    mechanismDescription: 'APOE4 impairs oligodendrocyte cholesterol via TWO mechanisms: (1) ↓SREBP2 in OLs reduces de novo synthesis, (2) poorly lipidated secreted APOE4 cannot deliver cholesterol from astrocytes. OLs become cholesterol-starved → cannot maintain myelin.',
+    timescale: 'months',
+    crossModule: 'Input from M10 (APOE4/REST)',
+    evidence: [
+      {
+        pmid: '36385529',
+        doi: '10.1038/s41586-022-05439-w',
+        firstAuthor: 'Blanchard',
+        year: 2022,
+        quote: 'APOE4 impairs cholesterol transport to oligodendrocytes, leading to myelin deficits that can be rescued by cyclodextrin',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'in_vitro',
+        causalConfidence: 'L4',
+      },
+    ],
+    causalConfidence: 'L4',
+    keyInsight: 'APOE4 AD mechanism may be primarily through OL cholesterol, not Aβ clearance',
+    therapeuticImplication: 'Cyclodextrin rescues OL cholesterol in APOE4 carriers',
+    translationalGap: 'Human iPSC data; needs validation in human brain tissue',
+  },
+
+  // ============================================================================
+  // OPC-BBB AXIS (Critical species difference)
+  // ============================================================================
+
+  {
+    id: 'E13.014',
+    source: 'opcs',
+    target: 'opc_tgf_beta1',
+    relation: 'directlyIncreases',
+    moduleId: 'M13',
+    edgeType: 'FLOW',
+    mechanismLabel: 'OPC_TGFb1_secretion',
+    mechanismDescription: 'OPCs constitutively secrete TGF-β1 which is required for BBB integrity. OPC-specific TGF-β1 knockout → cerebral hemorrhage in mice.',
+    timescale: 'hours',
+    evidence: [
+      {
+        pmid: '25186741',
+        doi: '10.1371/journal.pone.0103174',
+        firstAuthor: 'Seo',
+        year: 2014,
+        quote: 'OPCs support BBB integrity via TGF-β1 signaling; OPC-specific TGF-β1 KO causes cerebral hemorrhage',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'knockout',
+        causalConfidence: 'L3',
+      },
+    ],
+    causalConfidence: 'L3',
+    keyInsight: 'OPCs are BBB constituents, not just myelin precursors',
+  },
+
+  {
+    id: 'E13.015',
+    source: 'opc_tgf_beta1',
+    target: 'bbb_integrity', // From Module 12
+    relation: 'increases',
+    moduleId: 'M13',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'TGFb1_tight_junction_maintenance',
+    mechanismDescription: 'OPC-derived TGF-β1 activates TGF-βR on pericytes and endothelium → maintains tight junction proteins (claudin-5, occludin, ZO-1). Loss of OPCs → ↓TGF-β1 → BBB breakdown.',
+    timescale: 'days',
+    crossModule: 'Output to M12 (BBB/Glymphatic)',
+    sharedWith: ['M12'],
+    evidence: [
+      {
+        pmid: '25186741',
+        firstAuthor: 'Seo',
+        year: 2014,
+        quote: 'TGF-β1 from OPCs maintains tight junction proteins in cerebral endothelium',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'knockout',
+        causalConfidence: 'L3',
+      },
+    ],
+    causalConfidence: 'L3',
+    therapeuticImplication: 'OPC transplantation may restore BBB in AD',
+  },
+
+  // ============================================================================
+  // OPC NEUROVASCULAR COUPLING (HUMAN-SPECIFIC NOS1)
+  // ============================================================================
+
+  {
+    id: 'E13.016',
+    source: 'opc_vascular_coupling',
+    target: 'pericyte_function', // From M12
+    relation: 'modulates',
+    moduleId: 'M13',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'OPC_Ca_pericyte_dilation',
+    mechanismDescription: 'OPCs wrap capillaries; Ca²⁺ transients in OPCs PRECEDE pericyte relaxation and vessel dilation during functional hyperemia. OPCs may be upstream mediators of neurovascular coupling, not just responders.',
+    timescale: 'seconds',
+    crossModule: 'Output to M12 (BBB/Glymphatic)',
+    evidence: [
+      {
+        pmid: '29937277',
+        doi: '10.1016/j.neuron.2018.06.012',
+        firstAuthor: 'Rungta',
+        year: 2018,
+        quote: 'Calcium increases in NG2 cells precede arteriole dilation during functional hyperemia',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'imaging',
+        causalConfidence: 'L4',
+      },
+    ],
+    causalConfidence: 'L4',
+    translationalGap: 'Mouse data; human mechanism may differ due to OPC NOS1 expression',
+  },
+
+  {
+    id: 'E13.017',
+    source: 'opc_nos1_activity',
+    target: 'opc_vascular_coupling',
+    relation: 'modulates',
+    moduleId: 'M13',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'OPC_NO_signaling',
+    mechanismDescription: 'HUMAN-SPECIFIC: Human OPCs express NOS1 (τ=0.85 cell type specificity); mouse OPCs do NOT express Nos1. Human OPC-derived NO may regulate vascular tone through a mechanism absent in mouse models. This represents a critical translational gap.',
+    timescale: 'seconds',
+    translationalGap: 'CRITICAL: Human-specific NOS1 expression means mouse BBB models lack this signaling axis. Current BBB organoids typically lack OL lineage entirely.',
+    evidence: [
+      {
+        firstAuthor: 'Human Protein Atlas',
+        year: 2024,
+        quote: 'NOS1 cell type enhanced in oligodendrocyte precursor cells (τ=0.85)',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'transcriptomics',
+        causalConfidence: 'L6',
+      },
+      {
+        firstAuthor: 'Tabula Muris Consortium',
+        year: 2018,
+        quote: 'Nos1 not expressed in mouse OPCs or oligodendrocytes',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'transcriptomics',
+        causalConfidence: 'L6',
+      },
+    ],
+    causalConfidence: 'L6', // Observational - species comparison
+    keyInsight: 'Human OPCs may use NO signaling for BBB regulation that is completely absent in mouse studies',
+    therapeuticImplication: 'BBB models must include human OPCs for translational validity',
+  },
+
+  // ============================================================================
+  // A1 ASTROCYTE → OLIGODENDROCYTE DEATH (Cross-module from M05)
+  // ============================================================================
+
+  {
+    id: 'E13.018',
+    source: 'a1_astrocytes', // From Module 5
+    target: 'mature_oligodendrocytes',
+    relation: 'decreases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'A1_astrocyte_OL_killing',
+    mechanismDescription: 'A1 reactive astrocytes secrete saturated lipids that are toxic to oligodendrocytes. This is one mechanism of white matter pathology in AD. A1 astrocytes are induced by C1q + IL-1α + TNF-α from activated microglia.',
+    timescale: 'days',
+    crossModule: 'Input from M05 (Microglial Phenotypes)',
+    evidence: [
+      {
+        pmid: '28099414',
+        doi: '10.1038/nature21029',
+        firstAuthor: 'Liddelow',
+        year: 2017,
+        quote: 'A1 astrocytes induce death of neurons and oligodendrocytes through secretion of saturated lipids',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'in_vitro',
+        causalConfidence: 'L4',
+      },
+    ],
+    causalConfidence: 'L4',
+    keyInsight: 'Microglial activation → A1 astrocytes → OL death → demyelination cascade',
+  },
+
+  // ============================================================================
+  // AGING → OPC/REMYELINATION (Temporal dynamics)
+  // ============================================================================
+
+  {
+    id: 'E13.019',
+    source: 'aging',
+    target: 'opcs',
+    relation: 'decreases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'age_OPC_exhaustion',
+    mechanismDescription: 'OPCs become exhausted and senescent with age. Mechanisms include: (1) replicative senescence, (2) epigenetic changes reducing differentiation capacity, (3) accumulation of myelin debris inhibiting OPC function. Results in declining remyelination capacity.',
+    timescale: 'years',
+    evidence: [
+      {
+        pmid: '31497960',
+        firstAuthor: 'Neumann',
+        year: 2019,
+        quote: 'Aged OPCs show reduced differentiation capacity and impaired response to demyelination',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+        methodType: 'cohort',
+        causalConfidence: 'L5',
+      },
+    ],
+    causalConfidence: 'L5',
+    keyInsight: 'OPC exhaustion may explain why remyelination fails in aging brain',
+    interventionWindow: 'prevention',
+  },
+
+  {
+    id: 'E13.020',
+    source: 'aging',
+    target: 'remyelination_capacity',
+    relation: 'decreases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'age_remyelination_decline',
+    mechanismDescription: 'Remyelination capacity declines with age due to: (1) OPC exhaustion/senescence, (2) ↑LINGO1 inhibiting OPC differentiation, (3) altered macrophage/microglia clearance of myelin debris, (4) cholesterol metabolism changes. This creates a window where demyelination becomes irreversible.',
+    timescale: 'years',
+    evidence: [
+      {
+        pmid: '29499767',
+        doi: '10.1186/s40478-018-0515-3',
+        firstAuthor: 'Nasrabady',
+        year: 2018,
+        quote: 'White matter changes appear 22 years before symptom onset in AD',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'cohort',
+        causalConfidence: 'L5',
+      },
+    ],
+    causalConfidence: 'L5',
+    keyInsight: 'The 22-year prodrome suggests white matter pathology is an early, potentially modifiable target',
+    therapeuticImplication: 'Early intervention to preserve remyelination capacity may prevent AD progression',
+    interventionWindow: 'prevention',
+  },
+
+  // ============================================================================
+  // WHITE MATTER → COGNITIVE OUTCOMES
+  // ============================================================================
+
+  {
+    id: 'E13.021',
+    source: 'myelin_breakdown',
+    target: 'white_matter_pathology',
+    relation: 'increases',
+    moduleId: 'M13',
+    edgeType: 'TRANSITION',
+    mechanismLabel: 'demyelination_WM_pathology',
+    mechanismDescription: 'Myelin breakdown leads to detectable white matter pathology on MRI (↓fractional anisotropy, ↑mean diffusivity, white matter hyperintensities). This occurs BEFORE gray matter changes and predicts cognitive decline.',
+    timescale: 'months',
+    evidence: [
+      {
+        pmid: '29499767',
+        firstAuthor: 'Nasrabady',
+        year: 2018,
+        quote: 'White matter microstructure abnormalities precede gray matter atrophy by decades',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'cohort',
+        causalConfidence: 'L5',
+      },
+    ],
+    causalConfidence: 'L5',
+    keyInsight: 'WM pathology is an early biomarker and potential intervention target',
+  },
+
+  {
+    id: 'E13.022',
+    source: 'white_matter_pathology',
+    target: 'cholinergic_degeneration',
+    relation: 'increases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'WM_disconnection_BFCN',
+    mechanismDescription: 'White matter pathology disrupts long-range projections from basal forebrain cholinergic neurons to cortex and hippocampus. The cholinergic system has the longest axons in the brain and is particularly vulnerable to WM damage. This may explain why cholinergic deficits appear early in AD.',
+    timescale: 'months',
+    evidence: [
+      {
+        pmid: '6309134',
+        firstAuthor: 'Coyle',
+        year: 1983,
+        quote: 'Long projecting cholinergic neurons are selectively vulnerable in AD',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'cohort',
+        causalConfidence: 'L5',
+      },
+    ],
+    causalConfidence: 'L5',
+    keyInsight: 'WM damage may cause cholinergic dysfunction by disconnection, not just BFCN death',
+  },
+];
+
+// ============================================================================
+// MODULE 2: BMP/Lysosomal Additional Edges
+// ============================================================================
+
+export const module2LipidEdges: MechanisticEdge[] = [
+  {
+    id: 'E02.020',
+    source: 'lysosomal_dysfunction',
+    target: 'bmp_lysosomal',
+    relation: 'increases',
+    moduleId: 'M02',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'lysosomal_stress_BMP_elevation',
+    mechanismDescription: 'BMP (bis(monoacylglycero)phosphate) is a lysosome-specific lipid that facilitates lipid degradation by activating acid sphingomyelinase. ↑BMP is a compensatory response to lysosomal stress - the cell attempts to enhance lipid catabolism. BMP elevation is seen in lysosomal storage disorders and in AD brains.',
+    timescale: 'days',
+    evidence: [
+      {
+        firstAuthor: 'Nguyen',
+        year: 2024,
+        quote: 'BMP(22:6-22:6) significantly elevated in AD brains compared to controls',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'biochemistry',
+        causalConfidence: 'L5',
+      },
+      {
+        pmid: '23670896',
+        firstAuthor: 'Raben',
+        year: 2013,
+        quote: 'BMP levels correlate with lysosomal storage disease severity',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+    causalConfidence: 'L5',
+    keyInsight: 'BMP is a biomarker for lysosomal stress; elevation may be compensatory',
+  },
 ];
 
 // ============================================================================
@@ -4046,8 +4543,8 @@ export const module13Edges: MechanisticEdge[] = [
 export const module14Edges: MechanisticEdge[] = [
   {
     id: 'E14.001',
-    source: 'familial_AD_mutations',
-    target: 'MAM_hyperconnectivity',
+    source: 'familial_ad_mutations',
+    target: 'mam_hyperconnectivity',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'PS_MAM_upregulation',
@@ -4068,8 +4565,8 @@ export const module14Edges: MechanisticEdge[] = [
   },
   {
     id: 'E14.002',
-    source: 'MAM_hyperconnectivity',
-    target: 'ER_mito_Ca_flux',
+    source: 'mam_hyperconnectivity',
+    target: 'er_mito_ca_flux',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'MAM_Ca_transfer',
@@ -4087,8 +4584,8 @@ export const module14Edges: MechanisticEdge[] = [
   },
   {
     id: 'E14.003',
-    source: 'ER_mito_Ca_flux',
-    target: 'Ca_overload',
+    source: 'er_mito_ca_flux',
+    target: 'ca_overload',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'MAM_mito_Ca_overload',
@@ -4107,8 +4604,8 @@ export const module14Edges: MechanisticEdge[] = [
   },
   {
     id: 'E14.004',
-    source: 'MAM_hyperconnectivity',
-    target: 'gamma_secretase_MAM',
+    source: 'mam_hyperconnectivity',
+    target: 'gamma_secretase_mam',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'MAM_gamma_secretase',
@@ -4128,8 +4625,8 @@ export const module14Edges: MechanisticEdge[] = [
   // Additional M14 edges for connecting calcium nodes
   {
     id: 'E14.005',
-    source: 'familial_AD_mutations',
-    target: 'ER_Ca_stores',
+    source: 'familial_ad_mutations',
+    target: 'er_ca_stores',
     relation: 'regulates',
     moduleId: 'M14',
     mechanismLabel: 'PS1_ER_Ca_leak',
@@ -4148,8 +4645,8 @@ export const module14Edges: MechanisticEdge[] = [
   },
   {
     id: 'E14.006',
-    source: 'ER_Ca_stores',
-    target: 'ER_mito_Ca_flux',
+    source: 'er_ca_stores',
+    target: 'er_mito_ca_flux',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'ER_Ca_to_mito',
@@ -4167,8 +4664,8 @@ export const module14Edges: MechanisticEdge[] = [
   },
   {
     id: 'E14.007',
-    source: 'ER_mito_Ca_flux',
-    target: 'mito_Ca_overload_MAM',
+    source: 'er_mito_ca_flux',
+    target: 'mito_ca_overload_mam',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'MAM_Ca_transfer',
@@ -4186,8 +4683,8 @@ export const module14Edges: MechanisticEdge[] = [
   },
   {
     id: 'E14.008',
-    source: 'mito_Ca_overload_MAM',
-    target: 'Ca_overload',
+    source: 'mito_ca_overload_mam',
+    target: 'ca_overload',
     relation: 'increases',
     moduleId: 'M14',
     mechanismLabel: 'Ca_mito_dysfunction',
@@ -4214,7 +4711,7 @@ export const module14Edges: MechanisticEdge[] = [
 export const module15Edges: MechanisticEdge[] = [
   {
     id: 'E15.001',
-    source: 'BBB_penetration',
+    source: 'bbb_penetration',
     target: 'target_engagement',
     relation: 'increases',
     moduleId: 'M15',
@@ -4271,7 +4768,7 @@ export const module15Edges: MechanisticEdge[] = [
   {
     id: 'E15.004',
     source: 'exercise',
-    target: 'mTORC1_hyperactive',
+    target: 'mtorc1_hyperactive',
     relation: 'decreases',
     moduleId: 'M15',
     mechanismLabel: 'exercise_autophagy',
@@ -4393,7 +4890,7 @@ export const module16Edges: MechanisticEdge[] = [
   },
   {
     id: 'E16.003',
-    source: 'FSH_elevated',
+    source: 'fsh_elevated',
     target: 'neuronal_dysfunction',
     relation: 'increases',
     moduleId: 'M16',
@@ -4416,7 +4913,7 @@ export const module16Edges: MechanisticEdge[] = [
   {
     id: 'E16.004',
     source: 'sex',
-    target: 'APOE4_ancestry_effect',
+    target: 'apoe4_ancestry_effect',
     relation: 'regulates',
     moduleId: 'M16',
     mechanismLabel: 'ancestry_APOE4_interaction',
@@ -4477,7 +4974,7 @@ export const module16Edges: MechanisticEdge[] = [
   {
     id: 'E16.007',
     source: 'sex',
-    target: 'X_linked_lysosomal_genes',
+    target: 'x_linked_lysosomal_genes',
     relation: 'regulates',
     moduleId: 'M16',
     mechanismLabel: 'X_chromosome_dosage',
@@ -4497,7 +4994,7 @@ export const module16Edges: MechanisticEdge[] = [
   },
   {
     id: 'E16.008',
-    source: 'X_linked_lysosomal_genes',
+    source: 'x_linked_lysosomal_genes',
     target: 'lysosomal_dysfunction',
     relation: 'decreases',
     moduleId: 'M16',
@@ -4605,8 +5102,8 @@ export const module16Edges: MechanisticEdge[] = [
 export const module17Edges: MechanisticEdge[] = [
   {
     id: 'E17.001',
-    source: 'AS01_adjuvant',
-    target: 'TLR4_activation',
+    source: 'as01_adjuvant',
+    target: 'tlr4_activation',
     relation: 'directlyIncreases',
     moduleId: 'M17',
     mechanismLabel: 'MPL_TLR4_agonism',
@@ -4633,8 +5130,8 @@ export const module17Edges: MechanisticEdge[] = [
   },
   {
     id: 'E17.002',
-    source: 'TLR4_activation',
-    target: 'IFN_gamma',
+    source: 'tlr4_activation',
+    target: 'ifn_gamma',
     relation: 'increases',
     moduleId: 'M17',
     mechanismLabel: 'TLR4_IFNg_cascade',
@@ -4660,13 +5157,15 @@ export const module17Edges: MechanisticEdge[] = [
   },
   {
     id: 'E17.003',
-    source: 'IFN_gamma',
-    target: 'amyloid_clearance_enhanced',
+    source: 'ifn_gamma',
+    target: 'abeta_clearance',
     relation: 'increases',
     moduleId: 'M17',
+    edgeType: 'MODULATION', // IFN-gamma acts as regulator for the clearance flow
     mechanismLabel: 'IFNg_amyloid_clearance',
-    mechanismDescription: 'IFN-γ may attenuate amyloid plaque deposition; negatively correlated with cognitive decline in cognitively unimpaired older adults',
+    mechanismDescription: 'IFN-γ enhances microglial phagocytosis of Aβ; may attenuate amyloid plaque deposition; negatively correlated with cognitive decline in cognitively unimpaired older adults',
     causalConfidence: 'L7',
+    crossModule: 'M17 → M06',
     evidence: [
       {
         pmid: '40562756',
@@ -4684,18 +5183,20 @@ export const module17Edges: MechanisticEdge[] = [
         },
       },
     ],
-    keyInsight: 'Mechanism speculative; observational dementia risk reduction is robust',
+    keyInsight: 'IFN-γ acts as a regulator enhancing Aβ clearance rate',
     translationalGap: 'No RCT for dementia outcomes; mechanism proposed but not tested interventionally',
   },
   {
     id: 'E17.004',
-    source: 'amyloid_clearance_enhanced',
-    target: 'cognitive_function',
-    relation: 'increases',
+    source: 'abeta_clearance',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
     moduleId: 'M17',
-    mechanismLabel: 'clearance_cognition',
-    mechanismDescription: 'Enhanced Aβ clearance may reduce oligomer toxicity and preserve synaptic function',
-    causalConfidence: 'L7',
+    edgeType: 'FLOW', // Clearance is a flow that depletes the stock
+    mechanismLabel: 'clearance_reduces_oligomers',
+    mechanismDescription: 'Enhanced Aβ clearance reduces oligomer accumulation and toxicity',
+    causalConfidence: 'L5',
+    crossModule: 'M17 → M06',
     evidence: [
       {
         pmid: '40562756',
@@ -4717,12 +5218,254 @@ export const module17Edges: MechanisticEdge[] = [
 ];
 
 // ============================================================================
+// THERAPEUTIC EVIDENCE EDGES
+// Clinical trial learnings - what worked, what failed, and why
+// ============================================================================
+
+export const therapeuticEvidenceEdges: MechanisticEdge[] = [
+  // -------------------------------------------------------------------------
+  // Anti-Aβ Antibody Evidence
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.001',
+    source: 'abeta_plaques',
+    target: 'cognitive_score',
+    relation: 'decreases',
+    moduleId: 'M15',
+    edgeType: 'CLINICAL_OUTCOME',
+    mechanismLabel: 'gantenerumab_threshold_failure',
+    mechanismDescription:
+      'Gantenerumab reduced amyloid by 66 Centiloids but only 28% reached amyloid-negative status (vs 68-80% for approved drugs). Subcutaneous dosing limited brain exposure.',
+    timescale: 'months',
+    interventionWindow: 'early',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '37966285',
+        firstAuthor: 'Bateman',
+        year: 2023,
+        title: 'GRADUATE I/II Phase 3 trials',
+        quote: 'Gantenerumab did not meet primary endpoints despite substantial amyloid reduction',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'Target engagement threshold matters more than direction - 28% amyloid-negative was insufficient',
+    therapeuticImplication: 'Anti-Aβ antibodies must achieve high clearance rates (>60% amyloid-negative) for clinical benefit',
+  },
+  // -------------------------------------------------------------------------
+  // Polypharmacology Failure (Latrepirdine/Dimebon)
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.002',
+    source: 'abeta_oligomers',
+    target: 'cognitive_score',
+    relation: 'causesNoChange',
+    moduleId: 'M15',
+    edgeType: 'CLINICAL_OUTCOME',
+    mechanismLabel: 'latrepirdine_no_validation',
+    mechanismDescription:
+      'Latrepirdine claimed mitochondrial, NMDA, 5-HT6, and H1 mechanisms from in vitro data, but none were validated in humans. $725M Phase 3 showed zero efficacy.',
+    timescale: 'months',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '20818845',
+        firstAuthor: 'Jones',
+        year: 2010,
+        title: 'CONNECTION Phase III trial',
+        quote: 'Dimebon showed no significant difference from placebo on any efficacy measure',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'Multiple weak mechanisms ≠ one strong effect; polypharmacology without target validation fails',
+    therapeuticImplication: 'Require PET or biomarker validation of primary mechanism before Phase 3',
+    translationalGap: 'In vitro activity (μM-mM) did not translate to clinical efficacy',
+  },
+  // -------------------------------------------------------------------------
+  // Structural Class Liability: Tacrine-Derivative Hepatotoxicity
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.003',
+    source: 'synapses',
+    target: 'cognitive_score',
+    relation: 'increases',
+    moduleId: 'M15',
+    edgeType: 'ADVERSE_EVENT',
+    mechanismLabel: 'velnacrine_hepatotoxicity',
+    mechanismDescription:
+      'Velnacrine (1-hydroxytacrine) caused 29% hepatotoxicity via CYP1A2-mediated quinonemethide formation - a structural feature of the aminoacridine scaffold, not AChE inhibition.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '9013398',
+        firstAuthor: 'Gracon',
+        year: 1997,
+        title: 'Mentane Study Group',
+        quote: 'Liver transaminase elevations in 29% of patients; FDA advisory board voted unanimously against approval',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+      {
+        pmid: '8347124',
+        firstAuthor: 'Madden',
+        year: 1993,
+        title: 'Tacrine metabolism and protein adducts',
+        quote: 'Covalent binding to protein correlates with 7-OH-tacrine formation (r=0.79)',
+        methodType: 'biochemistry',
+        causalConfidence: 'L5',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'Same target (AChE), different scaffold = different safety. Donepezil has no hepatotoxicity.',
+    therapeuticImplication: 'Screen for structural class liabilities independent of mechanism',
+  },
+  // -------------------------------------------------------------------------
+  // Organophosphate Class Liability: Metrifonate NMJ Toxicity
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.004',
+    source: 'ach_reduced',
+    target: 'cognitive_score',
+    relation: 'increases',
+    moduleId: 'M15',
+    edgeType: 'ADVERSE_EVENT',
+    mechanismLabel: 'metrifonate_nmj_toxicity',
+    mechanismDescription:
+      'Metrifonate showed efficacy (ADAS-Cog -3.24, p<0.00001) but was withdrawn after 20 patients developed respiratory paralysis. Organophosphate irreversible AChE inhibition has no safe therapeutic window for chronic dosing.',
+    timescale: 'months',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        firstAuthor: 'Lopez-Arrieta',
+        year: 2006,
+        title: 'Cochrane CD003155',
+        quote: '20 patients experienced respiratory paralysis and problems with neuromuscular transmission',
+        methodType: 'meta_analysis',
+        causalConfidence: 'L1',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'Organophosphate-class irreversible inhibition = cumulative toxicity risk incompatible with chronic therapy',
+    therapeuticImplication: 'Irreversible enzyme inhibitors require very wide therapeutic index for chronic use',
+  },
+  // -------------------------------------------------------------------------
+  // Canine-Human Translational Gap: Propentofylline
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.005',
+    source: 'neuroinflammation',
+    target: 'cognitive_score',
+    relation: 'decreases',
+    moduleId: 'M15',
+    edgeType: 'CLINICAL_OUTCOME',
+    mechanismLabel: 'propentofylline_species_gap',
+    mechanismDescription:
+      'Propentofylline APPROVED for canine cognitive dysfunction (Karsivan) but FAILED human AD trials. Dogs (A+T−N±) lack tau pathology; humans (A+T+N+) have autonomous tau cascade. 12-month success, 18-month failure.',
+    timescale: 'months',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '9298634',
+        firstAuthor: 'Rother',
+        year: 1998,
+        title: '12-month propentofylline European Phase III',
+        quote: 'GBS total score p=0.001, MMSE p=0.001 - statistically significant improvement',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'Canine CCD models early AD frozen in time - drugs fail when tau cascade becomes autonomous',
+    therapeuticImplication: 'Stage-match preclinical models to clinical indication (A+T+N+ vs A+T−N±)',
+    translationalGap: 'Dogs: A+T−N± (no NFTs ever); Humans: A+T+N+ (tau drives progression)',
+  },
+  // -------------------------------------------------------------------------
+  // Biomarker-Clinical Dissociation: PDE9 Inhibitors
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.006',
+    source: 'synaptic_dysfunction',
+    target: 'cognitive_score',
+    relation: 'causesNoChange',
+    moduleId: 'M15',
+    edgeType: 'BIOMARKER_EFFECT',
+    mechanismLabel: 'pde9_biomarker_dissociation',
+    mechanismDescription:
+      'PDE9 inhibitor PF-04447943 elevated CSF cGMP (confirmed target engagement) but showed no cognitive benefit in Phase 2. Prevented spine loss in young Tg2576 mice, but couldn\'t reverse damage in established AD.',
+    timescale: 'weeks',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '24801218',
+        firstAuthor: 'Schwam',
+        year: 2014,
+        title: 'PDE9A inhibitor Phase II trial',
+        quote: '12 weeks PF-04447943 treatment did not improve cognition compared with placebo',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+      {
+        pmid: '21619887',
+        firstAuthor: 'Hutson',
+        year: 2011,
+        title: 'PDE9 inhibitor preclinical',
+        quote: 'Prevents decreases in dendritic spine density in Tg2576 mice',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse', model: 'Tg2576' },
+      },
+    ],
+    keyInsight: 'Target engagement (CSF cGMP ↑) ≠ clinical benefit; biomarker must causally link to phenotype',
+    therapeuticImplication: 'Prevention studies in mice don\'t predict reversal in symptomatic patients',
+    translationalGap: 'Mouse prevention ≠ human treatment; established neurodegeneration requires different approach',
+  },
+  // -------------------------------------------------------------------------
+  // AChE Inhibitor Safety: Eptastigmine Idiosyncratic Toxicity
+  // -------------------------------------------------------------------------
+  {
+    id: 'E-THER.007',
+    source: 'ach_reduced',
+    target: 'cognitive_score',
+    relation: 'increases',
+    moduleId: 'M15',
+    edgeType: 'ADVERSE_EVENT',
+    mechanismLabel: 'eptastigmine_granulocytopenia',
+    mechanismDescription:
+      'Eptastigmine (heptyl-physostigmine) showed efficacy but caused 5.6% granulocytopenia - an idiosyncratic toxicity unrelated to AChE inhibition, likely from the heptyl chain modification.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '11830755',
+        firstAuthor: 'Braida',
+        year: 2001,
+        title: 'Eptastigmine 10-year review',
+        quote: 'Granulocytopenia at 5.6% led to suspension of clinical trials',
+        methodType: 'review',
+        causalConfidence: 'L4',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'Structural modifications can introduce unpredictable toxicity unrelated to mechanism',
+    therapeuticImplication: 'Parent compound safety doesn\'t predict derivative safety',
+  },
+];
+
+// ============================================================================
 // EXPORT ALL EDGES
 // ============================================================================
 
 export const allEdges: MechanisticEdge[] = [
   ...module1Edges,
   ...module2Edges,
+  ...module2LipidEdges, // BMP edges
   ...module3Edges,
   ...module4Edges,
   ...module5Edges,
@@ -4739,6 +5482,7 @@ export const allEdges: MechanisticEdge[] = [
   ...module15Edges,
   ...module16Edges,
   ...module17Edges,
+  ...therapeuticEvidenceEdges,
 ];
 
 export default allEdges;

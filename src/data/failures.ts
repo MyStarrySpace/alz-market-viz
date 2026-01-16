@@ -22,6 +22,12 @@ export const marketFailures: MarketFailure[] = [
     connections: ['trial-economics', 'fda-structure'],
     icon: FileText,
     order: 1,
+    citationIds: [
+      'breckenridge-2019-market-competition',
+      'breckenridge-2019-second-use',
+      'pushpakom-2022-ip-challenges',
+      'pushpakom-2022-cost',
+    ],
   },
   {
     id: 'fda-structure',
@@ -34,18 +40,26 @@ export const marketFailures: MarketFailure[] = [
     connections: ['patent-system', 'trial-economics', 'timing-catastrophe'],
     icon: Shield,
     order: 2,
+    citationIds: ['fda-2018-staging'],
   },
   {
     id: 'trial-economics',
     title: 'Trial Economics',
     shortTitle: 'Trial Costs',
     description:
-      'A single Phase 3 AD trial costs $50-100 million. Only entities with patent protection can justify this investment.',
+      'A single Phase 3 AD trial costs $462 million on average. Only entities with patent protection can justify this investment.',
     impact:
       'Academic researchers cannot fund large-scale trials without industry partnership, and industry will not partner on generic drugs',
     connections: ['patent-system', 'fda-structure', 'insurance-structure'],
     icon: DollarSign,
     order: 3,
+    citationIds: [
+      'cummings-2021-total',
+      'cummings-2021-phase3',
+      'cummings-2021-failure-rate',
+      'breckenridge-2019-funding-gap',
+      'breckenridge-2019-early-stage',
+    ],
   },
   {
     id: 'insurance-structure',
@@ -58,18 +72,31 @@ export const marketFailures: MarketFailure[] = [
     connections: ['trial-economics', 'fda-structure'],
     icon: Clock,
     order: 4,
+    citationIds: [
+      'aldridge-2023-medicare-cost',
+      'aldridge-2023-medicaid-burden',
+      'aldridge-2023-nursing-home',
+      'aldridge-2023-pet-coverage',
+    ],
   },
   {
     id: 'subtype-blindness',
     title: 'Subtype Blindness',
     shortTitle: 'Subtypes',
     description:
-      '"Alzheimer\'s disease" is likely 5+ mechanistically distinct conditions with similar symptoms.',
+      '"Alzheimer\'s disease" is likely 3+ mechanistically distinct conditions with similar symptoms.',
     impact:
       'Trials that lump all patients together systematically fail because responders are diluted by non-responders',
     connections: ['timing-catastrophe', 'sex-difference'],
     icon: Users,
     order: 5,
+    citationIds: [
+      'ferreira-2020-subtypes',
+      'duara-2022-heterogeneity',
+      'duara-2022-mixed-pathology',
+      'duara-2022-progressors',
+      'graff-radford-2021-atypical',
+    ],
   },
   {
     id: 'sex-difference',
@@ -106,6 +133,13 @@ export const marketFailures: MarketFailure[] = [
     connections: ['fda-structure', 'subtype-blindness'],
     icon: Timer,
     order: 8,
+    citationIds: [
+      'yiannopoulou-2020-too-late',
+      'yiannopoulou-2020-decade-before',
+      'cummings-2022-too-late',
+      'cummings-2022-neurodegen',
+      'cummings-2022-prevention',
+    ],
   },
 ];
 

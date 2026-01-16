@@ -233,7 +233,7 @@ function EraSection({
               {era.title}
             </h3>
             <p className="text-sm text-[var(--text-muted)]">
-              {era.startYear}–{era.endYear}
+              {era.startYear}-{era.endYear}
             </p>
           </div>
         </div>
@@ -667,7 +667,7 @@ export function HistoricalTimeline() {
                 <button
                   onClick={toggleExpand}
                   className="flex items-center gap-2 px-6 py-3 bg-white border border-[var(--border)]
-                    rounded-full shadow-sm hover:shadow-md hover:border-[var(--accent-orange)]
+                    shadow-sm hover:shadow-md hover:border-[var(--accent-orange)]
                     text-[var(--text-body)] hover:text-[var(--accent-orange)] transition-all duration-200"
                 >
                   <Expand className="w-4 h-4" />

@@ -11,3 +11,5 @@ export * from './hopefulDevelopments';
 export * from './failedApproaches';
 export * from './sexAncestryEffects';
 export * from './mechanisticFramework';
+export * from './failureCascadeCharts';
+export * from './translationalFailures';

@@ -14,15 +14,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 50,
     "y": 320
   },
-  "FSH_elevated": {
+  "fsh_elevated": {
     "x": 50,
     "y": 520
   },
-  "familial_AD_mutations": {
+  "familial_ad_mutations": {
     "x": 50,
     "y": 590
   },
-  "APOE_genotype": {
+  "apoe_genotype": {
     "x": 50,
     "y": 660
   },
@@ -30,7 +30,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 50,
     "y": 860
   },
-  "AS01_adjuvant": {
+  "as01_adjuvant": {
     "x": 50,
     "y": 930
   },
@@ -38,15 +38,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 50,
     "y": 1000
   },
-  "TREM2_variants": {
+  "trem2_variants": {
     "x": 50,
     "y": 1070
   },
-  "BBB_penetration": {
+  "bbb_penetration": {
     "x": 50,
     "y": 1270
   },
-  "PINK1_Parkin": {
+  "pink1_parkin": {
     "x": 50,
     "y": 1340
   },
@@ -54,11 +54,11 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 50,
     "y": 1410
   },
-  "C1q_elevated": {
+  "c1q_elevated": {
     "x": 300,
     "y": 50
   },
-  "REST_nuclear": {
+  "rest_nuclear": {
     "x": 300,
     "y": 120
   },
@@ -66,35 +66,35 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 300,
     "y": 190
   },
-  "CypA_elevated": {
+  "cypa_elevated": {
     "x": 300,
     "y": 260
   },
-  "REST_depleted": {
+  "rest_depleted": {
     "x": 300,
     "y": 330
   },
-  "ER_Ca_stores": {
+  "er_ca_stores": {
     "x": 300,
     "y": 400
   },
-  "MAM_hyperconnectivity": {
+  "mam_hyperconnectivity": {
     "x": 300,
     "y": 470
   },
-  "senescent_TREM2_microglia": {
+  "senescent_trem2_microglia": {
     "x": 300,
     "y": 540
   },
-  "CBS_enzyme": {
+  "cbs_enzyme": {
     "x": 300,
     "y": 610
   },
-  "APOE4_domain_interaction": {
+  "apoe4_domain_interaction": {
     "x": 300,
     "y": 680
   },
-  "TLR4_activation": {
+  "tlr4_activation": {
     "x": 300,
     "y": 750
   },
@@ -102,15 +102,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 300,
     "y": 820
   },
-  "TREM2_surface": {
+  "trem2_surface": {
     "x": 300,
     "y": 890
   },
-  "X_linked_lysosomal_genes": {
+  "x_linked_lysosomal_genes": {
     "x": 300,
     "y": 960
   },
-  "APOE4_ancestry_effect": {
+  "apoe4_ancestry_effect": {
     "x": 300,
     "y": 1030
   },
@@ -126,19 +126,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 300,
     "y": 1240
   },
-  "DAM_transition_blocked": {
+  "dam_transition_blocked": {
     "x": 300,
     "y": 1310
   },
-  "mtDNA_cytosolic": {
+  "mtdna_cytosolic": {
     "x": 300,
     "y": 1380
   },
-  "SASP": {
-    "x": 300,
-    "y": 1450
-  },
-  "Nrf2_pathway": {
+  "nrf2_pathway": {
     "x": 550,
     "y": 50
   },
@@ -146,15 +142,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 550,
     "y": 120
   },
-  "MMP9_elevated": {
+  "mmp9_elevated": {
     "x": 550,
     "y": 190
   },
-  "ER_mito_Ca_flux": {
+  "er_mito_ca_flux": {
     "x": 550,
     "y": 260
   },
-  "gamma_secretase_MAM": {
+  "gamma_secretase_mam": {
     "x": 550,
     "y": 330
   },
@@ -162,11 +158,11 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 550,
     "y": 400
   },
-  "APOE_lipidation_reduced": {
+  "apoe_lipidation_reduced": {
     "x": 550,
     "y": 470
   },
-  "IFN_gamma": {
+  "ifn_gamma": {
     "x": 550,
     "y": 540
   },
@@ -174,7 +170,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 550,
     "y": 610
   },
-  "DAM_stage1": {
+  "dam_stage1": {
     "x": 550,
     "y": 680
   },
@@ -186,7 +182,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 550,
     "y": 820
   },
-  "sTREM2": {
+  "strem2": {
     "x": 550,
     "y": 890
   },
@@ -194,7 +190,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 550,
     "y": 960
   },
-  "ISF_Abeta_clearance": {
+  "isf_abeta_clearance": {
     "x": 800,
     "y": 50
   },
@@ -202,45 +198,37 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 800,
     "y": 120
   },
-  "mito_Ca_overload_MAM": {
+  "mito_ca_overload_mam": {
     "x": 800,
     "y": 190
   },
-  "CSE_enzyme": {
+  "cse_enzyme": {
     "x": 800,
     "y": 260
   },
-  "Abeta_clearance": {
+  "abeta_clearance": {
     "x": 800,
     "y": 330
-  },
-  "amyloid_clearance_enhanced": {
-    "x": 800,
-    "y": 400
   },
   "astrocyte_lipid_droplets": {
     "x": 800,
     "y": 470
   },
-  "DAM_stage2": {
+  "dam_stage2": {
     "x": 800,
     "y": 540
   },
-  "BBB_breakdown": {
+  "bbb_breakdown": {
     "x": 1050,
     "y": 50
   },
-  "H2S_production": {
+  "h2s_production": {
     "x": 1050,
     "y": 120
   },
   "cysteine": {
     "x": 1050,
     "y": 190
-  },
-  "cognitive_function": {
-    "x": 1050,
-    "y": 260
   },
   "plaque_barrier_function": {
     "x": 1050,
@@ -250,15 +238,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1300,
     "y": 50
   },
-  "glutathione_GSH": {
+  "glutathione_gsh": {
     "x": 1300,
     "y": 120
   },
-  "GSK3beta_sulfhydrated": {
+  "gsk3beta_sulfhydrated": {
     "x": 1550,
     "y": 50
   },
-  "GPX4_activity": {
+  "gpx4_activity": {
     "x": 1550,
     "y": 120
   },
@@ -266,7 +254,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 50
   },
-  "GSK3B_active": {
+  "gsk3b_active": {
     "x": 1800,
     "y": 120
   },
@@ -274,7 +262,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 190
   },
-  "CSF_biomarkers": {
+  "csf_biomarkers": {
     "x": 1800,
     "y": 260
   },
@@ -302,7 +290,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 680
   },
-  "TFEB_phosphorylated": {
+  "tfeb_phosphorylated": {
     "x": 1800,
     "y": 750
   },
@@ -310,7 +298,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 820
   },
-  "IRS1_serine_phosphorylated": {
+  "irs1_serine_phosphorylated": {
     "x": 1800,
     "y": 890
   },
@@ -318,31 +306,31 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 960
   },
-  "mTORC1_hyperactive": {
+  "mtorc1_hyperactive": {
     "x": 1800,
     "y": 1030
   },
-  "ULK1_phosphorylated": {
+  "ulk1_phosphorylated": {
     "x": 1800,
     "y": 1100
   },
-  "AMPK_phosphorylated": {
+  "ampk_phosphorylated": {
     "x": 1800,
     "y": 1170
   },
-  "S6K1_active": {
+  "s6k1_active": {
     "x": 1800,
     "y": 1240
   },
-  "LMP": {
+  "lmp": {
     "x": 1800,
     "y": 1310
   },
-  "mtDNA_from_lysosome": {
+  "mtdna_from_lysosome": {
     "x": 1800,
     "y": 1380
   },
-  "mtDNA_undegraded": {
+  "mtdna_undegraded": {
     "x": 1800,
     "y": 1450
   },
@@ -354,7 +342,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 1590
   },
-  "cathepsin_B_cytosolic": {
+  "cathepsin_b_cytosolic": {
     "x": 1800,
     "y": 1660
   },
@@ -370,27 +358,27 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 1870
   },
-  "mPTP_open": {
+  "mptp_open": {
     "x": 1800,
     "y": 1940
   },
-  "Ca_overload": {
+  "ca_overload": {
     "x": 1800,
     "y": 2010
   },
-  "mito_ROS": {
+  "mito_ros": {
     "x": 1800,
     "y": 2080
   },
-  "mtDNA_oxidized": {
+  "mtdna_oxidized": {
     "x": 1800,
     "y": 2150
   },
-  "ox_mtDNA_cytosolic": {
+  "ox_mtdna_cytosolic": {
     "x": 1800,
     "y": 2220
   },
-  "VDAC_oligomer": {
+  "vdac_oligomer": {
     "x": 1800,
     "y": 2290
   },
@@ -402,7 +390,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 2430
   },
-  "NLRP3_active": {
+  "nlrp3_active": {
     "x": 1800,
     "y": 2500
   },
@@ -410,35 +398,35 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 2570
   },
-  "IL1B": {
+  "il1b": {
     "x": 1800,
     "y": 2640
   },
-  "ISG_expression": {
+  "isg_expression": {
     "x": 1800,
     "y": 2710
   },
-  "IL18": {
+  "il18": {
     "x": 1800,
     "y": 2780
   },
-  "type_I_IFN": {
+  "type_i_ifn": {
     "x": 1800,
     "y": 2850
   },
-  "STING_active": {
+  "sting_active": {
     "x": 1800,
     "y": 2920
   },
-  "cGAS_active": {
+  "cgas_active": {
     "x": 1800,
     "y": 2990
   },
-  "PP2A_activity": {
+  "pp2a_activity": {
     "x": 1800,
     "y": 3060
   },
-  "A1_astrocytes": {
+  "a1_astrocytes": {
     "x": 1800,
     "y": 3130
   },
@@ -446,7 +434,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 3200
   },
-  "LDAM": {
+  "ldam": {
     "x": 1800,
     "y": 3270
   },
@@ -454,7 +442,7 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 3340
   },
-  "IL1A": {
+  "il1a": {
     "x": 1800,
     "y": 3410
   },
@@ -462,15 +450,15 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 3480
   },
-  "NF_kB_active": {
+  "nf_kb_active": {
     "x": 1800,
     "y": 3550
   },
-  "HIF1A_stabilized": {
+  "hif1a_stabilized": {
     "x": 1800,
     "y": 3620
   },
-  "SREBP1_active": {
+  "srebp1_active": {
     "x": 1800,
     "y": 3690
   },
@@ -478,47 +466,47 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 3760
   },
-  "C1q": {
+  "c1q": {
     "x": 1800,
     "y": 3830
   },
-  "TNF": {
+  "tnf": {
     "x": 1800,
     "y": 3900
   },
-  "APP_processing_amyloidogenic": {
+  "app_processing_amyloidogenic": {
     "x": 1800,
     "y": 3970
   },
-  "Abeta_production": {
+  "abeta_production": {
     "x": 1800,
     "y": 4040
   },
-  "LTP_inhibition": {
+  "ltp_inhibition": {
     "x": 1800,
     "y": 4110
   },
-  "synaptic_Abeta_binding": {
+  "synaptic_abeta_binding": {
     "x": 1800,
     "y": 4180
   },
-  "Abeta_oligomers": {
+  "abeta_oligomers": {
     "x": 1800,
     "y": 4250
   },
-  "Abeta_monomers": {
+  "abeta_monomers": {
     "x": 1800,
     "y": 4320
   },
-  "APP_betaCTF": {
+  "app_betactf": {
     "x": 1800,
     "y": 4390
   },
-  "BACE1_upregulated": {
+  "bace1_upregulated": {
     "x": 1800,
     "y": 4460
   },
-  "Abeta_plaques": {
+  "abeta_plaques": {
     "x": 1800,
     "y": 4530
   },
@@ -538,11 +526,11 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 4810
   },
-  "PP2A_inhibited": {
+  "pp2a_inhibited": {
     "x": 1800,
     "y": 4880
   },
-  "p38_MAPK_active": {
+  "p38_mapk_active": {
     "x": 1800,
     "y": 4950
   },
@@ -550,19 +538,19 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 5020
   },
-  "tau_aggregated_PHF": {
+  "tau_aggregated_phf": {
     "x": 1800,
     "y": 5090
   },
-  "NFT_formation": {
+  "nft_formation": {
     "x": 1800,
     "y": 5160
   },
-  "C3_opsonization": {
+  "c3_opsonization": {
     "x": 1800,
     "y": 5230
   },
-  "CR3_mediated_pruning": {
+  "cr3_mediated_pruning": {
     "x": 1800,
     "y": 5300
   },
@@ -614,12 +602,54 @@ export const nodePositions: Record<string, { x: number; y: number }> = {
     "x": 1800,
     "y": 6140
   },
-  "ACh_reduced": {
+  "ach_reduced": {
     "x": 1800,
     "y": 6210
   },
   "clinical_benefit": {
     "x": 1800,
     "y": 6280
+  },
+  // New BBB/OL lineage nodes (added 2026-01-15)
+  "bbb_integrity": {
+    "x": 300,
+    "y": 1450
+  },
+  "pericyte_function": {
+    "x": 300,
+    "y": 1520
+  },
+  "opcs": {
+    "x": 550,
+    "y": 1030
+  },
+  "mature_oligodendrocytes": {
+    "x": 550,
+    "y": 1100
+  },
+  "opc_nos1_activity": {
+    "x": 550,
+    "y": 1170
+  },
+  "ol_cholesterol_synthesis": {
+    "x": 550,
+    "y": 1240
+  },
+  "opc_tgf_beta1": {
+    "x": 550,
+    "y": 1310
+  },
+  "opc_vascular_coupling": {
+    "x": 550,
+    "y": 1380
+  },
+  "remyelination_capacity": {
+    "x": 550,
+    "y": 1450
+  },
+  // BMP lysosomal (Module 2)
+  "bmp_lysosomal": {
+    "x": 800,
+    "y": 400
   }
 };

@@ -19,20 +19,19 @@ export function CaseStudies() {
           subtitle="Real stories of promising treatments that were abandoned not for scientific reasons, but economic ones."
         />
 
-        {/* Active case content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentCase.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main content */}
-              <div className="lg:col-span-2">
-                <Card variant="default" hover={false}>
-                  <CardContent className="p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main content */}
+          <div className="lg:col-span-2">
+            <Card variant="default" hover={false}>
+              <CardContent className="p-8">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentCase.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
                       {currentCase.title}
                     </h3>
@@ -95,40 +94,40 @@ export function CaseStudies() {
                         </div>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+                  </motion.div>
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </div>
 
-              {/* Sidebar with all cases */}
-              <div>
-                <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-4">
-                  Case Studies
-                </h4>
-                <div>
-                  {caseStudies.map((study, index) => {
-                    const isActive = study.id === currentCase.id;
-                    return (
-                      <button
-                        key={study.id}
-                        className={`w-full text-left p-4 transition-colors ${
-                          index > 0 ? 'border-t border-[var(--border)]' : ''
-                        } ${isActive ? 'bg-[var(--bg-secondary)]' : 'hover:bg-[var(--bg-secondary)]'}`}
-                        onClick={() => setActiveCase(study.id)}
-                      >
-                        <h5 className={`font-medium mb-0.5 ${isActive ? 'text-[var(--accent-orange)]' : 'text-[var(--text-primary)]'}`}>
-                          {study.drug}
-                        </h5>
-                        <p className="text-xs text-[var(--text-muted)]">
-                          {study.summary}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+          {/* Sidebar with all cases */}
+          <div>
+            <h4 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-4 pl-4">
+              Case Studies
+            </h4>
+            <div>
+              {caseStudies.map((study, index) => {
+                const isActive = study.id === currentCase.id;
+                return (
+                  <button
+                    key={study.id}
+                    className={`w-full text-left p-4 transition-colors ${
+                      index > 0 ? 'border-t border-[var(--border)]' : ''
+                    } ${isActive ? 'bg-[var(--bg-secondary)] border-r-4 border-r-[var(--accent-orange)]' : 'hover:bg-[var(--bg-secondary)]'}`}
+                    onClick={() => setActiveCase(study.id)}
+                  >
+                    <h5 className={`font-medium mb-0.5 ${isActive ? 'text-[var(--accent-orange)]' : 'text-[var(--text-primary)]'}`}>
+                      {study.drug}
+                    </h5>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      {study.summary}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        </div>
       </Container>
     </Section>
   );

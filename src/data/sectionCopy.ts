@@ -127,7 +127,7 @@ Each was marginalized.`,
     fundingShare: '~50% of NIH AD funding',
     coreClaim: 'Remove the plaques, cure the disease.',
     result: '99.6% trial failure rate',
-    drugCost: '$26,500–$32,000/year',
+    drugCost: '$26,500-$32,000/year',
     color: 'danger', // Red in the design system
   },
 
@@ -164,38 +164,38 @@ export const timelineSectionCopy = {
   eraDescriptions: {
     origin: {
       title: 'The Discovery',
-      years: '1906–1983',
+      years: '1906-1983',
       description: 'A disease is named, but its molecular cause remains unknown for nearly 80 years.',
       mood: 'neutral',
     },
     molecular: {
       title: 'The Target Emerges',
-      years: '1984–1991',
+      years: '1984-1991',
       description: 'Aβ is identified. Genetic mutations seem to confirm its role.',
       mood: 'hopeful',
     },
     hypothesis: {
       title: 'The Hypothesis Takes Hold',
-      years: '1992–1999',
+      years: '1992-1999',
       description: 'The amyloid cascade hypothesis is formalized. The field aligns behind a single theory.',
       mood: 'confident',
     },
     alternatives: {
       title: 'The Dissidents',
-      years: '2000–2009',
+      years: '2000-2009',
       description:
         'Researchers propose vascular, metabolic, and mitochondrial causes. Their work is marginalized.',
       mood: 'conflicted',
     },
     failures: {
       title: 'The Failures Mount',
-      years: '2010–2019',
+      years: '2010-2019',
       description: 'Trial after trial fails. The 99% failure rate becomes undeniable. The field doubles down.',
       mood: 'troubled',
     },
     reckoning: {
       title: 'The Reckoning',
-      years: '2020–Present',
+      years: '2020-Present',
       description: 'Fraud exposed. Controversial approvals. New evidence suggests the sidelined frameworks were right.',
       mood: 'revelatory',
     },
@@ -236,8 +236,8 @@ Follow the money.`,
     label: 'Patented Approaches',
     amount: '$50+ Billion',
     examples: ['Lecanemab', 'Donanemab', 'Aducanumab'],
-    outcome: '27–35% slowing at best',
-    costToPatient: '$26,500–$32,000/year',
+    outcome: '27-35% slowing at best',
+    costToPatient: '$26,500-$32,000/year',
   },
 
   // Generic side

@@ -26,15 +26,21 @@ export type NodeCategory =
   | 'BOUNDARY';  // System boundary condition (gene, drug, clinical outcome)
 
 /**
- * Optional role annotations for nodes (SBSF v2.0)
+ * Role annotations for nodes (SBSF v2.0)
  * These describe the functional role a node plays in the system,
  * independent of its structural category.
+ *
+ * Consolidated from legacy NodeRole - use this for all role annotations.
  */
 export type NodeRoleAnnotation =
   | 'REGULATOR'           // Controls rate of other processes (enzymes, receptors, channels)
   | 'BIOMARKER'           // Measurable indicator of disease state
   | 'THERAPEUTIC_TARGET'  // Potential intervention point
-  | 'DRUG';               // Pharmacological agent
+  | 'DRUG'                // Pharmacological agent
+  // System dynamics roles (from Meadows)
+  | 'RATE_LIMITER'        // Bottleneck that limits flow through pathway
+  | 'LEVERAGE_POINT'      // High-impact intervention point
+  | 'FEEDBACK_HUB';       // Node participating in multiple feedback loops
 
 /**
  * Stock subtypes - things that accumulate
@@ -55,6 +61,7 @@ export type StockSubtype =
   | 'CompartmentState'    // BBB integrity, lysosomal pH, membrane potential
   // Signal stocks
   | 'CytokineLevel'       // IL-6, TNF-α, IFN-γ concentrations
+  | 'CytokineSignal'      // Secreted cytokine (TGF-β1, etc.)
   | 'HormoneLevel'        // Hepcidin, insulin, cortisol
   | 'MetaboliteSignal';   // When metabolite acts as signal
 
@@ -106,6 +113,7 @@ export type StateSubtype =
   | 'CompartmentIntegrity'// BBB_intact, lysosomal_pH_normal
   | 'MetabolicState'      // Glycolytic, oxidative
   | 'DiseaseStage'        // Preclinical, MCI, dementia
+  | 'Homeostatic'         // Normal function state (capacity, integrity)
   // SBSF v2.0: Former PROCESS subtypes migrated to STATE
   | 'BiologicalProcess'   // GO Biological Process (activity state)
   | 'Phagocytosis'        // GO:0006909
@@ -140,7 +148,92 @@ export type BoundarySubtype =
   | 'CognitiveScore'      // MMSE, CDR, ADAS-Cog
   | 'Diagnosis';          // MCI, dementia
 
+/**
+ * Boundary direction - determines layout position
+ * Input boundaries go on the left, output boundaries on the right
+ */
+export type BoundaryDirection = 'input' | 'output' | 'bidirectional';
+
 export type NodeSubtype = StockSubtype | RegulatorSubtype | StateSubtype | BoundarySubtype;
+
+// ============================================================================
+// DISCRIMINATED UNIONS FOR TYPE SAFETY
+// ============================================================================
+
+/**
+ * Valid subtype combinations per category.
+ * This enforces that you can't put a Kinase subtype on a BOUNDARY node, etc.
+ */
+export type ValidStockSubtype = StockSubtype | RegulatorSubtype;
+export type ValidStateSubtype = StateSubtype;
+export type ValidBoundarySubtype = BoundarySubtype;
+
+/**
+ * Category-specific node base (for discriminated unions)
+ */
+interface BaseNode {
+  id: string;                 // Unique identifier (lowercase_snake_case)
+  label: string;              // Human-readable display name
+  moduleId: string;           // Primary module this belongs to
+  sharedWith?: string[];      // Other modules that use this node
+
+  // Optional metadata
+  references?: OntologyReferences;
+  compartment?: Compartment;
+  roles?: NodeRoleAnnotation[];
+  timescale?: Timescale;
+  units?: string;
+
+  // For visualization
+  description?: string;
+  mechanism?: string;
+
+  // State/modification details
+  modifications?: {
+    type: string;
+    sites?: string[];
+    effect?: string;
+  }[];
+}
+
+/**
+ * STOCK node - accumulations with continuous quantities
+ */
+export interface StockNode extends BaseNode {
+  category: 'STOCK';
+  subtype: ValidStockSubtype;
+
+  // Stock-specific
+  inflows?: string[];
+  outflows?: string[];
+}
+
+/**
+ * STATE node - categorical/discrete conditions
+ */
+export interface StateNode extends BaseNode {
+  category: 'STATE';
+  subtype: ValidStateSubtype;
+}
+
+/**
+ * BOUNDARY node - system inputs/outputs
+ */
+export interface BoundaryNode extends BaseNode {
+  category: 'BOUNDARY';
+  subtype: ValidBoundarySubtype;
+
+  // Boundary-specific
+  variants?: BoundaryVariant[];
+  defaultVariant?: string;
+  boundaryDirection?: BoundaryDirection;
+}
+
+/**
+ * Discriminated union of all node types
+ * Use this for strict type checking when creating nodes
+ */
+export type StrictMechanisticNode = StockNode | StateNode | BoundaryNode;
 
 // ============================================================================
 // EDGE/RELATION TYPES (SBSF v2.0)
@@ -162,10 +255,18 @@ export type NodeSubtype = StockSubtype | RegulatorSubtype | StateSubtype | Bound
  *            Example: Aβ_plaque --influences--> cognitive_score
  */
 export type EdgeType =
-  | 'FLOW'        // Mass-conserving transformation between stocks
-  | 'TRANSITION'  // State change (same entity, different categorical state)
-  | 'MODULATION'  // Rate control (regulator affects process rate)
-  | 'INFLUENCE';  // Indirect downstream effect
+  // Core SBSF types
+  | 'FLOW'              // Mass-conserving transformation between stocks
+  | 'TRANSITION'        // State change (same entity, different categorical state)
+  | 'MODULATION'        // Rate control (regulator affects process rate)
+  | 'INFLUENCE'         // Indirect downstream effect
+  // Therapeutic evidence types
+  | 'INTERVENTION'      // Drug or treatment effect on target
+  | 'BIOMARKER_EFFECT'  // Effect on measurable biomarker
+  | 'CLINICAL_OUTCOME'  // Effect on clinical endpoint
+  | 'ADVERSE_EVENT'     // Safety/toxicity effect
+  | 'PHARMACOLOGY'      // Drug mechanism of action
+  | 'METABOLIC';        // Drug metabolism pathway
 
 /**
  * Causal relation types
@@ -302,18 +403,10 @@ export interface Compartment {
 // ============================================================================
 
 /**
- * Node roles in the system (legacy - keep for compatibility)
- * For SBSF v2.0, use NodeRoleAnnotation instead
+ * Node roles in the system
+ * @deprecated Use NodeRoleAnnotation instead - this alias exists for backwards compatibility
  */
-export type NodeRole =
-  | 'THERAPEUTIC_TARGET'
-  | 'BIOMARKER'
-  | 'RATE_LIMITER'
-  | 'LEVERAGE_POINT'
-  | 'FEEDBACK_HUB'
-  // SBSF v2.0 additions
-  | 'REGULATOR'
-  | 'DRUG';
+export type NodeRole = NodeRoleAnnotation;
 
 /**
  * Timescale of node dynamics
@@ -350,9 +443,12 @@ export interface BoundaryVariant {
 
 /**
  * Full node definition
+ *
+ * For stricter type checking, use StrictMechanisticNode instead.
+ * This interface is kept for backwards compatibility.
  */
 export interface MechanisticNode {
-  id: string;                 // Unique identifier (snake_case)
+  id: string;                 // Unique identifier (lowercase_snake_case)
   label: string;              // Human-readable display name
   category: NodeCategory;
   subtype: NodeSubtype;
@@ -362,7 +458,7 @@ export interface MechanisticNode {
   // Optional metadata
   references?: OntologyReferences;
   compartment?: Compartment;
-  roles?: NodeRole[];
+  roles?: NodeRoleAnnotation[];  // Use NodeRoleAnnotation (NodeRole is deprecated alias)
   timescale?: Timescale;
   units?: string;             // e.g., "pg/mL", "ASC specks/cell"
 
@@ -384,6 +480,9 @@ export interface MechanisticNode {
   // Boundary-specific: variants with different effects
   variants?: BoundaryVariant[];
   defaultVariant?: string;    // ID of the default/reference variant
+
+  // Boundary-specific: direction for layout positioning
+  boundaryDirection?: BoundaryDirection;  // 'input' = left, 'output' = right
 }
 
 // ============================================================================
@@ -432,17 +531,22 @@ export interface QuantitativeData {
  */
 export interface MechanisticEdge {
   id: string;                 // Unique identifier (e.g., "E04.001")
-  source: string;             // Source node ID
-  target: string;             // Target node ID
+  source: string;             // Source node ID (lowercase_snake_case)
+  target: string;             // Target node ID (lowercase_snake_case)
   relation: RelationType;
   moduleId: string;           // Which module this belongs to
 
-  // SBSF v2.0: Edge type classification (required)
+  // SBSF v2.0: Edge type classification
   edgeType?: EdgeType;        // FLOW, TRANSITION, MODULATION, or INFLUENCE
+                              // If not set, can be derived from relation + node types
 
   // Mechanism details (in v2.0, mechanism_label replaces PROCESS nodes)
   mechanismLabel?: string;    // The process name (what was formerly a PROCESS node)
   mechanismDescription?: string;
+
+  // Temporal dynamics - how fast does this edge act?
+  timescale?: Timescale;      // How long does this process take? (seconds, minutes, hours, etc.)
+  timeLag?: Timescale;        // Delay before effect is observable
 
   // Evidence
   evidence: EvidenceCitation[];
@@ -450,6 +554,10 @@ export interface MechanisticEdge {
 
   // Cross-module connections
   crossModule?: string;       // e.g., "Input from Module 3"
+  sharedWith?: string[];      // Module IDs this edge is shared with
+
+  // Intervention timing
+  interventionWindow?: 'prevention' | 'early' | 'late' | 'management';
 
   // Optional annotations
   modulations?: EdgeModulation[];
@@ -605,16 +713,27 @@ export const NODE_ROLE_COLORS: Record<NodeRoleAnnotation, string> = {
   BIOMARKER: '#34d399',       // Green - measurable indicators
   THERAPEUTIC_TARGET: '#C9461D', // Red-orange - intervention points
   DRUG: '#5a8a6e',            // Sage green - pharmacological agents
+  RATE_LIMITER: '#C3577F',    // Rose - bottlenecks
+  LEVERAGE_POINT: '#007385',  // Teal - high-impact points
+  FEEDBACK_HUB: '#a78bfa',    // Purple - loop participants
 };
 
 /**
  * Colors for edge types - SBSF v2.0
  */
 export const EDGE_TYPE_COLORS: Record<EdgeType, string> = {
+  // Core SBSF types
   FLOW: '#486393',            // Blue - mass transfer
   TRANSITION: '#a78bfa',      // Purple - state changes
   MODULATION: '#e36216',      // Orange - rate control
   INFLUENCE: '#787473',       // Gray - indirect effects
+  // Therapeutic evidence types
+  INTERVENTION: '#5a8a6e',    // Sage green - drug effects
+  BIOMARKER_EFFECT: '#34d399', // Green - measurable outcomes
+  CLINICAL_OUTCOME: '#007385', // Teal - clinical endpoints
+  ADVERSE_EVENT: '#c75146',   // Brick red - safety/toxicity
+  PHARMACOLOGY: '#C3577F',    // Rose - drug mechanisms
+  METABOLIC: '#fbbf24',       // Yellow - metabolism
 };
 
 /**
@@ -638,3 +757,112 @@ export const MODULE_COLORS: Record<string, string> = {
   M15: '#c75146',   // Interventions - Brick red
   M16: '#5a8a6e',   // Sex/Ancestry - Sage green
 };
+
+// ============================================================================
+// EDGE TYPE DERIVATION
+// ============================================================================
+
+/**
+ * Regulator subtypes that indicate MODULATION edges
+ */
+const REGULATOR_SUBTYPES: NodeSubtype[] = [
+  'Kinase', 'Phosphatase', 'Protease', 'Transferase',
+  'SurfaceReceptor', 'NuclearReceptor', 'IntracellularSensor',
+  'IonChannel', 'Transporter', 'Pump',
+  'Activator', 'Repressor', 'MasterRegulator',
+];
+
+/**
+ * Derive EdgeType from relation type and node information.
+ *
+ * Rules:
+ * - FLOW: relation is 'substrateof' or 'productof' (mass transfer)
+ * - TRANSITION: same entity changing state (inferred from node IDs sharing prefix)
+ * - MODULATION: source has REGULATOR role or is a Kinase/Phosphatase/etc.
+ * - INFLUENCE: default for indirect causal relationships
+ *
+ * @param edge - The edge to classify
+ * @param sourceNode - The source node (optional, for better classification)
+ * @param targetNode - The target node (optional, for better classification)
+ * @returns The derived EdgeType
+ */
+export function deriveEdgeType(
+  edge: MechanisticEdge,
+  sourceNode?: MechanisticNode,
+  targetNode?: MechanisticNode
+): EdgeType {
+  // If explicitly set, use that
+  if (edge.edgeType) {
+    return edge.edgeType;
+  }
+
+  // FLOW: substrate/product relationships (mass-conserving)
+  if (edge.relation === 'substrateof' || edge.relation === 'productof') {
+    return 'FLOW';
+  }
+
+  // TRANSITION: same entity changing state
+  // Heuristic: IDs share a common prefix (e.g., 'tfeb_phosphorylated' → 'tfeb_nuclear')
+  const sourceBase = edge.source.split('_')[0];
+  const targetBase = edge.target.split('_')[0];
+  if (sourceBase === targetBase && sourceBase.length > 2) {
+    return 'TRANSITION';
+  }
+
+  // MODULATION: source is a regulator
+  if (sourceNode) {
+    // Check if source has REGULATOR role
+    if (sourceNode.roles?.includes('REGULATOR')) {
+      return 'MODULATION';
+    }
+    // Check if source has a regulator subtype
+    if (REGULATOR_SUBTYPES.includes(sourceNode.subtype)) {
+      return 'MODULATION';
+    }
+  }
+
+  // MODULATION: direct physical interactions that control rates
+  if (edge.relation === 'directlyIncreases' || edge.relation === 'directlyDecreases') {
+    // If it's a direct effect on a process/state, it's modulation
+    if (targetNode?.category === 'STATE') {
+      return 'MODULATION';
+    }
+  }
+
+  // Default: INFLUENCE (indirect downstream effects)
+  return 'INFLUENCE';
+}
+
+/**
+ * Get edge type with derivation fallback.
+ * Use this when you need an EdgeType and want automatic derivation.
+ */
+export function getEdgeType(
+  edge: MechanisticEdge,
+  sourceNode?: MechanisticNode,
+  targetNode?: MechanisticNode
+): EdgeType {
+  return edge.edgeType ?? deriveEdgeType(edge, sourceNode, targetNode);
+}
+
+/**
+ * Timescale hierarchy for comparison
+ */
+export const TIMESCALE_ORDER: Record<Timescale, number> = {
+  seconds: 1,
+  minutes: 2,
+  hours: 3,
+  days: 4,
+  weeks: 5,
+  months: 6,
+  years: 7,
+  decades: 8,
+};
+
+/**
+ * Compare two timescales
+ * @returns negative if a < b, 0 if equal, positive if a > b
+ */
+export function compareTimescales(a: Timescale, b: Timescale): number {
+  return TIMESCALE_ORDER[a] - TIMESCALE_ORDER[b];
+}

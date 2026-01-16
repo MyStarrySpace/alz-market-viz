@@ -453,7 +453,7 @@ export function getFundingComparison(): FundingComparison {
     dominant: {
       name: 'Amyloid Cascade Hypothesis',
       trialFailureRate: '99.6%',
-      typicalDrugCost: '$26,500–$32,000/year',
+      typicalDrugCost: '$26,500-$32,000/year',
       fundingShare: '~50% of NIH AD funding',
     },
     marginalized: {

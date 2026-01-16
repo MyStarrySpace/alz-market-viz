@@ -14,9 +14,9 @@ interface ButtonProps {
 }
 
 const variantClasses = {
-  primary: 'bg-blue-600 hover:bg-blue-700 text-white border-transparent',
-  secondary: 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600',
-  ghost: 'bg-transparent hover:bg-slate-800 text-slate-300 border-slate-700',
+  primary: 'bg-white border-[var(--border)] shadow-sm hover:shadow-md hover:border-[var(--accent-orange)] text-[var(--text-body)] hover:text-[var(--accent-orange)]',
+  secondary: 'bg-white border-[var(--border)] shadow-sm hover:shadow-md hover:border-[var(--accent-orange)] text-[var(--text-body)] hover:text-[var(--accent-orange)]',
+  ghost: 'bg-transparent hover:bg-[var(--bg-secondary)] text-[var(--text-body)] border-transparent hover:text-[var(--accent-orange)]',
 };
 
 const sizeClasses = {
@@ -40,8 +40,8 @@ export function Button({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        'inline-flex items-center justify-center rounded-lg border font-medium transition-colors',
-        'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900',
+        'inline-flex items-center justify-center border font-medium transition-colors',
+        'focus:outline-none focus:ring-2 focus:ring-[var(--accent-orange)] focus:ring-offset-2 focus:ring-offset-white',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],

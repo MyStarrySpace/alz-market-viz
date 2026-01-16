@@ -1,35 +1,53 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Container } from '@/components/ui';
 
-// Navigation items - sections and act markers
-type NavItem =
-  | { type: 'section'; id: string; label: string }
-  | { type: 'act'; label: string };
+// Acts with their sections
+interface ActConfig {
+  label: string;
+  sections: { id: string; label: string }[];
+}
 
-const mainPageNav: NavItem[] = [
-  { type: 'act', label: 'I' },
-  { type: 'section', id: 'timeline', label: 'Timeline' },
-  { type: 'section', id: 'trial-barriers', label: 'Trials' },
-  { type: 'act', label: 'II' },
-  { type: 'section', id: 'system', label: 'System' },
-  { type: 'section', id: 'cases', label: 'Cases' },
-  { type: 'act', label: 'III' },
-  { type: 'section', id: 'hopeful-developments', label: 'Hope' },
-  { type: 'section', id: 'promising-frontier', label: 'Frontier' },
+const acts: ActConfig[] = [
+  {
+    label: 'I',
+    sections: [
+      { id: 'timeline', label: 'Timeline' },
+      { id: 'trial-barriers', label: 'Trials' },
+    ],
+  },
+  {
+    label: 'II',
+    sections: [
+      { id: 'system', label: 'System' },
+      { id: 'cases', label: 'Cases' },
+    ],
+  },
+  {
+    label: 'III',
+    sections: [
+      { id: 'hopeful-developments', label: 'Hope' },
+      { id: 'promising-frontier', label: 'Frontier' },
+    ],
+  },
 ];
 
-// Extract just sections for scroll tracking
-const mainPageSections = mainPageNav.filter((item): item is { type: 'section'; id: string; label: string } => item.type === 'section');
+// Flatten sections for scroll tracking
+const allSections = acts.flatMap(act => act.sections);
 
 export function Header() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState('');
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const [progressWidth, setProgressWidth] = useState(0); // Progress bar width in pixels
+  const navRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const isHomePage = pathname === '/';
+  const { scrollYProgress } = useScroll();
 
   // Track active section on scroll (only on home page)
   useEffect(() => {
@@ -39,10 +57,10 @@ export function Header() {
       const scrollPosition = window.scrollY + 150;
 
       // Find the current section
-      for (let i = mainPageSections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(mainPageSections[i].id);
+      for (let i = allSections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(allSections[i].id);
         if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(mainPageSections[i].id);
+          setActiveSection(allSections[i].id);
           return;
         }
       }
@@ -53,6 +71,41 @@ export function Header() {
     handleScroll(); // Initial check
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHomePage]);
+
+  // Update indicator position when active section changes
+  useEffect(() => {
+    if (!activeSection || !navRef.current) {
+      setIndicatorStyle(prev => ({ ...prev, opacity: 0 }));
+      setProgressWidth(0);
+      return;
+    }
+
+    const activeButton = buttonRefs.current.get(activeSection);
+    if (activeButton && navRef.current) {
+      const navRect = navRef.current.getBoundingClientRect();
+      const buttonRect = activeButton.getBoundingClientRect();
+      const dotLeft = buttonRect.left - navRect.left + buttonRect.width / 2 - 3;
+
+      setIndicatorStyle({
+        left: dotLeft,
+        width: 6,
+        opacity: 1,
+      });
+
+      // Calculate progress bar width: from left edge of screen to center of active button
+      // The dot center is at buttonRect.left + buttonRect.width / 2
+      setProgressWidth(buttonRect.left + buttonRect.width / 2);
+    }
+  }, [activeSection]);
+
+  // Store button ref
+  const setButtonRef = useCallback((id: string, el: HTMLButtonElement | null) => {
+    if (el) {
+      buttonRefs.current.set(id, el);
+    } else {
+      buttonRefs.current.delete(id);
+    }
+  }, []);
 
   // Handle smooth scroll to section
   const scrollToSection = (id: string) => {
@@ -67,6 +120,24 @@ export function Header() {
     }
   };
 
+  // Scroll to first section of an act
+  const scrollToAct = (actIndex: number) => {
+    const firstSection = acts[actIndex]?.sections[0];
+    if (firstSection) {
+      scrollToSection(firstSection.id);
+    }
+  };
+
+  // Determine which act is currently active based on the active section
+  const getActiveActIndex = (): number => {
+    if (!activeSection) return -1;
+    return acts.findIndex(act =>
+      act.sections.some(section => section.id === activeSection)
+    );
+  };
+
+  const activeActIndex = getActiveActIndex();
+
   return (
     <motion.header
       className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-[var(--border)]"
@@ -74,6 +145,13 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Progress bar aligned with the dot */}
+      {isHomePage && (
+        <div
+          className="absolute top-0 left-0 h-1 bg-[var(--chart-secondary)]"
+          style={{ width: progressWidth, opacity: progressWidth > 0 ? 1 : 0 }}
+        />
+      )}
       <Container>
         <nav className="flex items-center justify-between h-16">
           <Link
@@ -82,43 +160,63 @@ export function Header() {
           >
             Untangling Alzheimer&apos;s
           </Link>
-          <ul className="flex items-center gap-0.5 sm:gap-1">
-            {isHomePage ? (
-              // On home page: show section navigation with act labels
-              mainPageNav.map((item, index) => (
-                item.type === 'act' ? (
-                  <li key={`act-${item.label}`} className="hidden sm:block">
-                    <span className="px-1.5 py-2 text-xs font-medium text-[var(--border)] select-none">
-                      {item.label}
-                    </span>
-                  </li>
-                ) : (
-                  <li key={item.id}>
+          <div ref={navRef} className="relative flex items-center gap-1">
+            {isHomePage && (
+              <>
+                {/* Indicator dot */}
+                <div
+                  className="absolute top-0 h-1.5 w-1.5 rounded-full bg-[var(--accent-orange)]"
+                  style={{ left: indicatorStyle.left, opacity: indicatorStyle.opacity }}
+                />
+
+                {/* Navigation items */}
+                {acts.map((act, actIndex) => (
+                  <div key={act.label} className="flex items-center">
+                    {/* Separator between acts */}
+                    {actIndex > 0 && (
+                      <div className="w-px h-4 bg-[var(--border)] mx-3 hidden sm:block" />
+                    )}
+
+                    {/* Act label - clickable */}
                     <button
-                      onClick={() => scrollToSection(item.id)}
-                      className={`px-2 sm:px-2.5 py-2 text-sm font-medium transition-colors ${
-                        activeSection === item.id
+                      onClick={() => scrollToAct(actIndex)}
+                      className={`hidden sm:block px-2 py-1 text-xs font-semibold transition-colors ${
+                        activeActIndex === actIndex
                           ? 'text-[var(--accent-orange)]'
                           : 'text-[var(--text-muted)] hover:text-[var(--accent-orange)]'
                       }`}
                     >
-                      {item.label}
+                      {act.label}
                     </button>
-                  </li>
-                )
-              ))
-            ) : (
-              // On other pages: show link back to home
-              <li>
-                <Link
-                  href="/"
-                  className="px-2 sm:px-3 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors"
-                >
-                  ← Back to Main
-                </Link>
-              </li>
+
+                    {/* Sections in this act */}
+                    {act.sections.map((section) => (
+                      <button
+                        key={section.id}
+                        ref={(el) => setButtonRef(section.id, el)}
+                        onClick={() => scrollToSection(section.id)}
+                        className={`px-2 sm:px-3 py-2 text-sm font-medium transition-colors ${
+                          activeSection === section.id
+                            ? 'text-[var(--accent-orange)]'
+                            : 'text-[var(--text-muted)] hover:text-[var(--accent-orange)]'
+                        }`}
+                      >
+                        {section.label}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </>
             )}
-          </ul>
+            {!isHomePage && (
+              <Link
+                href="/"
+                className="px-2 sm:px-3 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors"
+              >
+                ← Back to Main
+              </Link>
+            )}
+          </div>
         </nav>
       </Container>
     </motion.header>
