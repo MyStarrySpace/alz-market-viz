@@ -1699,7 +1699,9 @@ function convertEdges(
   backEdges: Set<string> = new Set(),
   pinnedNodes: Set<string> = new Set(),
   nodePositions: Map<string, LayoutPosition> = new Map(),
-  showFeedbackLoops: boolean = true
+  showFeedbackLoops: boolean = true,
+  pathwayEdgeSet: Set<string> = new Set(),
+  isPathwayFocusMode: boolean = false
 ): { edges: Edge[]; waypointNodes: Node[] } {
   // Filter edges based on module filter state OR if connecting pinned nodes
   const filteredEdges = edges.filter(e => {
@@ -1772,6 +1774,9 @@ function convertEdges(
   filteredEdges.forEach(edge => {
     // Check if this edge originates from a boundary node with an active variant
     const isVariantEdge = !!(activeVariantNodeId && edge.source === activeVariantNodeId && activeVariant);
+
+    // Check if this edge is part of the active treatment pathway
+    const isInTreatmentPathway = isPathwayFocusMode && pathwayEdgeSet.has(edge.id);
 
     // Check if this is a back edge (cycle-completing edge detected during BFS)
     const isBackEdge = backEdges.has(edge.id);
@@ -1920,7 +1925,7 @@ function convertEdges(
       source: edge.source,
       target: edge.target,
       type: 'default',
-      animated: isVariantEdge || edge.relation === 'directlyIncreases' || edge.relation === 'directlyDecreases',
+      animated: isVariantEdge || isInTreatmentPathway,
       style: {
         stroke: strokeColor,
         strokeWidth,
@@ -2614,8 +2619,8 @@ function MechanisticNetworkGraphInner({
   const [currentNodePositions, setCurrentNodePositions] = useState<Map<string, LayoutPosition>>(new Map());
 
   const { edges: initialEdgeList, waypointNodes: initialWaypointNodes } = useMemo(
-    () => convertEdges(allEdges, moduleFilters, null, null, effectivePseudoNodes, showCrossModuleConnections ? initialExcludedEdges : new Set(), initialBackEdges, pinnedNodes, initialNodePositions, showFeedbackLoops),
-    [moduleFilters, effectivePseudoNodes, showCrossModuleConnections, initialExcludedEdges, initialBackEdges, pinnedNodes, initialNodePositions, showFeedbackLoops]
+    () => convertEdges(allEdges, moduleFilters, null, null, effectivePseudoNodes, showCrossModuleConnections ? initialExcludedEdges : new Set(), initialBackEdges, pinnedNodes, initialNodePositions, showFeedbackLoops, pathwayEdgeSet, drugPathwayFocusMode),
+    [moduleFilters, effectivePseudoNodes, showCrossModuleConnections, initialExcludedEdges, initialBackEdges, pinnedNodes, initialNodePositions, showFeedbackLoops, pathwayEdgeSet, drugPathwayFocusMode]
   );
 
   // Combine flow nodes with waypoint nodes (filter out pseudo-nodes if toggle is off)
@@ -2796,7 +2801,7 @@ function MechanisticNetworkGraphInner({
 
     // Get edges with waypoint nodes for back edge routing
     const { edges: newEdgeList, waypointNodes: newWaypointNodes } = convertEdges(
-      allEdges, moduleFilters, null, null, effectiveNewPseudoNodes, effectiveExcludedEdges, newBackEdges, pinnedNodes, newNodePositions, showFeedbackLoops
+      allEdges, moduleFilters, null, null, effectiveNewPseudoNodes, effectiveExcludedEdges, newBackEdges, pinnedNodes, newNodePositions, showFeedbackLoops, pathwayEdgeSet, drugPathwayFocusMode
     );
 
     // Combine flow nodes with waypoint nodes (filter out pseudo-nodes if toggle is off)
@@ -2924,7 +2929,7 @@ function MechanisticNetworkGraphInner({
     const effectiveCurrentExcludedEdges = showCrossModuleConnections ? currentExcludedEdges : new Set<string>();
 
     const { edges: newEdgeList, waypointNodes: newWaypointNodes } = convertEdges(
-      allEdges, moduleFilters, activeVariantNodeId, activeVariant, effectiveCurrentPseudoNodes, effectiveCurrentExcludedEdges, currentBackEdges, pinnedNodes, currentNodePositions, showFeedbackLoops
+      allEdges, moduleFilters, activeVariantNodeId, activeVariant, effectiveCurrentPseudoNodes, effectiveCurrentExcludedEdges, currentBackEdges, pinnedNodes, currentNodePositions, showFeedbackLoops, pathwayEdgeSet, drugPathwayFocusMode
     );
     setEdges(newEdgeList);
     // Also update waypoint nodes in case positions changed
@@ -2933,7 +2938,7 @@ function MechanisticNetworkGraphInner({
       const nonWaypointNodes = currentNodes.filter(n => !n.id.startsWith('__waypoint_'));
       return [...nonWaypointNodes, ...newWaypointNodes];
     });
-  }, [activeVariantNodeId, activeVariant, currentPseudoNodes, currentExcludedEdges, currentBackEdges, pinnedNodes, currentNodePositions, showCrossModuleConnections, showFeedbackLoops, setEdges, setNodes]);
+  }, [activeVariantNodeId, activeVariant, currentPseudoNodes, currentExcludedEdges, currentBackEdges, pinnedNodes, currentNodePositions, showCrossModuleConnections, showFeedbackLoops, pathwayEdgeSet, drugPathwayFocusMode, setEdges, setNodes]);
 
   // Simple on/off toggle for module filter (no tri-state cycling)
   const toggleModuleFilter = useCallback((moduleId: string) => {
@@ -3524,7 +3529,7 @@ function MechanisticNetworkGraphInner({
               />
             </label>
 
-            {/* Drug Library Button */}
+            {/* Treatment Library Button */}
             <div className="relative">
               <button
                 onClick={() => setShowDrugLibrary(!showDrugLibrary)}
@@ -3533,12 +3538,12 @@ function MechanisticNetworkGraphInner({
                     ? 'bg-[var(--accent-orange)] text-white border-[var(--accent-orange)]'
                     : 'bg-white border-[var(--border)] hover:border-[var(--accent-orange)]'
                 }`}
-                title="Browse drug library to visualize pathways"
+                title="Browse treatment library to visualize pathways"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                 </svg>
-                Drugs
+                Treatments
               </button>
               {showDrugLibrary && (
                 <div className="absolute top-full right-0 mt-1 z-50">
