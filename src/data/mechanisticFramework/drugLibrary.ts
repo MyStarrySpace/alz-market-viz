@@ -1,14 +1,15 @@
 /**
- * Drug Library for AD Mechanistic Network
+ * Treatment Library for AD Mechanistic Network
  *
- * Curated list of drugs with their targets in the mechanistic network,
- * enabling pathway visualization and mechanism analysis.
+ * Curated list of treatments (drugs, devices, lifestyle interventions) with
+ * their targets in the mechanistic network, enabling pathway visualization
+ * and mechanism analysis.
  *
- * Each drug entry specifies:
+ * Each treatment entry specifies:
  * - Target nodes in the network
  * - Effect type (activates/inhibits/modulates)
- * - Evidence level and FDA status
- * - Optional variants (e.g., dosing regimens)
+ * - Evidence level and regulatory status
+ * - Optional variants (e.g., dosing regimens, intensity levels)
  */
 
 // ============================================================================
@@ -16,54 +17,82 @@
 // ============================================================================
 
 /**
- * How a drug affects its target
+ * How a treatment affects its target
  */
-export type DrugEffect = 'activates' | 'inhibits' | 'modulates';
+export type TreatmentEffect = 'activates' | 'inhibits' | 'modulates';
+/** @deprecated Use TreatmentEffect instead */
+export type DrugEffect = TreatmentEffect;
 
 /**
- * Strength of the drug's effect on target
+ * Strength of the treatment's effect on target
  */
 export type EffectStrength = 'strong' | 'moderate' | 'weak';
 
 /**
- * Drug classification
+ * Treatment classification
  */
-export type DrugType = 'small_molecule' | 'antibody' | 'biologic' | 'supplement';
+export type TreatmentType =
+  | 'small_molecule'  // Drugs, supplements
+  | 'antibody'        // Monoclonal antibodies
+  | 'biologic'        // Peptides, proteins
+  | 'supplement'      // OTC supplements
+  | 'device'          // Medical devices (e.g., 40Hz stimulation)
+  | 'lifestyle'       // Exercise, diet, sleep
+  | 'behavioral';     // Behavioral modifications (e.g., nasal hygiene)
+
+/** @deprecated Use TreatmentType instead */
+export type DrugType = TreatmentType;
 
 /**
- * Regulatory status
+ * Regulatory/evidence status
  */
-export type FDAStatus =
-  | 'approved'      // FDA approved for any indication
-  | 'phase3'        // In Phase 3 trials
-  | 'phase2'        // In Phase 2 trials
-  | 'phase1'        // In Phase 1 trials
-  | 'preclinical'   // Preclinical stage
-  | 'no_pathway';   // Generic/supplement without FDA pathway
+export type RegulatoryStatus =
+  | 'approved'        // FDA approved for any indication
+  | 'phase3'          // In Phase 3 trials
+  | 'phase2'          // In Phase 2 trials
+  | 'phase1'          // In Phase 1 trials
+  | 'preclinical'     // Preclinical stage
+  | 'no_pathway'      // Generic/supplement without FDA pathway
+  | 'lifestyle'       // Lifestyle intervention (no FDA pathway)
+  | 'device_cleared'; // FDA cleared device (510k)
+
+/** @deprecated Use RegulatoryStatus instead */
+export type FDAStatus = RegulatoryStatus;
 
 /**
- * How the drug is available
+ * How the treatment is available
  */
-export type DrugAvailability = 'prescription' | 'otc' | 'supplement' | 'experimental';
+export type TreatmentAvailability =
+  | 'prescription'     // Requires prescription
+  | 'otc'              // Over-the-counter
+  | 'supplement'       // Dietary supplement
+  | 'experimental'     // Clinical trials only
+  | 'consumer_device'  // Consumer device (no prescription)
+  | 'free';            // Freely available (lifestyle changes)
+
+/** @deprecated Use TreatmentAvailability instead */
+export type DrugAvailability = TreatmentAvailability;
 
 /**
- * A single target of a drug in the network
+ * A single target of a treatment in the network
  */
-export interface DrugTarget {
+export interface TreatmentTarget {
   /** Node ID in the mechanistic network */
   nodeId: string;
-  /** How the drug affects this target */
-  effect: DrugEffect;
+  /** How the treatment affects this target */
+  effect: TreatmentEffect;
   /** Strength of the effect */
   strength: EffectStrength;
   /** Brief mechanism description */
   mechanism?: string;
 }
+/** @deprecated Use TreatmentTarget instead */
+export type DrugTarget = TreatmentTarget;
 
 /**
- * Evidence for drug's effects in AD
+ * Evidence for treatment's effects in AD
  */
-export interface DrugADEvidence {
+export interface TreatmentADEvidence {
   /** Evidence level (matches our evidence hierarchy) */
   level: 'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6' | 'L7';
   /** Summary of evidence */
@@ -71,11 +100,13 @@ export interface DrugADEvidence {
   /** PubMed IDs for key studies */
   pmids?: string[];
 }
+/** @deprecated Use TreatmentADEvidence instead */
+export type DrugADEvidence = TreatmentADEvidence;
 
 /**
- * Drug variant (e.g., different dosing regimens)
+ * Treatment variant (e.g., different dosing regimens or intensity levels)
  */
-export interface DrugVariant {
+export interface TreatmentVariant {
   id: string;
   label: string;
   /** Multiplier for effect strength (1.0 = standard) */
@@ -83,53 +114,58 @@ export interface DrugVariant {
   /** Additional notes */
   notes?: string;
 }
+/** @deprecated Use TreatmentVariant instead */
+export type DrugVariant = TreatmentVariant;
 
 /**
- * Complete drug library entry
+ * Complete treatment library entry
  */
-export interface DrugLibraryEntry {
+export interface TreatmentLibraryEntry {
   /** Unique identifier (lowercase_snake_case) */
   id: string;
   /** Display name */
   name: string;
-  /** Drug classification */
-  type: DrugType;
-  /** FDA approval status */
-  fdaStatus: FDAStatus;
+  /** Treatment classification */
+  type: TreatmentType;
+  /** Regulatory/evidence status */
+  fdaStatus: RegulatoryStatus;
   /** Primary targets in the network */
-  primaryTargets: DrugTarget[];
+  primaryTargets: TreatmentTarget[];
   /** Brief summary of mechanism */
   mechanismSummary: string;
-  /** Optional dosing variants */
-  variants?: DrugVariant[];
+  /** Optional variants (dosing, intensity levels) */
+  variants?: TreatmentVariant[];
   /** AD-specific evidence */
-  adEvidence: DrugADEvidence;
-  /** Estimated annual cost (USD) */
+  adEvidence: TreatmentADEvidence;
+  /** Estimated annual cost (USD), undefined for free interventions */
   annualCost?: number;
-  /** How the drug is available */
-  availability: DrugAvailability;
+  /** How the treatment is available */
+  availability: TreatmentAvailability;
   /** Additional notes */
   notes?: string;
 }
+/** @deprecated Use TreatmentLibraryEntry instead */
+export type DrugLibraryEntry = TreatmentLibraryEntry;
 
 /**
- * Pre-computed pathway configuration for a drug
+ * Pre-computed pathway configuration for a treatment
+ * Note: `drugId` kept for backward compatibility, maps to treatment ID
  */
-export interface DrugPathwayConfig {
-  /** Drug ID this pathway is for */
+export interface TreatmentPathwayConfig {
+  /** Treatment ID this pathway is for (alias: drugId for backward compatibility) */
   drugId: string;
   /** Nodes upstream of targets (what leads TO the target) */
   upstreamNodes: string[];
-  /** The drug's direct target nodes */
+  /** The treatment's direct target nodes */
   targetNodes: string[];
   /** Nodes downstream of targets (what the target affects) */
   downstreamNodes: string[];
   /** Edge IDs in the pathway */
   pathwayEdges: string[];
-  /** Feedback loops affected by this drug */
+  /** Feedback loops affected by this treatment */
   relevantLoops: {
     loopId: string;
-    /** How the drug affects this loop */
+    /** How the treatment affects this loop */
     involvement: 'breaks' | 'weakens' | 'strengthens' | 'enters';
     /** Which target node participates in this loop */
     targetNodeInLoop: string;
@@ -139,12 +175,14 @@ export interface DrugPathwayConfig {
   /** When this pathway was computed */
   computedAt: string;
 }
+/** @deprecated Use TreatmentPathwayConfig instead */
+export type DrugPathwayConfig = TreatmentPathwayConfig;
 
 // ============================================================================
-// DRUG LIBRARY
+// TREATMENT LIBRARY
 // ============================================================================
 
-export const drugLibrary: DrugLibraryEntry[] = [
+export const treatmentLibrary: TreatmentLibraryEntry[] = [
   // ---------------------------------------------------------------------------
   // RAPAMYCIN (SIROLIMUS)
   // ---------------------------------------------------------------------------
@@ -497,6 +535,50 @@ export const drugLibrary: DrugLibraryEntry[] = [
   },
 
   // ---------------------------------------------------------------------------
+  // CAFFEIC ACID DERIVATIVE (COMPOUND 12d)
+  // ---------------------------------------------------------------------------
+  {
+    id: 'caffeic_acid_12d',
+    name: 'Caffeic Acid Derivative (Compound 12d)',
+    type: 'small_molecule',
+    fdaStatus: 'preclinical',
+    availability: 'experimental',
+    mechanismSummary: 'Multi-target directed ligand with AChE inhibition, antioxidant, metal chelation, and anti-amyloid aggregation properties',
+    primaryTargets: [
+      {
+        nodeId: 'ach_reduced',
+        effect: 'inhibits',
+        strength: 'strong',
+        mechanism: 'Selective AChE inhibition (IC₅₀ 3.72 μM) increases acetylcholine availability',
+      },
+      {
+        nodeId: 'mito_ros',
+        effect: 'inhibits',
+        strength: 'moderate',
+        mechanism: 'Potent antioxidant activity (DPPH IC₅₀ 6.32 μM) reduces oxidative stress',
+      },
+      {
+        nodeId: 'abeta_oligomers',
+        effect: 'inhibits',
+        strength: 'moderate',
+        mechanism: 'Inhibits Aβ self-aggregation (Thioflavin T assay and electron microscopy confirmed)',
+      },
+      {
+        nodeId: 'labile_iron',
+        effect: 'inhibits',
+        strength: 'weak',
+        mechanism: 'Metal-chelating properties reduce free metal-induced oxidative damage',
+      },
+    ],
+    adEvidence: {
+      level: 'L5',
+      summary: 'Scopolamine-induced AD mouse model showed improved Y-maze spatial memory and restored cholinesterase levels. Neuroprotection in SH-SY5Y cells against H₂O₂ toxicity.',
+      pmids: ['40578253'],
+    },
+    notes: 'Multi-target directed ligand (MTDL) approach from IIT BHU. Predicted BBB permeable (Pe = 4.12). Published June 2025 in Eur J Med Chem.',
+  },
+
+  // ---------------------------------------------------------------------------
   // CURCUMIN (TURMERIC)
   // ---------------------------------------------------------------------------
   {
@@ -528,56 +610,205 @@ export const drugLibrary: DrugLibraryEntry[] = [
     annualCost: 100,
     notes: 'Poor brain penetration despite promising preclinical data. Nano-formulations being tested.',
   },
+
+  // ===========================================================================
+  // NON-PHARMACOLOGICAL INTERVENTIONS
+  // ===========================================================================
+
+  // ---------------------------------------------------------------------------
+  // 40Hz GAMMA STIMULATION
+  // ---------------------------------------------------------------------------
+  {
+    id: 'gamma_40hz',
+    name: '40Hz Gamma Stimulation',
+    type: 'device',
+    fdaStatus: 'phase3',
+    availability: 'consumer_device',
+    mechanismSummary: 'Audio-visual entrainment promotes glymphatic clearance via VIP interneurons and arterial pulsatility',
+    primaryTargets: [
+      {
+        nodeId: 'arterial_pulsatility',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'VIP interneuron activation → increased vasomotion amplitude (~0.1Hz band)',
+      },
+      {
+        nodeId: 'aqp4_polarization',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'VIP signaling → restored AQP4 localization at astrocyte endfeet',
+      },
+      {
+        nodeId: 'glymphatic_clearance',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'Enhanced CSF influx and Aβ clearance; requires intact AQP4',
+      },
+    ],
+    variants: [
+      { id: 'visual_only', label: 'Visual only (40Hz flicker)', effectModifier: 0.6 },
+      { id: 'audio_only', label: 'Audio only (40Hz click)', effectModifier: 0.5 },
+      { id: 'multisensory', label: 'Multisensory (audio + visual)', effectModifier: 1.0 },
+      { id: 'cognito_device', label: 'Cognito Therapeutics GENUS', effectModifier: 1.0, notes: 'Phase 3 EVOKE trial' },
+    ],
+    adEvidence: {
+      level: 'L4',
+      summary: 'Mouse studies show increased glymphatic clearance and reduced Aβ. Phase 3 human trials ongoing (EVOKE).',
+      pmids: ['38418876', '27929004', '39747869'],
+    },
+    annualCost: 1500, // Consumer devices ~$1500
+    notes: 'Murdock et al. 2024 (Nature) showed VIP interneurons and AQP4 are required for effect. EVOKE Phase 3 ongoing.',
+  },
+
+  // ---------------------------------------------------------------------------
+  // EXERCISE
+  // ---------------------------------------------------------------------------
+  {
+    id: 'exercise_aerobic',
+    name: 'Aerobic Exercise',
+    type: 'lifestyle',
+    fdaStatus: 'lifestyle',
+    availability: 'free',
+    mechanismSummary: 'Restores AQP4 polarization, increases arterial pulsatility, promotes BDNF and autophagy',
+    primaryTargets: [
+      {
+        nodeId: 'aqp4_polarization',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'Upregulates Lama1 and Dp71 → restores DAPC → AQP4 relocalization to endfeet',
+      },
+      {
+        nodeId: 'arterial_pulsatility',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'Increased cardiac output → enhanced perivascular CSF flow',
+      },
+      {
+        nodeId: 'glymphatic_clearance',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'Both AQP4 and pulsatility effects converge on glymphatic enhancement',
+      },
+      {
+        nodeId: 'neuroinflammation',
+        effect: 'inhibits',
+        strength: 'moderate',
+        mechanism: 'Reduces systemic and CNS inflammation markers',
+      },
+    ],
+    variants: [
+      { id: 'sedentary', label: 'Sedentary (<150 min/week)', effectModifier: 0, notes: 'Risk factor' },
+      { id: 'light', label: 'Light (150-300 min/week)', effectModifier: 0.5 },
+      { id: 'moderate', label: 'Moderate (300+ min/week)', effectModifier: 1.0 },
+      { id: 'vigorous', label: 'Vigorous/HIIT', effectModifier: 1.2 },
+      { id: 'swimming', label: 'Swimming', effectModifier: 1.0, notes: 'Most studied in AD models' },
+    ],
+    adEvidence: {
+      level: 'L4',
+      summary: 'Meta-analyses show 15-20% AD risk reduction. Mouse studies confirm AQP4 and glymphatic mechanisms.',
+      pmids: ['39971255', '28579942', '35142700', '28054939'],
+    },
+    notes: 'Effect requires intact AQP4 (Liu 2022). Swimming specifically studied in Liang 2025.',
+  },
+
+  // ---------------------------------------------------------------------------
+  // NASAL HYGIENE
+  // ---------------------------------------------------------------------------
+  {
+    id: 'nasal_hygiene',
+    name: 'Nasal Hygiene (Avoid Nose Picking)',
+    type: 'behavioral',
+    fdaStatus: 'lifestyle',
+    availability: 'free',
+    mechanismSummary: 'Reduces pathogen entry via olfactory nerve route to brain',
+    primaryTargets: [
+      {
+        nodeId: 'neuroinflammation',
+        effect: 'inhibits',
+        strength: 'weak',
+        mechanism: 'Pathogens (C. pneumoniae, HSV-1, P. gingivalis) can enter brain via olfactory nerve; nose picking introduces them',
+      },
+    ],
+    variants: [
+      { id: 'no_picking', label: 'Avoid nose picking', effectModifier: 1.0 },
+      { id: 'nasal_rinse', label: 'Saline nasal rinse', effectModifier: 0.8, notes: 'May reduce pathogen load' },
+      { id: 'hand_hygiene', label: 'Hand hygiene before face touching', effectModifier: 0.7 },
+    ],
+    adEvidence: {
+      level: 'L6',
+      summary: 'Olfactory nerve is a documented pathogen entry route. C. pneumoniae, HSV-1 found in AD brains. Epidemiological associations.',
+      pmids: ['35675982', '37019931', '36280091'],
+    },
+    notes: 'St John & Bhattacharya 2022 (Nat Rev Neurosci) reviewed nose picking → C. pneumoniae → olfactory bulb → brain route.',
+  },
 ];
+
+/** @deprecated Use treatmentLibrary instead */
+export const drugLibrary = treatmentLibrary;
 
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
 
 /**
- * Get a drug by ID
+ * Get a treatment by ID
  */
-export function getDrugById(id: string): DrugLibraryEntry | undefined {
-  return drugLibrary.find(d => d.id === id);
+export function getTreatmentById(id: string): TreatmentLibraryEntry | undefined {
+  return treatmentLibrary.find(d => d.id === id);
 }
+/** @deprecated Use getTreatmentById instead */
+export const getDrugById = getTreatmentById;
 
 /**
- * Get all drugs targeting a specific node
+ * Get all treatments targeting a specific node
  */
-export function getDrugsTargetingNode(nodeId: string): DrugLibraryEntry[] {
-  return drugLibrary.filter(d =>
+export function getTreatmentsTargetingNode(nodeId: string): TreatmentLibraryEntry[] {
+  return treatmentLibrary.filter(d =>
     d.primaryTargets.some(t => t.nodeId === nodeId)
   );
 }
+/** @deprecated Use getTreatmentsTargetingNode instead */
+export const getDrugsTargetingNode = getTreatmentsTargetingNode;
 
 /**
- * Get drugs by FDA status
+ * Get treatments by regulatory status
  */
-export function getDrugsByStatus(status: FDAStatus): DrugLibraryEntry[] {
-  return drugLibrary.filter(d => d.fdaStatus === status);
+export function getTreatmentsByStatus(status: RegulatoryStatus): TreatmentLibraryEntry[] {
+  return treatmentLibrary.filter(d => d.fdaStatus === status);
+}
+/** @deprecated Use getTreatmentsByStatus instead */
+export const getDrugsByStatus = getTreatmentsByStatus;
+
+/**
+ * Get treatments by evidence level (L1 = highest)
+ */
+export function getTreatmentsByEvidenceLevel(level: TreatmentADEvidence['level']): TreatmentLibraryEntry[] {
+  return treatmentLibrary.filter(d => d.adEvidence.level === level);
+}
+/** @deprecated Use getTreatmentsByEvidenceLevel instead */
+export const getDrugsByEvidenceLevel = getTreatmentsByEvidenceLevel;
+
+/**
+ * Get treatments by type (drug, device, lifestyle, behavioral)
+ */
+export function getTreatmentsByType(type: TreatmentType): TreatmentLibraryEntry[] {
+  return treatmentLibrary.filter(d => d.type === type);
 }
 
 /**
- * Get drugs by evidence level (L1 = highest)
+ * Get treatments that inhibit a target
  */
-export function getDrugsByEvidenceLevel(level: DrugADEvidence['level']): DrugLibraryEntry[] {
-  return drugLibrary.filter(d => d.adEvidence.level === level);
-}
-
-/**
- * Get drugs that inhibit a target
- */
-export function getInhibitors(): DrugLibraryEntry[] {
-  return drugLibrary.filter(d =>
+export function getInhibitors(): TreatmentLibraryEntry[] {
+  return treatmentLibrary.filter(d =>
     d.primaryTargets.some(t => t.effect === 'inhibits')
   );
 }
 
 /**
- * Get drugs that activate a target
+ * Get treatments that activate a target
  */
-export function getActivators(): DrugLibraryEntry[] {
-  return drugLibrary.filter(d =>
+export function getActivators(): TreatmentLibraryEntry[] {
+  return treatmentLibrary.filter(d =>
     d.primaryTargets.some(t => t.effect === 'activates')
   );
 }
@@ -587,7 +818,7 @@ export function getActivators(): DrugLibraryEntry[] {
  */
 export function getAllTargetNodeIds(): string[] {
   const ids = new Set<string>();
-  drugLibrary.forEach(d => {
+  treatmentLibrary.forEach(d => {
     d.primaryTargets.forEach(t => ids.add(t.nodeId));
   });
   return Array.from(ids);

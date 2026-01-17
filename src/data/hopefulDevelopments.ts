@@ -531,6 +531,46 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     sourceIds: ['lithium-orotate-2025'],
   },
 
+  {
+    id: 'caffeic-acid-12d',
+    name: 'Caffeic Acid Derivative (Compound 12d)',
+    category: 'pipeline_drug',
+    status: 'preclinical',
+    description:
+      'Multi-target directed ligand (MTDL) derived from caffeic acid that addresses multiple AD pathways simultaneously: cholinergic, oxidative, metal-induced, and amyloid.',
+    mechanism:
+      'Four complementary mechanisms: (1) selective AChE inhibition (IC₅₀ 3.72 μM) boosts acetylcholine; (2) potent antioxidant activity (DPPH IC₅₀ 6.32 μM); (3) metal chelation reduces free radical damage; (4) inhibits Aβ self-aggregation.',
+    whyHopeful:
+      'The "one drug, one target" paradigm has failed in AD. Multi-target directed ligands address the disease\'s complexity by hitting several pathways at once. Compound 12d shows strong preclinical efficacy with predicted blood-brain barrier permeability.',
+    evidence: [
+      {
+        trialName: 'Kumar & Modi 2025 (IIT BHU)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'Neuroprotection and memory in AD models',
+        result:
+          'Protected SH-SY5Y neurons from H₂O₂ toxicity, reduced intracellular ROS. Improved Y-maze spatial memory in scopolamine-induced AD mice and restored cholinesterase levels.',
+        limitation: 'Mouse model (scopolamine-induced); not tested in transgenic AD models yet',
+      },
+      {
+        trialName: 'In vitro characterization',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'Multi-target activity profile',
+        result:
+          'AChE IC₅₀: 3.72 μM (selective over BuChE); DPPH IC₅₀: 6.32 μM; Thioflavin T assay confirmed Aβ aggregation inhibition; predicted BBB permeable (Pe = 4.12)',
+        limitation: 'In vitro data; needs in vivo validation of all mechanisms',
+      },
+    ],
+    cost: 'Unknown (early stage)',
+    availability: 'Preclinical; no clinical trials registered',
+    caveats: [
+      'Only tested in scopolamine model, not transgenic AD mice',
+      'BBB permeability predicted computationally, not measured in vivo',
+      'MTDL approach promising but challenging to optimize',
+      'Long path from preclinical to human trials',
+    ],
+    sourceIds: ['kumar-modi-caffeic-2025'],
+  },
+
   // ============================================
   // RESEARCH TOOLS
   // ============================================
