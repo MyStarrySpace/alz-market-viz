@@ -71,15 +71,20 @@ export function HeroStat({
     danger: 'text-[var(--danger)]',
   };
 
+  const fullValue = `${prefix}${value}${suffix}`;
+
   return (
-    <motion.div
+    <motion.figure
       ref={ref}
+      role="group"
+      aria-label={`Statistic: ${fullValue} - ${label}`}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
       className={cn('text-center', className)}
     >
       <div
+        aria-hidden="true"
         className={cn(
           'font-serif font-bold tracking-tight leading-none',
           'text-5xl sm:text-6xl md:text-7xl lg:text-8xl',
@@ -91,14 +96,16 @@ export function HeroStat({
         {displayValue}
         {suffix}
       </div>
-      <p className="mt-4 text-lg sm:text-xl md:text-2xl text-[var(--text-primary)] font-medium">
-        {label}
-      </p>
-      {sublabel && (
-        <p className="mt-2 text-sm sm:text-base text-[var(--text-muted)] max-w-md mx-auto">
-          {sublabel}
+      <figcaption>
+        <p className="mt-4 text-lg sm:text-xl md:text-2xl text-[var(--text-primary)] font-medium">
+          {label}
         </p>
-      )}
-    </motion.div>
+        {sublabel && (
+          <p className="mt-2 text-sm sm:text-base text-[var(--text-muted)] max-w-md mx-auto">
+            {sublabel}
+          </p>
+        )}
+      </figcaption>
+    </motion.figure>
   );
 }

@@ -21,49 +21,51 @@ import '@xyflow/react/dist/style.css';
 
 import { allNodes } from '@/data/mechanisticFramework/nodes';
 import { allEdges } from '@/data/mechanisticFramework/edges';
+import { feedbackLoops } from '@/data/mechanisticFramework/feedbackLoops';
 import type { MechanisticNode, BoundaryVariant, BoundaryDirection } from '@/data/mechanisticFramework/types';
+import {
+  drugLibrary,
+  type DrugLibraryEntry,
+  type DrugPathwayConfig,
+} from '@/data/mechanisticFramework/drugLibrary';
+import { calculateDrugPathway, getPathwayStats } from '@/lib/pathwayCalculation';
+import { DrugLibraryPicker } from './MechanisticNetworkGraph/DrugLibraryPicker';
+import { PathwayFocusPanel } from './MechanisticNetworkGraph/PathwayFocusPanel';
 
-// Tri-state for module filtering: 'on' (full), 'partial' (filtered), 'off' (hidden)
+// Import modular types and constants
+import type {
+  LayoutPosition,
+  PseudoNode,
+  VariantCallbacks,
+  BoundaryExpansionConfig,
+  BoundaryVariantNodeData,
+  BoundaryExpandButtonData,
+  SortConfig,
+  HorizontalSortMode,
+  VerticalSortMode,
+} from './MechanisticNetworkGraph/types';
+
+import {
+  moduleColors,
+  categoryStyles,
+  roleStyles,
+  moduleLabels,
+  REGION_ORDER,
+} from './MechanisticNetworkGraph/constants';
+
+import {
+  inferRegion,
+  getRegionSortIndex,
+  getTimescaleSortIndex,
+  getCellType,
+  getModuleSortIndex,
+} from './MechanisticNetworkGraph/regionMapping';
+
+// Algorithm functions (computeDAGLayers, findFilteredComponents, findPseudoNodes, computeGreedyLayout)
+// are defined locally below. They can be imported from './MechanisticNetworkGraph/algorithms' in the future.
+
+// Local type definitions (not imported to avoid conflicts with different categorization systems)
 type ModuleFilterState = 'on' | 'partial' | 'off';
-
-// Module colors for visual grouping
-const moduleColors: Record<string, string> = {
-  'BOUNDARY': '#787473',
-  'M01': '#486393',  // Insulin/mTOR - blue
-  'M02': '#007385',  // Lysosomal - teal
-  'M03': '#C9461D',  // Mitochondrial - orange
-  'M04': '#E5AF19',  // Inflammasome - yellow
-  'M05': '#C3577F',  // Microglial - pink
-  'M06': '#60a5fa',  // Amyloid - soft blue
-  'M07': '#a78bfa',  // Tau - purple
-  'M08': '#34d399',  // Complement - green
-  'M09': '#f472b6',  // Iron - pink
-  'M10': '#8ecae6',  // APOE - teal
-  'M11': '#fbbf24',  // TREM2 - yellow
-  'M12': '#94a3b8',  // BBB - slate
-  'M13': '#fb923c',  // Cholinergic - orange
-  'M14': '#a855f7',  // MAM - violet
-  'M15': '#22c55e',  // Interventions - green
-  'M16': '#ec4899',  // Sex/Ancestry - pink
-  'M17': '#14b8a6',  // Immunomodulatory - teal
-};
-
-// Category shapes/styles (SBSF v2.0: Only STOCK, STATE, BOUNDARY)
-const categoryStyles: Record<string, { borderStyle: string; borderWidth: number }> = {
-  'BOUNDARY': { borderStyle: 'dashed', borderWidth: 2 },
-  'STATE': { borderStyle: 'solid', borderWidth: 2 },
-  'STOCK': { borderStyle: 'solid', borderWidth: 3 },
-};
-
-// Role-based styling for REGULATOR nodes (SBSF v2.0: REGULATOR is now a role, not category)
-const roleStyles: Record<string, { borderColor?: string; borderStyle?: string }> = {
-  'REGULATOR': { borderColor: '#e36216', borderStyle: 'double' },
-  'THERAPEUTIC_TARGET': { borderColor: '#C9461D' },
-  'BIOMARKER': { borderColor: '#34d399' },
-  'DRUG': { borderColor: '#5a8a6e' },
-};
-
-// View mode for boundary variant nodes
 type BoundaryViewMode = 'simple' | 'table' | 'graph';
 
 // Effect direction indicator
@@ -81,19 +83,7 @@ function EffectIndicator({ direction }: { direction: 'protective' | 'neutral' | 
   );
 }
 
-// Custom node for boundary nodes with variants
-interface BoundaryVariantNodeData extends Record<string, unknown> {
-  label: string;
-  variants: BoundaryVariant[];
-  defaultVariant?: string;
-  moduleId: string;
-  isPartial?: boolean;
-  onVariantSelect?: (variantId: string | null) => void;
-  onVariantHover?: (variantId: string | null) => void;
-  selectedVariant?: string | null;
-  hoveredVariant?: string | null;
-  forceGraphView?: boolean; // Force graph view when only boundaries are visible
-}
+// BoundaryVariantNodeData imported from './MechanisticNetworkGraph/types'
 
 // Helper to interpret risk magnitude
 function getRiskLabel(magnitude: number, direction: 'protective' | 'neutral' | 'risk'): string {
@@ -275,16 +265,12 @@ const BoundaryVariantNode = memo(({ data }: NodeProps<Node<BoundaryVariantNodeDa
 
 BoundaryVariantNode.displayName = 'BoundaryVariantNode';
 
-// Custom node for boundary expand/collapse button
-interface BoundaryExpandButtonData extends Record<string, unknown> {
-  direction: 'input' | 'output';
-  isExpanded: boolean;
-  boundaryCount: number;
-  onToggle: () => void;
-}
+// BoundaryExpandButtonData imported from './MechanisticNetworkGraph/types'
 
 const BoundaryExpandButton = memo(({ data }: NodeProps<Node<BoundaryExpandButtonData>>) => {
   const isInput = data.direction === 'input';
+  const directionLabel = isInput ? 'input' : 'output';
+  const actionLabel = data.isExpanded ? 'collapse' : 'expand';
 
   return (
     <div
@@ -296,6 +282,7 @@ const BoundaryExpandButton = memo(({ data }: NodeProps<Node<BoundaryExpandButton
         borderRadius: '8px',
         textAlign: 'center',
       }}
+      title={`Click to ${actionLabel} ${directionLabel} nodes`}
       onClick={(e) => {
         e.stopPropagation();
         data.onToggle();
@@ -385,31 +372,11 @@ function computeDAGLayers(
   return layers;
 }
 
-// Variant callback type for passing into convertNodes
-interface VariantCallbacks {
-  onVariantSelect: (variantId: string | null) => void;
-  onVariantHover: (variantId: string | null) => void;
-  selectedVariant: string | null;
-  hoveredVariant: string | null;
-}
+// Types (VariantCallbacks, LayoutPosition, PseudoNode) imported from './MechanisticNetworkGraph/types'
 
 // =============================================================================
 // GREEDY DYNAMIC LAYOUT ALGORITHM
 // =============================================================================
-
-interface LayoutPosition {
-  x: number;
-  y: number;
-}
-
-interface PseudoNode {
-  id: string;
-  label: string;
-  moduleId: string;
-  isPseudo: true;
-  connectsFrom: string[];  // node IDs in visible set that connect TO this hidden module
-  connectsTo: string[];    // node IDs in visible set that this hidden module connects TO
-}
 
 /**
  * Find connected components in the filtered subgraph
@@ -614,15 +581,30 @@ function findPseudoNodes(
 }
 
 /**
+ * Default sort configuration
+ */
+const DEFAULT_SORT_CONFIG: SortConfig = {
+  horizontal: 'topological',
+  vertical: 'crossing',
+};
+
+/**
  * Greedy layout algorithm that positions nodes based on causal flow.
  * Handles disconnected components by laying them out separately.
  * Also identifies back edges (cycle-completing edges) during BFS.
+ *
+ * @param filteredNodes - Nodes to layout
+ * @param edges - All edges in the graph
+ * @param pseudoNodes - Pseudo-nodes representing hidden modules
+ * @param excludedEdges - Edges to exclude from layout
+ * @param sortConfig - Configuration for horizontal and vertical sorting
  */
 function computeGreedyLayout(
   filteredNodes: MechanisticNode[],
   edges: typeof allEdges,
   pseudoNodes: PseudoNode[] = [],
-  excludedEdges: Set<string> = new Set()
+  excludedEdges: Set<string> = new Set(),
+  sortConfig: SortConfig = DEFAULT_SORT_CONFIG
 ): { positions: Map<string, LayoutPosition>; backEdges: Set<string> } {
   const positions = new Map<string, LayoutPosition>();
   const backEdges = new Set<string>();
@@ -767,7 +749,16 @@ function computeGreedyLayout(
     // We use a modified Kahn's algorithm that tracks back edges
     const layers = new Map<string, number>();
     const queue = [...sources];
-    sources.forEach(id => layers.set(id, 0));
+
+    // Input boundaries get exclusive layer 0, other sources get layer 1 (if inputs exist)
+    const hasInputBoundaries = inputBoundaries.length > 0;
+    sources.forEach(id => {
+      if (inputBoundaries.includes(id)) {
+        layers.set(id, 0);
+      } else {
+        layers.set(id, hasInputBoundaries ? 1 : 0);
+      }
+    });
 
     const processed = new Set<string>();
     const inQueue = new Set<string>(sources);
@@ -924,6 +915,41 @@ function computeGreedyLayout(
       layerGroups.get(layer)!.push(nodeId);
     });
 
+    // Apply horizontal sort mode (affects layer assignment)
+    // Only 'timescale' and 'module' modes override the topological ordering
+    if (sortConfig.horizontal !== 'topological') {
+      // Clear existing layer groups
+      layerGroups.clear();
+
+      // Reassign layers based on horizontal sort mode
+      component.forEach(id => {
+        const node = nodeMap.get(id);
+        let newLayer: number;
+
+        if (sortConfig.horizontal === 'timescale') {
+          // Assign layer based on timescale (faster dynamics = earlier layer)
+          if (node) {
+            newLayer = getTimescaleSortIndex(node);
+          } else {
+            // Pseudo nodes go to a middle layer
+            newLayer = 4; // 'days' equivalent
+          }
+        } else if (sortConfig.horizontal === 'module') {
+          // Assign layer based on module order
+          const moduleId = node?.moduleId || pseudoNodes.find(p => p.id === id)?.moduleId || '';
+          newLayer = getModuleSortIndex(moduleId);
+        } else {
+          newLayer = layers.get(id) ?? 0;
+        }
+
+        layers.set(id, newLayer);
+        if (!layerGroups.has(newLayer)) {
+          layerGroups.set(newLayer, []);
+        }
+        layerGroups.get(newLayer)!.push(id);
+      });
+    }
+
     // Layer balancing: try to move nodes to later layers if it helps balance
     // This reduces clustering in middle layers by pushing nodes toward their sinks
     const sortedLayerKeys = Array.from(layerGroups.keys()).sort((a, b) => a - b);
@@ -1060,14 +1086,56 @@ function computeGreedyLayout(
     const adjOutgoing = dummyNodes.length > 0 ? dummyOutgoing : outgoing;
     const adjIncoming = dummyNodes.length > 0 ? dummyIncoming : incoming;
 
-    // Sort within layers by module initially
+    // Helper function for vertical sorting within layers
+    const getVerticalSortKey = (id: string): number | string => {
+      // Dummy nodes always go at the end
+      if (id.startsWith('__dummy_')) return 99999;
+
+      const node = nodeMap.get(id);
+      const pseudoNode = pseudoNodes.find(p => p.id === id);
+      const moduleId = node?.moduleId || pseudoNode?.moduleId || '';
+
+      switch (sortConfig.vertical) {
+        case 'region':
+          // Sort by brain region order
+          if (node) {
+            return getRegionSortIndex(node);
+          }
+          return REGION_ORDER.length; // Pseudo nodes go last
+
+        case 'cellType':
+          // Sort alphabetically by cell type
+          if (node) {
+            return getCellType(node);
+          }
+          return 'zzz'; // Pseudo nodes go last
+
+        case 'module':
+          // Sort by module ID
+          return getModuleSortIndex(moduleId);
+
+        case 'crossing':
+        default:
+          // Default to module-based initial sort, crossing minimization later
+          return getModuleSortIndex(moduleId);
+      }
+    };
+
+    // Sort within layers based on vertical sort mode
     layerGroups.forEach(ids => {
       ids.sort((a, b) => {
-        if (a.startsWith('__dummy_')) return 1;
-        if (b.startsWith('__dummy_')) return -1;
-        const modA = nodeMap.get(a)?.moduleId || pseudoNodes.find(p => p.id === a)?.moduleId || '';
-        const modB = nodeMap.get(b)?.moduleId || pseudoNodes.find(p => p.id === b)?.moduleId || '';
-        return modA.localeCompare(modB);
+        const keyA = getVerticalSortKey(a);
+        const keyB = getVerticalSortKey(b);
+
+        // Handle string vs number comparison
+        if (typeof keyA === 'string' && typeof keyB === 'string') {
+          return keyA.localeCompare(keyB);
+        }
+        if (typeof keyA === 'number' && typeof keyB === 'number') {
+          return keyA - keyB;
+        }
+        // Mixed types: numbers before strings
+        return typeof keyA === 'number' ? -1 : 1;
       });
     });
 
@@ -1145,88 +1213,92 @@ function computeGreedyLayout(
       return sorted[mid];
     };
 
-    // Bidirectional median heuristic: each node is positioned based on BOTH predecessors AND successors
-    // This creates more balanced layouts by pulling nodes toward their connections on both sides
-    for (let iter = 0; iter < 8; iter++) {
-      // Bidirectional pass: position each layer using weighted average of predecessor and successor medians
-      for (let i = 0; i < sortedLayers.length; i++) {
-        const layer = sortedLayers[i];
-        const prevLayer = i > 0 ? sortedLayers[i - 1] : null;
-        const nextLayer = i < sortedLayers.length - 1 ? sortedLayers[i + 1] : null;
-        const ids = layerGroups.get(layer)!;
-        const bidirectionalPos = new Map<string, number>();
+    // Only apply crossing minimization when vertical sort mode is 'crossing'
+    // Other modes (region, cellType, module) maintain their deterministic sort order
+    if (sortConfig.vertical === 'crossing') {
+      // Bidirectional median heuristic: each node is positioned based on BOTH predecessors AND successors
+      // This creates more balanced layouts by pulling nodes toward their connections on both sides
+      for (let iter = 0; iter < 8; iter++) {
+        // Bidirectional pass: position each layer using weighted average of predecessor and successor medians
+        for (let i = 0; i < sortedLayers.length; i++) {
+          const layer = sortedLayers[i];
+          const prevLayer = i > 0 ? sortedLayers[i - 1] : null;
+          const nextLayer = i < sortedLayers.length - 1 ? sortedLayers[i + 1] : null;
+          const ids = layerGroups.get(layer)!;
+          const bidirectionalPos = new Map<string, number>();
 
-        ids.forEach(id => {
-          let totalWeight = 0;
-          let weightedSum = 0;
+          ids.forEach(id => {
+            let totalWeight = 0;
+            let weightedSum = 0;
 
-          // Get median from predecessors (if not first layer)
-          if (prevLayer !== null) {
-            const preds = getNonBackPreds(id, prevLayer);
-            if (preds.length > 0) {
-              const predPositions = preds.map(p => nodePositionInLayer.get(p) ?? 0);
-              const predMedian = getMedian(predPositions);
-              // Weight by number of connections
-              weightedSum += predMedian * preds.length;
-              totalWeight += preds.length;
+            // Get median from predecessors (if not first layer)
+            if (prevLayer !== null) {
+              const preds = getNonBackPreds(id, prevLayer);
+              if (preds.length > 0) {
+                const predPositions = preds.map(p => nodePositionInLayer.get(p) ?? 0);
+                const predMedian = getMedian(predPositions);
+                // Weight by number of connections
+                weightedSum += predMedian * preds.length;
+                totalWeight += preds.length;
+              }
             }
-          }
 
-          // Get median from successors (if not last layer)
-          if (nextLayer !== null) {
-            const succs = getNonBackSuccs(id, nextLayer);
-            if (succs.length > 0) {
-              const succPositions = succs.map(t => nodePositionInLayer.get(t) ?? 0);
-              const succMedian = getMedian(succPositions);
-              // Weight by number of connections
-              weightedSum += succMedian * succs.length;
-              totalWeight += succs.length;
+            // Get median from successors (if not last layer)
+            if (nextLayer !== null) {
+              const succs = getNonBackSuccs(id, nextLayer);
+              if (succs.length > 0) {
+                const succPositions = succs.map(t => nodePositionInLayer.get(t) ?? 0);
+                const succMedian = getMedian(succPositions);
+                // Weight by number of connections
+                weightedSum += succMedian * succs.length;
+                totalWeight += succs.length;
+              }
             }
-          }
 
-          if (totalWeight > 0) {
-            bidirectionalPos.set(id, weightedSum / totalWeight);
-          } else {
-            bidirectionalPos.set(id, nodePositionInLayer.get(id) ?? 0);
-          }
-        });
-
-        ids.sort((a, b) => (bidirectionalPos.get(a) ?? 0) - (bidirectionalPos.get(b) ?? 0));
-        ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
-      }
-
-      // Local swap improvement: try swapping adjacent nodes if it reduces crossings
-      for (let i = 0; i < sortedLayers.length; i++) {
-        const layer = sortedLayers[i];
-        const ids = layerGroups.get(layer)!;
-
-        let improved = true;
-        let swapIterations = 0;
-        const maxSwapIterations = ids.length * 3; // Prevent infinite loops
-
-        while (improved && swapIterations < maxSwapIterations) {
-          improved = false;
-          swapIterations++;
-
-          for (let j = 0; j < ids.length - 1; j++) {
-            // Calculate crossings before swap
-            const prevCrossings = (i > 0 ? countCrossings(sortedLayers[i - 1], layer) : 0) +
-                                  (i < sortedLayers.length - 1 ? countCrossings(layer, sortedLayers[i + 1]) : 0);
-
-            // Try swap
-            [ids[j], ids[j + 1]] = [ids[j + 1], ids[j]];
-            ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
-
-            // Calculate crossings after swap
-            const newCrossings = (i > 0 ? countCrossings(sortedLayers[i - 1], layer) : 0) +
-                                 (i < sortedLayers.length - 1 ? countCrossings(layer, sortedLayers[i + 1]) : 0);
-
-            if (newCrossings < prevCrossings) {
-              improved = true; // Keep the swap
+            if (totalWeight > 0) {
+              bidirectionalPos.set(id, weightedSum / totalWeight);
             } else {
-              // Revert swap
+              bidirectionalPos.set(id, nodePositionInLayer.get(id) ?? 0);
+            }
+          });
+
+          ids.sort((a, b) => (bidirectionalPos.get(a) ?? 0) - (bidirectionalPos.get(b) ?? 0));
+          ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
+        }
+
+        // Local swap improvement: try swapping adjacent nodes if it reduces crossings
+        for (let i = 0; i < sortedLayers.length; i++) {
+          const layer = sortedLayers[i];
+          const ids = layerGroups.get(layer)!;
+
+          let improved = true;
+          let swapIterations = 0;
+          const maxSwapIterations = ids.length * 3; // Prevent infinite loops
+
+          while (improved && swapIterations < maxSwapIterations) {
+            improved = false;
+            swapIterations++;
+
+            for (let j = 0; j < ids.length - 1; j++) {
+              // Calculate crossings before swap
+              const prevCrossings = (i > 0 ? countCrossings(sortedLayers[i - 1], layer) : 0) +
+                                    (i < sortedLayers.length - 1 ? countCrossings(layer, sortedLayers[i + 1]) : 0);
+
+              // Try swap
               [ids[j], ids[j + 1]] = [ids[j + 1], ids[j]];
               ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
+
+              // Calculate crossings after swap
+              const newCrossings = (i > 0 ? countCrossings(sortedLayers[i - 1], layer) : 0) +
+                                   (i < sortedLayers.length - 1 ? countCrossings(layer, sortedLayers[i + 1]) : 0);
+
+              if (newCrossings < prevCrossings) {
+                improved = true; // Keep the swap
+              } else {
+                // Revert swap
+                [ids[j], ids[j + 1]] = [ids[j + 1], ids[j]];
+                ids.forEach((id, idx) => nodePositionInLayer.set(id, idx));
+              }
             }
           }
         }
@@ -1276,35 +1348,8 @@ function computeGreedyLayout(
   return { positions, backEdges };
 }
 
-// Module labels for pseudo-nodes
-const moduleLabels: Record<string, string> = {
-  'BOUNDARY': 'Boundary',
-  'M01': 'Insulin/mTOR',
-  'M02': 'Lysosomal',
-  'M03': 'Mitochondrial',
-  'M04': 'Inflammasome',
-  'M05': 'Microglial',
-  'M06': 'Amyloid',
-  'M07': 'Tau',
-  'M08': 'Complement',
-  'M09': 'Iron',
-  'M10': 'APOE',
-  'M11': 'TREM2',
-  'M12': 'BBB/Glymphatic',
-  'M13': 'Cholinergic',
-  'M14': 'MAM/Calcium',
-  'M15': 'Interventions',
-  'M16': 'Sex/Ancestry',
-  'M17': 'Immunomodulatory',
-};
-
-// Boundary expansion config
-interface BoundaryExpansionConfig {
-  inputExpanded: boolean;
-  outputExpanded: boolean;
-  onToggleInput: () => void;
-  onToggleOutput: () => void;
-}
+// Module labels imported from './MechanisticNetworkGraph/constants'
+// BoundaryExpansionConfig imported from './MechanisticNetworkGraph/types'
 
 // Convert mechanistic nodes to React Flow nodes with dynamic layout
 function convertNodes(
@@ -1312,7 +1357,8 @@ function convertNodes(
   moduleFilters: Record<string, ModuleFilterState>,
   variantCallbacks?: VariantCallbacks,
   pinnedNodes: Set<string> = new Set(),
-  boundaryExpansion?: BoundaryExpansionConfig
+  boundaryExpansion?: BoundaryExpansionConfig,
+  sortConfig: SortConfig = DEFAULT_SORT_CONFIG
 ): { flowNodes: Node[]; pseudoNodes: PseudoNode[]; excludedEdges: Set<string>; nodePositions: Map<string, LayoutPosition>; backEdges: Set<string> } {
   // Identify input and output boundaries from all nodes
   const inputBoundaryNodes = nodes.filter(n =>
@@ -1350,21 +1396,115 @@ function convertNodes(
   const flowNodes: Node[] = [];
 
   // Find pseudo-nodes for hidden connecting modules
-  const { pseudoNodes, excludedEdges } = findPseudoNodes(filteredNodes, allEdges, nodes);
+  const { pseudoNodes: modulePseudoNodes, excludedEdges: moduleExcludedEdges } = findPseudoNodes(filteredNodes, allEdges, nodes);
+
+  // Create mutable copies for adding boundary pseudo-nodes
+  const pseudoNodes: PseudoNode[] = [...modulePseudoNodes];
+  const excludedEdges = new Set(moduleExcludedEdges);
+
+  // Build adjacency maps for boundary pseudo-node connections
+  const outgoing: Record<string, string[]> = {};
+  const incoming: Record<string, string[]> = {};
+  nodes.forEach(n => {
+    outgoing[n.id] = [];
+    incoming[n.id] = [];
+  });
+  allEdges.forEach(e => {
+    outgoing[e.source]?.push(e.target);
+    incoming[e.target]?.push(e.source);
+  });
+
+  const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
+
+  // Create pseudo-node for collapsed INPUT boundaries
+  if (boundaryExpansion && !boundaryExpansion.inputExpanded && inputBoundaryNodes.length > 0) {
+    // Find visible nodes that INPUT boundaries connect TO
+    const visibleTargetsFromInputs = new Set<string>();
+    const inputBoundaryIds = new Set(inputBoundaryNodes.map(n => n.id));
+
+    inputBoundaryNodes.forEach(inputNode => {
+      // Get nodes this input boundary connects to
+      (outgoing[inputNode.id] || []).forEach(targetId => {
+        if (filteredNodeIds.has(targetId)) {
+          visibleTargetsFromInputs.add(targetId);
+        }
+      });
+    });
+
+    if (visibleTargetsFromInputs.size > 0) {
+      pseudoNodes.push({
+        id: '__pseudo_INPUTS',
+        label: 'Inputs',
+        moduleId: 'BOUNDARY',
+        isPseudo: true,
+        connectsFrom: [], // No incoming connections (inputs are the start)
+        connectsTo: Array.from(visibleTargetsFromInputs),
+      });
+
+      // Exclude direct edges from input boundaries to visible nodes
+      allEdges.forEach(edge => {
+        if (inputBoundaryIds.has(edge.source) && filteredNodeIds.has(edge.target)) {
+          excludedEdges.add(edge.id);
+        }
+      });
+    }
+  }
+
+  // Create pseudo-node for collapsed OUTPUT boundaries
+  if (boundaryExpansion && !boundaryExpansion.outputExpanded && outputBoundaryNodes.length > 0) {
+    // Find visible nodes that connect TO output boundaries
+    const visibleSourcesIntoOutputs = new Set<string>();
+    const outputBoundaryIds = new Set(outputBoundaryNodes.map(n => n.id));
+
+    outputBoundaryNodes.forEach(outputNode => {
+      // Get nodes that connect to this output boundary
+      (incoming[outputNode.id] || []).forEach(sourceId => {
+        if (filteredNodeIds.has(sourceId)) {
+          visibleSourcesIntoOutputs.add(sourceId);
+        }
+      });
+    });
+
+    if (visibleSourcesIntoOutputs.size > 0) {
+      pseudoNodes.push({
+        id: '__pseudo_OUTPUTS',
+        label: 'Outputs',
+        moduleId: 'BOUNDARY',
+        isPseudo: true,
+        connectsFrom: Array.from(visibleSourcesIntoOutputs),
+        connectsTo: [], // No outgoing connections (outputs are the end)
+      });
+
+      // Exclude direct edges from visible nodes to output boundaries
+      allEdges.forEach(edge => {
+        if (filteredNodeIds.has(edge.source) && outputBoundaryIds.has(edge.target)) {
+          excludedEdges.add(edge.id);
+        }
+      });
+    }
+  }
 
   // Compute dynamic layout for filtered nodes + pseudo nodes (also identifies back edges)
-  const { positions: dynamicPositions, backEdges } = computeGreedyLayout(filteredNodes, allEdges, pseudoNodes, excludedEdges);
+  const { positions: dynamicPositions, backEdges } = computeGreedyLayout(filteredNodes, allEdges, pseudoNodes, excludedEdges, sortConfig);
 
   // Add pseudo-nodes to flow
   pseudoNodes.forEach(pn => {
     const pos = dynamicPositions.get(pn.id);
     const color = moduleColors[pn.moduleId] || '#787473';
 
+    // Use custom labels for boundary pseudo-nodes
+    let label = `via ${moduleLabels[pn.moduleId] || pn.moduleId}`;
+    if (pn.id === '__pseudo_INPUTS') {
+      label = 'via Inputs';
+    } else if (pn.id === '__pseudo_OUTPUTS') {
+      label = 'via Outputs';
+    }
+
     flowNodes.push({
       id: pn.id,
       position: { x: pos?.x ?? 50, y: pos?.y ?? 50 },
       data: {
-        label: `via ${moduleLabels[pn.moduleId] || pn.moduleId}`,
+        label,
         moduleId: pn.moduleId,
         isPseudo: true,
       },
@@ -2152,10 +2292,97 @@ function MechanisticNetworkGraphInner({
   const [showCrossModuleConnections, setShowCrossModuleConnections] = useState(true);
 
   // Show hidden module indicators on edge nodes (what hidden modules they connect to)
-  const [showHiddenModuleIndicators, setShowHiddenModuleIndicators] = useState(false);
+  const [showHiddenModuleIndicators, setShowHiddenModuleIndicators] = useState(true);
 
   // Show feedback loops (back edges that create cycles)
   const [showFeedbackLoops, setShowFeedbackLoops] = useState(true);
+
+  // Sort configuration for graph layout
+  const [horizontalSort, setHorizontalSort] = useState<HorizontalSortMode>('topological');
+  const [verticalSort, setVerticalSort] = useState<VerticalSortMode>('crossing');
+
+  // Memoized sort config
+  const sortConfig: SortConfig = useMemo(() => ({
+    horizontal: horizontalSort,
+    vertical: verticalSort,
+  }), [horizontalSort, verticalSort]);
+
+  // Custom node creation state
+  const [addNodeMode, setAddNodeMode] = useState<'idle' | 'selectTarget' | 'customize'>('idle');
+
+  // Custom node type
+  type CustomNodeType = {
+    id: string;
+    label: string;
+    attachedTo: string;
+    direction: 'input' | 'output';
+    description?: string;
+    source?: string;  // Citation/source for the node
+    variants?: Array<{
+      id: string;
+      label: string;
+      effectDirection: 'protective' | 'neutral' | 'risk';
+      effectMagnitude: number;
+      color: string;
+      frequency?: number;
+      source?: string;  // Citation/source for the variant
+    }>;
+  };
+
+  const [customNodes, setCustomNodes] = useState<CustomNodeType[]>([]);
+  const [editingCustomNodeId, setEditingCustomNodeId] = useState<string | null>(null);
+
+  // Undo/redo history for custom nodes
+  const [customNodesHistory, setCustomNodesHistory] = useState<CustomNodeType[][]>([[]]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  // Save state to history (call this before making changes)
+  const saveToHistory = useCallback((newNodes: CustomNodeType[]) => {
+    setCustomNodesHistory(prev => {
+      // Remove any future states if we're not at the end
+      const newHistory = prev.slice(0, historyIndex + 1);
+      // Add new state
+      newHistory.push(newNodes);
+      // Limit history to 50 items
+      if (newHistory.length > 50) {
+        newHistory.shift();
+        return newHistory;
+      }
+      return newHistory;
+    });
+    setHistoryIndex(prev => Math.min(prev + 1, 49));
+  }, [historyIndex]);
+
+  // Undo action
+  const undoCustomNodes = useCallback(() => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      setCustomNodes(customNodesHistory[newIndex]);
+    }
+  }, [historyIndex, customNodesHistory]);
+
+  // Redo action
+  const redoCustomNodes = useCallback(() => {
+    if (historyIndex < customNodesHistory.length - 1) {
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      setCustomNodes(customNodesHistory[newIndex]);
+    }
+  }, [historyIndex, customNodesHistory]);
+
+  // Helper to update custom nodes with history
+  const updateCustomNodesWithHistory = useCallback((updater: (prev: CustomNodeType[]) => CustomNodeType[]) => {
+    setCustomNodes(prev => {
+      const newNodes = updater(prev);
+      saveToHistory(newNodes);
+      return newNodes;
+    });
+  }, [saveToHistory]);
+
+  // Check if undo/redo is available
+  const canUndo = historyIndex > 0;
+  const canRedo = historyIndex < customNodesHistory.length - 1;
 
   // Toggle a category's expanded state
   const toggleCategory = useCallback((category: ModuleCategory) => {
@@ -2176,6 +2403,75 @@ function MechanisticNetworkGraphInner({
     previousFilters: Record<string, ModuleFilterState>;
   } | null>(null);
 
+  // Drug pathway visualization state
+  const [selectedDrug, setSelectedDrug] = useState<DrugLibraryEntry | null>(null);
+  const [drugPathway, setDrugPathway] = useState<DrugPathwayConfig | null>(null);
+  const [showDrugLibrary, setShowDrugLibrary] = useState(false);
+  const [drugPathwayFocusMode, setDrugPathwayFocusMode] = useState(false);
+
+  // Calculate pathway when drug is selected
+  useEffect(() => {
+    if (selectedDrug) {
+      const pathway = calculateDrugPathway(
+        selectedDrug,
+        allNodes,
+        allEdges,
+        feedbackLoops,
+        5 // maxDepth
+      );
+      setDrugPathway(pathway);
+    } else {
+      setDrugPathway(null);
+      setDrugPathwayFocusMode(false);
+    }
+  }, [selectedDrug]);
+
+  // Handle drug selection
+  const handleSelectDrug = useCallback((drug: DrugLibraryEntry) => {
+    setSelectedDrug(drug);
+    setShowDrugLibrary(false);
+    // Enable modules that contain the pathway
+    const pathway = calculateDrugPathway(drug, allNodes, allEdges, feedbackLoops, 5);
+    const modulesToEnable = new Set(pathway.affectedModules);
+    setModuleFilters(prev => {
+      const updated = { ...prev };
+      modulesToEnable.forEach(moduleId => {
+        if (updated[moduleId] === 'off') {
+          updated[moduleId] = 'on';
+        }
+      });
+      return updated;
+    });
+  }, []);
+
+  // Close drug pathway view
+  const handleCloseDrugPathway = useCallback(() => {
+    setSelectedDrug(null);
+    setDrugPathway(null);
+    setDrugPathwayFocusMode(false);
+  }, []);
+
+  // Toggle drug pathway focus mode
+  const handleToggleDrugPathwayFocus = useCallback(() => {
+    setDrugPathwayFocusMode(prev => !prev);
+  }, []);
+
+  // Get pathway node set for styling
+  const pathwayNodeSet = useMemo(() => {
+    if (!drugPathway) return new Set<string>();
+    return new Set([
+      ...drugPathway.upstreamNodes,
+      ...drugPathway.targetNodes,
+      ...drugPathway.downstreamNodes,
+    ]);
+  }, [drugPathway]);
+
+  // Get pathway edge set for styling
+  const pathwayEdgeSet = useMemo(() => {
+    if (!drugPathway) return new Set<string>();
+    return new Set(drugPathway.pathwayEdges);
+  }, [drugPathway]);
+
   const { fitView } = useReactFlow();
 
   // Fit view when fullscreen mode changes
@@ -2187,16 +2483,22 @@ function MechanisticNetworkGraphInner({
     return () => clearTimeout(timer);
   }, [isFullscreen, fitView]);
 
-  // Escape key to exit fullscreen
+  // Escape key to exit fullscreen or drug pathway mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isFullscreen) {
-        setIsFullscreen(false);
+      if (e.key === 'Escape') {
+        if (drugPathwayFocusMode) {
+          setDrugPathwayFocusMode(false);
+        } else if (selectedDrug) {
+          handleCloseDrugPathway();
+        } else if (isFullscreen) {
+          setIsFullscreen(false);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isFullscreen]);
+  }, [isFullscreen, drugPathwayFocusMode, selectedDrug, handleCloseDrugPathway]);
 
   // Search results for node search (pinning) - includes visibility status
   const searchResults = useMemo(() => {
@@ -2297,9 +2599,9 @@ function MechanisticNetworkGraphInner({
   const [currentBackEdges, setCurrentBackEdges] = useState<Set<string>>(new Set());
 
   const { flowNodes: initialFlowNodes, pseudoNodes: initialPseudoNodes, excludedEdges: initialExcludedEdges, backEdges: initialBackEdges, nodePositions: initialNodePositions } = useMemo(
-    () => convertNodes(allNodes, moduleFilters, variantCallbacks, pinnedNodes, boundaryExpansionConfig),
+    () => convertNodes(allNodes, moduleFilters, variantCallbacks, pinnedNodes, boundaryExpansionConfig, sortConfig),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [moduleFilters, pinnedNodes, boundaryExpansionConfig] // Recreate nodes when module filters, pinned nodes, or boundary expansion change
+    [moduleFilters, pinnedNodes, boundaryExpansionConfig, sortConfig] // Recreate nodes when module filters, pinned nodes, boundary expansion, or sort config change
   );
 
   // Filter pseudo-nodes based on toggle
@@ -2380,13 +2682,113 @@ function MechanisticNetworkGraphInner({
     );
   }, [selectedVariant, hoveredVariant, setNodes]);
 
-  // Recreate all nodes when module filters, pinned nodes, boundary expansion, or cross-module toggle change
+  // Apply pathway focus styling when drug pathway focus mode changes
+  useEffect(() => {
+    if (!drugPathway) return;
+
+    setNodes(currentNodes =>
+      currentNodes.map(node => {
+        // Skip waypoints and pseudo-nodes
+        if (node.id.startsWith('__waypoint_') || node.id.startsWith('__pseudo_') || node.id.startsWith('__dummy_')) {
+          return node;
+        }
+
+        const isInPathway = pathwayNodeSet.has(node.id);
+        const isTarget = drugPathway.targetNodes.includes(node.id);
+
+        // Determine opacity and styling based on focus mode
+        if (drugPathwayFocusMode) {
+          if (isTarget) {
+            // Target nodes get highlighted with green border
+            return {
+              ...node,
+              style: {
+                ...node.style,
+                opacity: 1,
+                border: `3px solid #5a8a6e`, // Sage green for targets
+                boxShadow: '0 0 8px rgba(90, 138, 110, 0.5)',
+              },
+            };
+          } else if (isInPathway) {
+            // Pathway nodes stay visible
+            return {
+              ...node,
+              style: {
+                ...node.style,
+                opacity: 1,
+              },
+            };
+          } else {
+            // Non-pathway nodes get dimmed
+            return {
+              ...node,
+              style: {
+                ...node.style,
+                opacity: 0.2,
+                filter: 'grayscale(100%)',
+              },
+            };
+          }
+        } else {
+          // Not in focus mode - restore normal styling
+          // Remove pathway-specific styling
+          const { boxShadow, filter, ...restStyle } = node.style || {};
+          return {
+            ...node,
+            style: {
+              ...restStyle,
+              opacity: node.data?.isPartial ? 0.5 : 1,
+            },
+          };
+        }
+      })
+    );
+
+    // Also update edges for focus mode
+    setEdges(currentEdges =>
+      currentEdges.map(edge => {
+        const isInPathway = pathwayEdgeSet.has(edge.id) ||
+          // Also check for back edge segments
+          edge.id.includes('_seg') && pathwayEdgeSet.has(edge.id.split('_seg')[0]);
+
+        if (drugPathwayFocusMode) {
+          if (isInPathway) {
+            return {
+              ...edge,
+              style: {
+                ...edge.style,
+                opacity: 1,
+              },
+            };
+          } else {
+            return {
+              ...edge,
+              style: {
+                ...edge.style,
+                opacity: 0.1,
+              },
+            };
+          }
+        } else {
+          return {
+            ...edge,
+            style: {
+              ...edge.style,
+              opacity: 1,
+            },
+          };
+        }
+      })
+    );
+  }, [drugPathwayFocusMode, drugPathway, pathwayNodeSet, pathwayEdgeSet, setNodes, setEdges]);
+
+  // Recreate all nodes when module filters, pinned nodes, boundary expansion, cross-module toggle, or sort config change
   useEffect(() => {
     const { flowNodes: newFlowNodes, pseudoNodes: newPseudoNodes, excludedEdges: newExcludedEdges, backEdges: newBackEdges, nodePositions: newNodePositions } = convertNodes(allNodes, moduleFilters, {
       ...variantCallbacks,
       selectedVariant,
       hoveredVariant,
-    }, pinnedNodes, boundaryExpansionConfig);
+    }, pinnedNodes, boundaryExpansionConfig, sortConfig);
 
     // Filter pseudo-nodes based on toggle
     const effectiveNewPseudoNodes = showCrossModuleConnections ? newPseudoNodes : [];
@@ -2408,7 +2810,112 @@ function MechanisticNetworkGraphInner({
     setCurrentBackEdges(newBackEdges);
     setCurrentNodePositions(newNodePositions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moduleFilters, pinnedNodes, boundaryExpansionConfig, showCrossModuleConnections, showFeedbackLoops]); // On module filter, pinned nodes, boundary expansion, cross-module toggle, or feedback loops changes
+  }, [moduleFilters, pinnedNodes, boundaryExpansionConfig, showCrossModuleConnections, showFeedbackLoops, sortConfig]); // On module filter, pinned nodes, boundary expansion, cross-module toggle, feedback loops, or sort config changes
+
+  // Add custom nodes to the graph when they change
+  useEffect(() => {
+    if (customNodes.length === 0) return;
+
+    // Create custom node objects
+    const customFlowNodes: Node[] = customNodes.map(cn => {
+      // Find the position of the attached node
+      const attachedNodePos = currentNodePositions.get(cn.attachedTo);
+      const xOffset = cn.direction === 'input' ? -200 : 200;
+      const x = (attachedNodePos?.x ?? 0) + xOffset;
+      const y = attachedNodePos?.y ?? 0;
+
+      // If the custom node has variants, use the BoundaryVariantNode type
+      const hasVariants = cn.variants && cn.variants.length > 0;
+
+      if (hasVariants) {
+        return {
+          id: cn.id,
+          type: 'boundaryVariant',
+          position: { x, y },
+          data: {
+            label: cn.label,
+            variants: cn.variants,
+            moduleId: 'CUSTOM',  // Custom module ID for styling
+            isCustom: true,
+            attachedTo: cn.attachedTo,
+            direction: cn.direction,
+            description: cn.description,
+            source: cn.source,
+            onVariantSelect: handleVariantSelect,
+            onVariantHover: handleVariantHover,
+            selectedVariant,
+            hoveredVariant,
+          },
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+        };
+      }
+
+      // Simple custom node without variants
+      return {
+        id: cn.id,
+        position: { x, y },
+        data: {
+          label: cn.label,
+          isCustom: true,
+          attachedTo: cn.attachedTo,
+          direction: cn.direction,
+          description: cn.description,
+          source: cn.source,
+        },
+        style: {
+          background: '#fff',
+          border: '2px dashed var(--accent-orange)',
+          borderRadius: '8px',
+          padding: '8px 12px',
+          fontSize: '11px',
+          fontWeight: 500,
+          color: cn.label === 'Click to customize...' ? 'var(--text-muted)' : 'var(--text-primary)',
+          fontStyle: cn.label === 'Click to customize...' ? 'italic' : 'normal',
+          cursor: 'pointer',
+          minWidth: '120px',
+          textAlign: 'center' as const,
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+      };
+    });
+
+    // Create edges connecting custom nodes to their attached nodes
+    const customEdges: Edge[] = customNodes.map(cn => {
+      const edgeId = `__custom_edge_${cn.id}`;
+      const isInput = cn.direction === 'input';
+
+      return {
+        id: edgeId,
+        source: isInput ? cn.id : cn.attachedTo,
+        target: isInput ? cn.attachedTo : cn.id,
+        animated: false,
+        style: {
+          stroke: 'var(--accent-orange)',
+          strokeWidth: 2,
+          strokeDasharray: '5,5',
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: 'var(--accent-orange)',
+        },
+      };
+    });
+
+    // Add custom nodes and edges to the graph
+    setNodes(currentNodes => {
+      // Remove old custom nodes first
+      const nonCustomNodes = currentNodes.filter(n => !n.id.startsWith('__custom_'));
+      return [...nonCustomNodes, ...customFlowNodes];
+    });
+
+    setEdges(currentEdges => {
+      // Remove old custom edges first
+      const nonCustomEdges = currentEdges.filter(e => !e.id.startsWith('__custom_edge_'));
+      return [...nonCustomEdges, ...customEdges];
+    });
+  }, [customNodes, currentNodePositions, setNodes, setEdges, handleVariantSelect, handleVariantHover, selectedVariant, hoveredVariant]);
 
   // Update edges when variant or module filters change (but not for module filter changes which are handled above)
   useEffect(() => {
@@ -2500,6 +3007,86 @@ function MechanisticNetworkGraphInner({
     }
   }, [focusMode]);
 
+  // Export graph state to JSON file
+  const exportGraphState = useCallback(() => {
+    const state = {
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      moduleFilters,
+      pinnedNodes: Array.from(pinnedNodes),
+      customNodes,
+      inputBoundariesExpanded,
+      outputBoundariesExpanded,
+      showCrossModuleConnections,
+      showFeedbackLoops,
+    };
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mechanistic-graph-state-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [moduleFilters, pinnedNodes, customNodes, inputBoundariesExpanded, outputBoundariesExpanded, showCrossModuleConnections, showFeedbackLoops]);
+
+  // Import graph state from JSON file
+  const importGraphState = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const state = JSON.parse(e.target?.result as string);
+
+        // Validate version
+        if (!state.version) {
+          alert('Invalid graph state file: missing version');
+          return;
+        }
+
+        // Import module filters
+        if (state.moduleFilters) {
+          setModuleFilters(state.moduleFilters);
+        }
+
+        // Import pinned nodes
+        if (state.pinnedNodes && Array.isArray(state.pinnedNodes)) {
+          setPinnedNodes(new Set(state.pinnedNodes));
+        }
+
+        // Import custom nodes
+        if (state.customNodes && Array.isArray(state.customNodes)) {
+          setCustomNodes(state.customNodes);
+        }
+
+        // Import boundary expansion states
+        if (typeof state.inputBoundariesExpanded === 'boolean') {
+          setInputBoundariesExpanded(state.inputBoundariesExpanded);
+        }
+        if (typeof state.outputBoundariesExpanded === 'boolean') {
+          setOutputBoundariesExpanded(state.outputBoundariesExpanded);
+        }
+
+        // Import toggle states
+        if (typeof state.showCrossModuleConnections === 'boolean') {
+          setShowCrossModuleConnections(state.showCrossModuleConnections);
+        }
+        if (typeof state.showFeedbackLoops === 'boolean') {
+          setShowFeedbackLoops(state.showFeedbackLoops);
+        }
+      } catch (err) {
+        alert('Failed to parse graph state file: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      }
+    };
+    reader.readAsText(file);
+
+    // Reset input value to allow re-importing same file
+    event.target.value = '';
+  }, []);
+
   // Fit view only when module filters change (not on variant hover)
   useEffect(() => {
     // Small delay to ensure nodes are rendered before fitting
@@ -2516,8 +3103,22 @@ function MechanisticNetworkGraphInner({
       return;
     }
 
+    // Handle custom node clicks - open editing panel
+    if (node.data?.isCustom) {
+      setEditingCustomNodeId(node.id);
+      setAddNodeMode('customize');
+      setSelectedNode(null);
+      setSelectedEdge(null);
+      return;
+    }
+
     setSelectedNode(node);
     setSelectedEdge(null);
+    setEditingCustomNodeId(null);
+    if (addNodeMode === 'customize') {
+      setAddNodeMode('idle');
+    }
+
     // Set activeVariantNodeId for boundary nodes with variants
     if (node.type === 'boundaryVariant' && node.data?.variants) {
       setActiveVariantNodeId(node.id);
@@ -2526,7 +3127,7 @@ function MechanisticNetworkGraphInner({
       setSelectedVariant(null);
       setHoveredVariant(null);
     }
-  }, [enterFocusMode]);
+  }, [enterFocusMode, addNodeMode]);
 
   const onEdgeClick = useCallback((_: React.MouseEvent, edge: Edge) => {
     setSelectedEdge(edge);
@@ -2753,6 +3354,60 @@ function MechanisticNetworkGraphInner({
                   </label>
                 )}
 
+                {/* Inputs toggle */}
+                <label
+                  className="flex items-center gap-1 cursor-pointer group"
+                  title={inputBoundariesExpanded ? "Hide input boundary nodes" : "Show input boundary nodes"}
+                >
+                  <input
+                    type="checkbox"
+                    checked={inputBoundariesExpanded}
+                    onChange={toggleInputBoundaries}
+                    className="sr-only peer"
+                  />
+                  <div className={`w-3 h-3 border-2 border-dashed rounded transition-all ${
+                    inputBoundariesExpanded
+                      ? 'bg-[#787473] border-transparent'
+                      : 'bg-white border-[var(--border)] group-hover:border-[#787473]'
+                  }`}>
+                    {inputBoundariesExpanded && (
+                      <svg className="w-2 h-2 text-white" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-[9px] text-[var(--text-muted)] group-hover:text-[var(--text-primary)]">
+                    Inputs
+                  </span>
+                </label>
+
+                {/* Outputs toggle */}
+                <label
+                  className="flex items-center gap-1 cursor-pointer group"
+                  title={outputBoundariesExpanded ? "Hide output boundary nodes" : "Show output boundary nodes"}
+                >
+                  <input
+                    type="checkbox"
+                    checked={outputBoundariesExpanded}
+                    onChange={toggleOutputBoundaries}
+                    className="sr-only peer"
+                  />
+                  <div className={`w-3 h-3 border-2 border-dashed rounded transition-all ${
+                    outputBoundariesExpanded
+                      ? 'bg-[#787473] border-transparent'
+                      : 'bg-white border-[var(--border)] group-hover:border-[#787473]'
+                  }`}>
+                    {outputBoundariesExpanded && (
+                      <svg className="w-2 h-2 text-white" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-[9px] text-[var(--text-muted)] group-hover:text-[var(--text-primary)]">
+                    Outputs
+                  </span>
+                </label>
+
                 {/* Hidden module indicators toggle */}
                 <label
                   className="flex items-center gap-1 cursor-pointer group"
@@ -2766,8 +3421,8 @@ function MechanisticNetworkGraphInner({
                   />
                   <div className={`w-3 h-3 border-2 rounded transition-all ${
                     showHiddenModuleIndicators
-                      ? 'bg-[var(--chart-secondary)] border-transparent'
-                      : 'bg-white border-[var(--border)] group-hover:border-[var(--chart-secondary)]'
+                      ? 'bg-[#e36216] border-transparent'
+                      : 'bg-white border-[var(--border)] group-hover:border-[#e36216]'
                   }`}>
                     {showHiddenModuleIndicators && (
                       <svg className="w-2 h-2 text-white" viewBox="0 0 12 12" fill="none">
@@ -2806,20 +3461,128 @@ function MechanisticNetworkGraphInner({
                     Feedback
                   </span>
                 </label>
+
+                {/* Separator */}
+                <div className="w-px h-3 bg-[var(--border)] mx-1" />
+
+                {/* Horizontal sort control */}
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] text-[var(--text-muted)]">X:</span>
+                  <select
+                    value={horizontalSort}
+                    onChange={(e) => setHorizontalSort(e.target.value as HorizontalSortMode)}
+                    className="text-[9px] px-1 py-0.5 border border-[var(--border)] rounded bg-white hover:border-[var(--accent-orange)] transition-colors cursor-pointer"
+                    title="Horizontal sorting: determines left-to-right positioning"
+                  >
+                    <option value="topological">Causal Flow</option>
+                    <option value="timescale">Timescale</option>
+                    <option value="module">Module</option>
+                  </select>
+                </div>
+
+                {/* Vertical sort control */}
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] text-[var(--text-muted)]">Y:</span>
+                  <select
+                    value={verticalSort}
+                    onChange={(e) => setVerticalSort(e.target.value as VerticalSortMode)}
+                    className="text-[9px] px-1 py-0.5 border border-[var(--border)] rounded bg-white hover:border-[var(--accent-orange)] transition-colors cursor-pointer"
+                    title="Vertical sorting: determines top-to-bottom positioning within layers"
+                  >
+                    <option value="crossing">Minimize Crossings</option>
+                    <option value="region">Brain Region</option>
+                    <option value="cellType">Cell Type</option>
+                    <option value="module">Module</option>
+                  </select>
+                </div>
               </div>
             );
           })()}
 
-          {/* Right: Add node button */}
-          <div className="relative ml-auto">
+          {/* Right: Export/Import and Add node buttons */}
+          <div className="relative ml-auto flex items-center gap-1">
+            {/* Export Button */}
             <button
-              onClick={() => setShowNodeSearch(!showNodeSearch)}
-              className="px-1.5 py-0.5 bg-white border border-[var(--border)] rounded hover:border-[var(--accent-orange)]"
+              onClick={exportGraphState}
+              className="px-1.5 py-0.5 text-xs border border-[var(--border)] rounded bg-white hover:border-[var(--accent-orange)] transition-colors"
+              title="Export graph state to JSON file"
             >
-              + Add Node
+              ↓ Export
             </button>
-            {showNodeSearch && (
-              <div className="absolute top-full right-0 mt-1 z-50 bg-white border border-[var(--border)] rounded shadow-lg w-56">
+
+            {/* Import Button */}
+            <label
+              className="px-1.5 py-0.5 text-xs border border-[var(--border)] rounded bg-white hover:border-[var(--accent-orange)] transition-colors cursor-pointer"
+              title="Import graph state from JSON file"
+            >
+              ↑ Import
+              <input
+                type="file"
+                accept=".json"
+                onChange={importGraphState}
+                className="hidden"
+              />
+            </label>
+
+            {/* Drug Library Button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowDrugLibrary(!showDrugLibrary)}
+                className={`px-1.5 py-0.5 border rounded transition-colors flex items-center gap-1 ${
+                  selectedDrug || showDrugLibrary
+                    ? 'bg-[var(--accent-orange)] text-white border-[var(--accent-orange)]'
+                    : 'bg-white border-[var(--border)] hover:border-[var(--accent-orange)]'
+                }`}
+                title="Browse drug library to visualize pathways"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                Drugs
+              </button>
+              {showDrugLibrary && (
+                <div className="absolute top-full right-0 mt-1 z-50">
+                  <DrugLibraryPicker
+                    onSelectDrug={handleSelectDrug}
+                    onClose={() => setShowDrugLibrary(false)}
+                    selectedDrugId={selectedDrug?.id}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Add Node Button */}
+            <button
+              onClick={() => {
+                if (addNodeMode === 'idle') {
+                  setAddNodeMode('selectTarget');
+                  setShowNodeSearch(true);
+                  setNodeSearchQuery('');
+                } else {
+                  setAddNodeMode('idle');
+                  setShowNodeSearch(false);
+                  setEditingCustomNodeId(null);
+                }
+              }}
+              className={`px-1.5 py-0.5 border rounded transition-colors ${
+                addNodeMode !== 'idle'
+                  ? 'bg-[var(--accent-orange)] text-white border-[var(--accent-orange)]'
+                  : 'bg-white border-[var(--border)] hover:border-[var(--accent-orange)]'
+              }`}
+            >
+              {addNodeMode === 'customize' ? '✓ Done' : addNodeMode === 'selectTarget' ? '✕ Cancel' : '+ Add Node'}
+            </button>
+            {showNodeSearch && addNodeMode === 'selectTarget' && (
+              <div className="absolute top-full right-0 mt-1 z-50 bg-white border border-[var(--border)] rounded shadow-lg w-64">
+                {/* Instruction header */}
+                <div className="px-3 py-2 bg-[var(--accent-orange-light)] border-b border-[var(--border)]">
+                  <p className="text-xs font-medium text-[var(--accent-orange)]">
+                    Choose a node to attach to:
+                  </p>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
+                    The new node will connect to this node
+                  </p>
+                </div>
                 <input
                   type="text"
                   value={nodeSearchQuery}
@@ -2831,50 +3594,51 @@ function MechanisticNetworkGraphInner({
                 {searchResults.length > 0 && (
                   <div className="max-h-48 overflow-y-auto">
                     {searchResults.map(node => (
-                      <div
+                      <button
                         key={node.id}
-                        className={`w-full px-2 py-1.5 text-left text-xs hover:bg-[var(--bg-secondary)] flex items-center gap-2 ${
-                          node.isHidden ? 'bg-[var(--danger-light)]' : ''
+                        onClick={() => {
+                          // Create a new custom node attached to this node
+                          const newNodeId = `__custom_${Date.now()}`;
+                          updateCustomNodesWithHistory(prev => [...prev, {
+                            id: newNodeId,
+                            label: 'Click to customize...',
+                            attachedTo: node.id,
+                            direction: 'input',
+                          }]);
+                          setEditingCustomNodeId(newNodeId);
+                          setAddNodeMode('customize');
+                          setShowNodeSearch(false);
+                          setNodeSearchQuery('');
+                          // Ensure the target node's module is visible
+                          if (node.isHidden) {
+                            setModuleFilters(prev => ({ ...prev, [node.moduleId]: 'on' }));
+                          }
+                        }}
+                        className={`w-full px-2 py-1.5 text-left text-xs hover:bg-[var(--accent-orange-light)] flex items-center gap-2 transition-colors ${
+                          node.isHidden ? 'bg-[var(--bg-secondary)]' : ''
                         }`}
                       >
                         <span
                           className="w-2 h-2 rounded-full flex-shrink-0"
                           style={{ backgroundColor: moduleColors[node.moduleId] || '#787473' }}
                         />
-                        <span className={`truncate ${node.isHidden ? 'text-[var(--text-muted)]' : ''}`}>
+                        <span className={`truncate flex-1 ${node.isHidden ? 'text-[var(--text-muted)]' : ''}`}>
                           {node.label}
                         </span>
                         {node.isHidden && (
-                          <span className="text-[var(--danger)] text-[8px] flex-shrink-0">
+                          <span className="text-[var(--text-muted)] text-[8px] flex-shrink-0">
                             (hidden)
                           </span>
                         )}
-                        <span className="text-[var(--text-muted)] text-[9px] ml-auto flex-shrink-0">{node.moduleId}</span>
-                        {node.isHidden ? (
-                          <button
-                            onClick={() => {
-                              setModuleFilters(prev => ({ ...prev, [node.moduleId]: 'on' }));
-                            }}
-                            className="text-[8px] px-1 py-0.5 bg-[var(--accent-orange)] text-white rounded hover:bg-[var(--accent-orange)]/80 flex-shrink-0"
-                            title="Show module"
-                          >
-                            Show
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => pinNode(node.id)}
-                            className="text-[8px] px-1 py-0.5 bg-[var(--success)] text-white rounded hover:bg-[var(--success)]/80 flex-shrink-0"
-                            title="Pin node"
-                          >
-                            Pin
-                          </button>
-                        )}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}
                 {nodeSearchQuery.length >= 2 && searchResults.length === 0 && (
                   <div className="px-2 py-2 text-xs text-[var(--text-muted)]">No nodes found</div>
+                )}
+                {nodeSearchQuery.length < 2 && (
+                  <div className="px-2 py-2 text-xs text-[var(--text-muted)]">Type to search visible nodes...</div>
                 )}
               </div>
             )}
@@ -2984,6 +3748,12 @@ function MechanisticNetworkGraphInner({
                 if (node.data?.isPseudo) {
                   return '#d1d1d1';
                 }
+                // Dim non-pathway nodes in focus mode
+                if (drugPathwayFocusMode && drugPathway) {
+                  if (!pathwayNodeSet.has(node.id)) {
+                    return '#d1d1d1';
+                  }
+                }
                 return moduleColors[node.data?.moduleId as string] || '#787473';
               }}
               maskColor="rgba(250, 249, 247, 0.6)"
@@ -2996,6 +3766,26 @@ function MechanisticNetworkGraphInner({
               }}
               className="minimap-with-viewport"
             />
+          )}
+
+          {/* Drug Pathway Focus Panel */}
+          {selectedDrug && drugPathway && (
+            <div className="absolute top-2 right-2 z-10">
+              <PathwayFocusPanel
+                drug={selectedDrug}
+                pathway={drugPathway}
+                feedbackLoops={feedbackLoops}
+                isFocusMode={drugPathwayFocusMode}
+                onToggleFocusMode={handleToggleDrugPathwayFocus}
+                onClose={handleCloseDrugPathway}
+                onPanToNode={(nodeId) => {
+                  const targetNode = nodes.find(n => n.id === nodeId);
+                  if (targetNode) {
+                    fitView({ nodes: [{ id: nodeId }], padding: 0.5, duration: 500 });
+                  }
+                }}
+              />
+            </div>
           )}
         </ReactFlow>
 
@@ -3048,8 +3838,317 @@ function MechanisticNetworkGraphInner({
         })()}
       </div>
 
+      {/* Custom node editing panel */}
+      {addNodeMode === 'customize' && editingCustomNodeId && (() => {
+        const customNode = customNodes.find(n => n.id === editingCustomNodeId);
+        if (!customNode) return null;
+        const attachedToNode = allNodes.find(n => n.id === customNode.attachedTo);
+
+        return (
+          <div className="p-4 border-t border-[var(--border)] bg-[var(--accent-orange-light)]">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h4 className="font-semibold text-[var(--text-primary)]">Customize Node</h4>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Connected to: <span className="font-medium">{attachedToNode?.label || customNode.attachedTo}</span>
+                </p>
+              </div>
+              {/* Undo/Redo buttons */}
+              <div className="flex gap-1">
+                <button
+                  onClick={undoCustomNodes}
+                  disabled={!canUndo}
+                  className={`px-2 py-1 text-xs border rounded transition-colors ${
+                    canUndo
+                      ? 'border-[var(--border)] bg-white hover:border-[var(--accent-orange)] text-[var(--text-body)]'
+                      : 'border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-not-allowed'
+                  }`}
+                  title="Undo (Ctrl+Z)"
+                >
+                  ↶ Undo
+                </button>
+                <button
+                  onClick={redoCustomNodes}
+                  disabled={!canRedo}
+                  className={`px-2 py-1 text-xs border rounded transition-colors ${
+                    canRedo
+                      ? 'border-[var(--border)] bg-white hover:border-[var(--accent-orange)] text-[var(--text-body)]'
+                      : 'border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-not-allowed'
+                  }`}
+                  title="Redo (Ctrl+Y)"
+                >
+                  ↷ Redo
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Node label */}
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">
+                  Node Label
+                </label>
+                <input
+                  type="text"
+                  value={customNode.label === 'Click to customize...' ? '' : customNode.label}
+                  onChange={(e) => {
+                    setCustomNodes(prev => prev.map(n =>
+                      n.id === editingCustomNodeId ? { ...n, label: e.target.value || 'Click to customize...' } : n
+                    ));
+                  }}
+                  placeholder="Enter node name..."
+                  className="w-full px-2 py-1.5 text-sm border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)] bg-white"
+                />
+              </div>
+
+              {/* Direction */}
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">
+                  Connection Direction
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setCustomNodes(prev => prev.map(n =>
+                        n.id === editingCustomNodeId ? { ...n, direction: 'input' } : n
+                      ));
+                    }}
+                    className={`flex-1 px-2 py-1.5 text-xs rounded border transition-colors ${
+                      customNode.direction === 'input'
+                        ? 'bg-[var(--accent-orange)] text-white border-[var(--accent-orange)]'
+                        : 'bg-white border-[var(--border)] hover:border-[var(--accent-orange)]'
+                    }`}
+                  >
+                    → Input to node
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCustomNodes(prev => prev.map(n =>
+                        n.id === editingCustomNodeId ? { ...n, direction: 'output' } : n
+                      ));
+                    }}
+                    className={`flex-1 px-2 py-1.5 text-xs rounded border transition-colors ${
+                      customNode.direction === 'output'
+                        ? 'bg-[var(--accent-orange)] text-white border-[var(--accent-orange)]'
+                        : 'bg-white border-[var(--border)] hover:border-[var(--accent-orange)]'
+                    }`}
+                  >
+                    Output from node →
+                  </button>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="md:col-span-2">
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">
+                  Description (optional)
+                </label>
+                <textarea
+                  value={customNode.description || ''}
+                  onChange={(e) => {
+                    setCustomNodes(prev => prev.map(n =>
+                      n.id === editingCustomNodeId ? { ...n, description: e.target.value } : n
+                    ));
+                  }}
+                  placeholder="Add notes about this node..."
+                  rows={2}
+                  className="w-full px-2 py-1.5 text-sm border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)] bg-white resize-none"
+                />
+              </div>
+
+              {/* Source/Citation */}
+              <div className="md:col-span-2">
+                <label className="block text-xs font-medium text-[var(--text-muted)] mb-1">
+                  Source/Citation (optional)
+                </label>
+                <input
+                  type="text"
+                  value={customNode.source || ''}
+                  onChange={(e) => {
+                    setCustomNodes(prev => prev.map(n =>
+                      n.id === editingCustomNodeId ? { ...n, source: e.target.value } : n
+                    ));
+                  }}
+                  placeholder="e.g., Smith et al. 2023, PMID:12345678, DOI:10.1234/..."
+                  className="w-full px-2 py-1.5 text-sm border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)] bg-white"
+                />
+              </div>
+
+              {/* Variants Section */}
+              <div className="md:col-span-2 border-t border-[var(--border)] pt-3 mt-1">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-medium text-[var(--text-muted)]">
+                    Variants (e.g., drug combinations, genetic variants)
+                  </label>
+                  <button
+                    onClick={() => {
+                      const newVariant = {
+                        id: `var_${Date.now()}`,
+                        label: 'New Variant',
+                        effectDirection: 'neutral' as const,
+                        effectMagnitude: 1.0,
+                        color: '#787473',
+                      };
+                      updateCustomNodesWithHistory(prev => prev.map(n =>
+                        n.id === editingCustomNodeId
+                          ? { ...n, variants: [...(n.variants || []), newVariant] }
+                          : n
+                      ));
+                    }}
+                    className="px-2 py-1 text-xs bg-[var(--accent-orange)] text-white rounded hover:bg-[var(--accent-orange)]/90"
+                  >
+                    + Add Variant
+                  </button>
+                </div>
+
+                {/* Variant List */}
+                {(customNode.variants || []).length === 0 ? (
+                  <p className="text-xs text-[var(--text-muted)] italic">No variants defined. Add variants to simulate different effects.</p>
+                ) : (
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {(customNode.variants || []).map((variant, varIdx) => (
+                      <div key={variant.id} className="p-2 bg-white border border-[var(--border)] rounded">
+                        <div className="flex items-center gap-2 mb-2">
+                          {/* Variant Name */}
+                          <input
+                            type="text"
+                            value={variant.label}
+                            onChange={(e) => {
+                              setCustomNodes(prev => prev.map(n =>
+                                n.id === editingCustomNodeId
+                                  ? {
+                                      ...n,
+                                      variants: (n.variants || []).map((v, i) =>
+                                        i === varIdx ? { ...v, label: e.target.value } : v
+                                      )
+                                    }
+                                  : n
+                              ));
+                            }}
+                            className="flex-1 px-2 py-1 text-xs border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)]"
+                            placeholder="Variant name"
+                          />
+                          {/* Delete button */}
+                          <button
+                            onClick={() => {
+                              updateCustomNodesWithHistory(prev => prev.map(n =>
+                                n.id === editingCustomNodeId
+                                  ? { ...n, variants: (n.variants || []).filter((_, i) => i !== varIdx) }
+                                  : n
+                              ));
+                            }}
+                            className="text-[var(--danger)] hover:text-[var(--danger)]/80 text-xs"
+                            title="Remove variant"
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {/* Effect Direction */}
+                          <select
+                            value={variant.effectDirection}
+                            onChange={(e) => {
+                              const dir = e.target.value as 'protective' | 'neutral' | 'risk';
+                              const colors = { protective: '#34d399', neutral: '#787473', risk: '#c75146' };
+                              setCustomNodes(prev => prev.map(n =>
+                                n.id === editingCustomNodeId
+                                  ? {
+                                      ...n,
+                                      variants: (n.variants || []).map((v, i) =>
+                                        i === varIdx ? { ...v, effectDirection: dir, color: colors[dir] } : v
+                                      )
+                                    }
+                                  : n
+                              ));
+                            }}
+                            className="px-2 py-1 text-xs border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)]"
+                          >
+                            <option value="protective">Protective</option>
+                            <option value="neutral">Neutral</option>
+                            <option value="risk">Risk</option>
+                          </select>
+                          {/* Effect Magnitude */}
+                          <div className="flex items-center gap-1">
+                            <span className="text-[10px] text-[var(--text-muted)]">×</span>
+                            <input
+                              type="number"
+                              step="0.1"
+                              min="0.1"
+                              max="10"
+                              value={variant.effectMagnitude}
+                              onChange={(e) => {
+                                setCustomNodes(prev => prev.map(n =>
+                                  n.id === editingCustomNodeId
+                                    ? {
+                                        ...n,
+                                        variants: (n.variants || []).map((v, i) =>
+                                          i === varIdx ? { ...v, effectMagnitude: parseFloat(e.target.value) || 1 } : v
+                                        )
+                                      }
+                                    : n
+                                ));
+                              }}
+                              className="w-14 px-1 py-1 text-xs border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)]"
+                            />
+                          </div>
+                          {/* Effect indicator */}
+                          <span
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: variant.color }}
+                            title={`${variant.effectDirection} (${variant.effectMagnitude}x)`}
+                          />
+                        </div>
+                        {/* Variant Source */}
+                        <div className="mt-2">
+                          <input
+                            type="text"
+                            value={variant.source || ''}
+                            onChange={(e) => {
+                              setCustomNodes(prev => prev.map(n =>
+                                n.id === editingCustomNodeId
+                                  ? {
+                                      ...n,
+                                      variants: (n.variants || []).map((v, i) =>
+                                        i === varIdx ? { ...v, source: e.target.value } : v
+                                      )
+                                    }
+                                  : n
+                              ));
+                            }}
+                            className="w-full px-2 py-1 text-[10px] border border-[var(--border)] rounded outline-none focus:ring-1 focus:ring-[var(--accent-orange)]"
+                            placeholder="Source (e.g., PMID, DOI, study name)"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer with delete button */}
+            <div className="mt-4 pt-3 border-t border-[var(--border)] flex justify-between items-center">
+              <button
+                onClick={() => {
+                  // Delete the custom node with history
+                  updateCustomNodesWithHistory(prev => prev.filter(n => n.id !== editingCustomNodeId));
+                  setEditingCustomNodeId(null);
+                  setAddNodeMode('idle');
+                }}
+                className="px-3 py-1.5 text-xs text-[var(--danger)] border border-[var(--danger)] rounded hover:bg-[var(--danger-light)] transition-colors"
+              >
+                🗑 Delete Node
+              </button>
+              <p className="text-[10px] text-[var(--text-muted)]">
+                Click &quot;Done&quot; above when finished editing
+              </p>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Selected node details - only show for non-boundaryVariant nodes */}
-      {selectedNode && selectedNode.type !== 'boundaryVariant' && (
+      {selectedNode && selectedNode.type !== 'boundaryVariant' && !editingCustomNodeId && (
         <div className="p-3 border-t border-[var(--border)] bg-[var(--bg-primary)]">
           <div className="flex justify-between items-start mb-2">
             <h4 className="font-semibold text-[var(--text-primary)]">{selectedNode.data.label as string}</h4>

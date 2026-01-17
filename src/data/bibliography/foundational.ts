@@ -21,7 +21,7 @@ export const foundationalSources: Source[] = [
     citations: [
       {
         id: 'davies-1976-deficit',
-        quote: 'Choline acetyltransferase activity was reduced by 60-90% in the cerebral cortex and hippocampus of patients with Alzheimer\'s disease compared to age-matched controls.',
+        quote: 'Choline acetyltransferase activity was reduced by 30-90% in the cerebral cortex and hippocampus of patients with Alzheimer\'s disease compared to age-matched controls.',
         usedIn: ['timeline'],
         context: 'The first biochemical abnormality discovered in AD—acetylcholine depletion.',
       },

@@ -61,7 +61,7 @@ export function Stakes() {
                   <ul className="space-y-3 text-[var(--text-body)]">
                     <li className="flex items-start gap-3">
                       <span className="text-[var(--danger)] mt-1">-</span>
-                      <span>$50B+ invested in patented amyloid drugs</span>
+                      <span>$42.5B invested in patented amyloid drugs</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-[var(--danger)] mt-1">-</span>

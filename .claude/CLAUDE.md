@@ -78,7 +78,7 @@ src/
 
 ### Act I: The Paradox
 - **Hero**: Introduction with key statistics (55M patients, 99% trial failure rate)
-- **InvestmentWaterfall**: $50B vs $50M investment disparity visualization
+- **InvestmentWaterfall**: $42.5B vs ~$50M investment disparity visualization
 
 ### Act II: The System
 - **EvidenceGraveyard**: Tombstone cards for abandoned generic drug research
@@ -302,7 +302,7 @@ interface EvidenceLevel {
 
 ## Key Visualizations
 
-1. **Investment Waterfall**: Proportional bars showing $50B vs $50M disparity (1000:1 ratio)
+1. **Investment Waterfall**: Proportional bars showing $42.5B vs ~$50M disparity (850:1 ratio)
 2. **Evidence Graveyard**: Grid of "tombstone" cards for abandoned research
 3. **Sidelined Researchers**: Cards showing marginalized scientists and their hypotheses
 4. **Failure Cascade**: 7-node flow diagram of interconnected market failures

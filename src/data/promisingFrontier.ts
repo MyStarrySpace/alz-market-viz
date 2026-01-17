@@ -121,4 +121,30 @@ export const promisingFrontierData: PromisingDrug[] = [
       'RCT of AS01 adjuvant alone (or Shingrix in dementia-enriched population) with CSF inflammatory markers and cognitive endpoints.',
     citationIds: ['taquet-as01-2025'],
   },
+  {
+    id: 'sri-011381',
+    drug: 'SRI-011381 (C381)',
+    mechanism: 'v-ATPase activator + TGF-β1 agonist',
+    mechanismCategory: 'lysosomal',
+    evidenceStrength: 4,
+    keyEvidence:
+      '11+ independent validation studies across AD (5xFAD, 3xTG), PD (MPTP), MS (EAE), and TBI models. Human AD neurons show 20-46% reduction in intracellular Aβ42. IND-enabling toxicology complete since 2022.',
+    quote:
+      'C381 isn\'t abandoned—it\'s waiting for the right delivery technology. The TGF-β pathway is neuroprotective in brain but pro-fibrotic peripherally.',
+    quoteSource: 'Mechanistic analysis',
+    whyItMatters:
+      'Dual mechanism targets lysosomal dysfunction (v-ATPase → acidification) AND microglial clearance (TGF-β1 → TMEM119 → Aβ phagocytosis). Works even in mid-stage disease. Oral, brain-penetrant, IND-ready.',
+    keyCaveat:
+      'TGF-β agonism is a double-edged sword: neuroprotective in brain but pro-fibrotic in peripheral organs. Oral systemic delivery may cause peripheral fibrosis with chronic use—brain-selective delivery needed.',
+    status: 'IND-ready; founders building QinoTrans BBB platform for brain-selective delivery',
+    costPerMonth: 'Unknown (small molecule economics favorable)',
+    decisiveTrial:
+      'Phase 1 safety trial using brain-targeted delivery (QinoTrans or similar) to avoid peripheral TGF-β activation. Eli Lilly partnership (Oct 2024) validates BBB platform approach.',
+    citationIds: [
+      'vest-2022-pnas',
+      'liu-2025-immunity',
+      'chou-2025-nature-cell-bio',
+      'qinotrans-lilly-2024',
+    ],
+  },
 ];

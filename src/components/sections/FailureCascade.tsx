@@ -12,8 +12,12 @@ import {
   insuranceData,
   adSubtypesData,
   timingData,
+  getSection,
 } from '@/data';
+
 import { MenopauseComparison, AncestryRiskChart, FatDistributionChart } from '@/components/sections';
+
+const sectionConfig = getSection('system')!;
 
 // Color palette for cards - cycling through theme colors
 const cardColors = [
@@ -44,11 +48,11 @@ export function FailureCascade() {
   const [modalContent, setModalContent] = useState<ModalContent>(null);
 
   return (
-    <Section id="system">
+    <Section id={sectionConfig.id}>
       <Container>
         <SectionHeader
-          title="The Failure Cascade"
-          subtitle="Each market failure reinforces the others, creating a system that systematically excludes the most promising interventions."
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         {/* Narrative intro - compact */}

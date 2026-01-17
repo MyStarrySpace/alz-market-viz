@@ -57,7 +57,9 @@ export function ShoutoutBox({ children, className, variant = 'default' }: Shouto
   const style = variantStyles[variant] || variantStyles.default;
 
   return (
-    <motion.div
+    <motion.aside
+      role="note"
+      aria-label={`${variant === 'warning' ? 'Warning' : variant === 'danger' ? 'Important' : variant === 'success' ? 'Success' : 'Note'}`}
       className={cn('p-4 rounded border', className)}
       style={{
         backgroundColor: style.bg,
@@ -71,6 +73,6 @@ export function ShoutoutBox({ children, className, variant = 'default' }: Shouto
       <p className="text-sm" style={{ color: style.text }}>
         {children}
       </p>
-    </motion.div>
+    </motion.aside>
   );
 }

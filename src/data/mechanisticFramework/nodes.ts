@@ -1683,6 +1683,56 @@ export const module12Nodes: MechanisticNode[] = [
     mechanism: 'Pericytes regulate BBB permeability, capillary blood flow, and respond to OPC Ca²⁺ signals. Receive TGF-β1 from OPCs for tight junction maintenance',
     sharedWith: ['M13'], // OPC-vascular coupling
   },
+  // AQP4 and glymphatic machinery (added 2026-01-17)
+  {
+    id: 'aqp4_polarization',
+    label: 'AQP4 Polarization',
+    category: 'STATE',
+    subtype: 'Homeostatic',
+    moduleId: 'M12',
+    references: {
+      protein: 'UniProt:P55087', // AQP4
+      process: 'GO:0015250', // water channel activity
+    },
+    description: 'AQP4 concentrated at astrocyte endfeet (healthy state)',
+    mechanism:
+      'AQP4 anchored to endfeet by dystrophin-associated protein complex (DAPC): Laminin → α/β-Dystroglycan → Dystrophin → α1-Syntrophin → AQP4. Enables efficient CSF-ISF exchange for waste clearance',
+    roles: ['THERAPEUTIC_TARGET'],
+  },
+  {
+    id: 'aqp4_depolarization',
+    label: 'AQP4 Depolarization',
+    category: 'STATE',
+    subtype: 'DiseaseStage',
+    moduleId: 'M12',
+    references: {
+      protein: 'UniProt:P55087', // AQP4
+    },
+    description: 'AQP4 redistributed away from endfeet (pathological)',
+    mechanism:
+      'DAPC disruption → AQP4 mislocalized to parenchymal membrane. DTNB (AD risk gene) encodes β-dystrobrevin component of DAPC. AQP4 SNPs (rs151244, rs3763040) associated with faster cognitive decline. Reduces glymphatic efficiency 80-90%',
+    roles: ['BIOMARKER', 'THERAPEUTIC_TARGET'],
+  },
+  {
+    id: 'arterial_pulsatility',
+    label: 'Arterial Pulsatility',
+    category: 'STATE',
+    subtype: 'Homeostatic',
+    moduleId: 'M12',
+    description: 'Vasomotion amplitude that drives perivascular CSF flow',
+    mechanism:
+      'Arterial pulsatility drives CSF influx along periarterial spaces. Increased by exercise (cardiac output) and 40Hz gamma stimulation (VIP-mediated). Stiffening with age reduces flow',
+  },
+  {
+    id: 'csf_isf_exchange',
+    label: 'CSF-ISF Exchange',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Bidirectional fluid exchange in brain parenchyma',
+    mechanism:
+      'CSF enters via periarterial spaces → AQP4-mediated exchange with ISF → waste-laden ISF exits via perivenous spaces → meningeal lymphatics. Rate enhanced by sleep, exercise, 40Hz stimulation',
+  },
 ];
 
 // ============================================================================

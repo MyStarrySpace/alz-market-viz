@@ -47,6 +47,9 @@ import {
   diseaseComparisonChartData,
   neuroDiseaseTrialComparison,
 } from '@/data/trialBarriers';
+import { getSection } from '@/data';
+
+const sectionConfig = getSection('trial-barriers')!;
 
 // Theme-consistent chart colors
 const chartColors = {
@@ -355,11 +358,11 @@ export function TrialBarriers() {
   const phase3Cost = adTrialPhaseCosts.find((p) => p.phase === 'Phase 3')!.perDrugCost;
 
   return (
-    <Section id="trial-barriers">
+    <Section id={sectionConfig.id}>
       <Container>
         <SectionHeader
-          title="Why AD Trials Are Different"
-          subtitle="Alzheimer's trials are 3-5x more expensive, take 2-3x longer, and have higher failure rates than almost any other disease."
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         {/* Key statistics */}
@@ -371,23 +374,23 @@ export function TrialBarriers() {
           viewport={{ once: true }}
         >
           <div className="bg-white border border-[var(--border)] p-4 text-center">
-            <span className="text-2xl font-bold text-[var(--text-primary)]">$42.5B</span>
+            <span className="text-2xl font-bold font-serif text-[var(--text-primary)]">$42.5B</span>
             <p className="text-xs text-[var(--text-muted)] mt-1">Private investment (1995-2021)</p>
           </div>
           <div className="bg-white border border-[var(--border)] p-4 text-center">
-            <span className="text-2xl font-bold text-[var(--accent-orange)]">
+            <span className="text-2xl font-bold font-serif text-[var(--accent-orange)]">
               {adDevelopmentStatistics.overallFailureRate}%
             </span>
             <p className="text-xs text-[var(--text-muted)] mt-1">Phase 2/3 failure rate</p>
           </div>
           <div className="bg-white border border-[var(--border)] p-4 text-center">
-            <span className="text-2xl font-bold text-[var(--text-primary)]">
+            <span className="text-2xl font-bold font-serif text-[var(--text-primary)]">
               {(adDevelopmentStatistics.totalParticipants / 1000).toFixed(0)}K
             </span>
             <p className="text-xs text-[var(--text-muted)] mt-1">Trial participants enrolled</p>
           </div>
           <div className="bg-white border border-[var(--border)] p-4 text-center">
-            <span className="text-2xl font-bold text-[var(--text-primary)]">
+            <span className="text-2xl font-bold font-serif text-[var(--text-primary)]">
               {adDevelopmentStatistics.fdaApprovals}
             </span>
             <p className="text-xs text-[var(--text-muted)] mt-1">FDA approvals (26 years)</p>

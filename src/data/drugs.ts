@@ -105,17 +105,23 @@ export const comparisonData: ComparisonRow[] = [
     patented: '$462 million',
     generic: 'Cannot fund Phase 3',
     delta: 'No pathway',
+    sourceId: 'cummings-ad-costs-2022',
+    keyFinding: 'Phase 3 cost per drug: $462 million',
   },
   {
-    category: 'Funding Source',
+    category: 'Phase 3 Funding Source',
     patented: '79% industry-funded',
-    generic: '80% NIH/philanthropy',
+    generic: '77% non-industry',
+    sourceId: 'cummings-pipeline-2024',
+    keyFinding: '79% of Phase 3 trials are industry-funded; 77% of repurposed trials are non-industry funded',
   },
   {
     category: 'Annual Patient Cost',
     patented: '$26,500 (lecanemab)',
     generic: '$4-180/year',
     delta: '100-1000x cheaper',
+    sourceId: 'lecanemab-fda-2023',
+    keyFinding: 'Wholesale acquisition cost: $26,500 per year',
   },
 ];
 
@@ -138,20 +144,19 @@ export const comparisonData: ComparisonRow[] = [
 export const investmentData = {
   patented: {
     total: 42500000000, // $42.5 billion - Cummings 2022
-    label: 'Amyloid-Focused R&D',
+    label: 'Patented Drug R&D',
     examples: ['Lecanemab', 'Donanemab', 'Aduhelm'],
     period: '1995-2021',
     sourceId: 'cummings-ad-costs-2022',
+    industryFundedPercent: 79, // 79% of Phase 3 trials - Cummings 2024
   },
-  generic: {
-    total: 500000000, // ~$500 million estimated for repurposed drug trials
-    label: 'Repurposed/Generic',
+  repurposed: {
+    label: 'Repurposed Drugs',
     examples: ['Lithium', 'GV-971', 'Metformin'],
-    fundingNote: '80% NIH/philanthropic funded',
+    nonIndustryFundedPercent: 77, // 77% of repurposed trials - Cummings 2024
     sourceId: 'cummings-pipeline-2024',
   },
-  ratio: 85, // More conservative than 1000:1, based on available data
-  phase3Cost: 462000000, // $462M per Phase 3 trial
+  phase3Cost: 462000000, // $462M per Phase 3 trial - Cummings 2022
   nihAdBudget: 3800000000, // $3.8B FY2024
   sourceIds: ['cummings-ad-costs-2022', 'cummings-pipeline-2024', 'nia-budget-2024'],
 };
@@ -183,10 +188,10 @@ export const investmentSources = {
     journal: 'Alzheimers Dement Transl Res Clin Interv',
     year: 2024,
     keyFindings: [
-      'Repurposed drugs: 33% of pipeline',
-      '80% of repurposed drugs funded by NIH/academic/philanthropic',
-      'Only 18% of repurposed drugs funded by industry',
-      'Amyloid targets: 12-22% of pipeline by phase',
+      '79% of Phase 3 trials are industry-funded',
+      '77% of repurposed trials are funded by non-industry sources',
+      '60% of all clinical trials are industry-funded',
+      'Repurposed drugs: 31% of pipeline',
     ],
   },
   'nia-budget-2024': {
@@ -197,6 +202,16 @@ export const investmentSources = {
       'Total NIA budget: $4.51 billion',
       'AD/ADRD research funding: ~$3.8 billion',
       '$100 million increase over FY2023',
+    ],
+  },
+  'lecanemab-fda-2023': {
+    url: 'https://www.fda.gov/drugs/news-events-human-drugs/fda-converts-novel-alzheimers-disease-treatment-traditional-approval',
+    title: 'FDA Converts Novel Alzheimer\'s Disease Treatment to Traditional Approval',
+    year: 2023,
+    keyFindings: [
+      'Lecanemab (Leqembi) received traditional FDA approval July 2023',
+      'Wholesale acquisition cost: $26,500 per year',
+      'First amyloid-targeting therapy with traditional approval',
     ],
   },
 };

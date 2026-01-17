@@ -2,6 +2,7 @@ export { Abbreviation, TextWithAbbreviations, abbreviations, type AbbreviationKe
 export { Button } from './Button';
 export { Card, CardHeader, CardContent, DataCard } from './Card';
 export { ChapterBreak, SectionDivider } from './ChapterBreak';
+export { CitedNumber } from './CitedNumber';
 export { Container } from './Container';
 export { Heading, SectionHeader } from './Heading';
 export { HeroStat } from './HeroStat';

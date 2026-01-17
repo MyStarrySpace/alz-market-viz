@@ -16,6 +16,23 @@ export * from './types';
 // Data
 export { modules, default as moduleData } from './modules';
 export {
+  drugLibrary,
+  getDrugById,
+  getDrugsTargetingNode,
+  getDrugsByStatus,
+  getDrugsByEvidenceLevel,
+  type DrugLibraryEntry,
+  type DrugTarget,
+  type DrugPathwayConfig,
+  type DrugADEvidence,
+  type DrugVariant,
+  type DrugEffect,
+  type EffectStrength,
+  type DrugType,
+  type FDAStatus,
+  type DrugAvailability,
+} from './drugLibrary';
+export {
   allNodes,
   boundaryNodes,
   module1Nodes,

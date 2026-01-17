@@ -14,6 +14,7 @@ import {
   Users,
   Clock,
   Target,
+  Waves,
 } from 'lucide-react';
 import {
   Container,
@@ -30,7 +31,10 @@ import {
   getModelsByOrganism,
   getPathologyStatus,
 } from '@/data/translationalFailures';
+import { getSection } from '@/data';
 import type { AnimalModel, PathologyFeature, PathologyPresence } from '@/types';
+
+const sectionConfig = getSection('translational-failures')!;
 
 // ============================================================================
 // CONSTANTS
@@ -212,11 +216,11 @@ export function TranslationalFailures() {
   };
 
   return (
-    <Section id="translational-failures" className="bg-[var(--bg-secondary)]">
+    <Section id={sectionConfig.id} className="bg-[var(--bg-secondary)]">
       <Container>
         <SectionHeader
-          title="The Translation Gap"
-          subtitle="Why promising treatments that work in animal models fail in human trials"
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         {/* Narrative Lead-in */}
@@ -540,6 +544,76 @@ export function TranslationalFailures() {
               </div>
             </motion.div>
           </div>
+
+          {/* Morris Water Maze Methodological Paradox - Special callout */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 mb-12 bg-gradient-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-200 p-8 max-w-4xl mx-auto shadow-lg"
+          >
+            <div className="flex items-start gap-5">
+              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <Waves className="w-7 h-7 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-semibold px-2 py-0.5 bg-blue-100 text-blue-700 uppercase tracking-wide">
+                    Methodological Confound
+                  </span>
+                </div>
+                <h4 className="font-serif font-bold text-xl text-[var(--text-primary)] mb-3">
+                  The Morris Water Maze Paradox
+                </h4>
+                <p className="text-[var(--text-body)] leading-relaxed mb-4">
+                  The Morris Water Maze (MWM) is the gold standard for testing cognitive function
+                  in AD mouse models. But there&apos;s a problem:{' '}
+                  <strong>MWM involves swimming—a form of aerobic exercise</strong>. Swimming
+                  exercise restores glymphatic clearance, increases BDNF, reduces inflammation, and
+                  improves AQP4 polarization. The test itself may be{' '}
+                  <em>treating</em> the mice while measuring them.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="bg-white/80 border border-blue-100 p-3 rounded">
+                    <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
+                      Testing Protocol = Exercise Intervention
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      4-6 days × 4-6 trials/day of swimming. Enough to induce neurogenesis, ↑BDNF,
+                      ↓TNF-α, and restore glymphatic function (Liang 2025, Bashiri 2020).
+                    </p>
+                  </div>
+                  <div className="bg-white/80 border border-blue-100 p-3 rounded">
+                    <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
+                      No 2×2 Factorial Studies
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      We lack studies comparing: (1) drug + MWM test, (2) placebo + MWM test,
+                      (3) drug + dry maze, (4) placebo + dry maze. The confound remains uncontrolled.
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-[var(--text-body)]">
+                        <strong>Implication:</strong> Control mice (swimming in MWM) receive partial
+                        treatment, potentially masking drug effects. Exercise interventions may show
+                        smaller effects because both groups are exercising.
+                        Drug effect sizes may be systematically underestimated across the entire field.
+                      </p>
+                      <p className="text-xs text-[var(--text-muted)] mt-2 italic">
+                        &ldquo;Morris water maze training is associated with locomotion, and physical
+                        activity robustly increases hippocampal neurogenesis&rdquo; — Ehninger &
+                        Kempermann, 2006
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Bottom takeaway */}
           <motion.div

@@ -126,6 +126,16 @@ h1, h2, h3, h4, h5, h6 {
   fill: rgba(227, 98, 22, 0.08) !important;
 }
 
+/* React Flow node transitions for smooth repositioning */
+.react-flow__node {
+  transition: transform 0.4s ease-out;
+}
+
+/* Disable transition during drag */
+.react-flow__node.dragging {
+  transition: none;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

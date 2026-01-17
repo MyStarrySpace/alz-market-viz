@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "calculate-pathways": "npx tsx scripts/calculate-drug-pathways.ts"
   },
   "dependencies": {
     "@xyflow/react": "^12.10.0",

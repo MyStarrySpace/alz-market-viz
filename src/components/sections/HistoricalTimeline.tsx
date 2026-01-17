@@ -9,9 +9,29 @@ import {
   User,
   Building2,
   Expand,
+  ExternalLink,
 } from 'lucide-react';
 import { Container, Section, SectionHeader, TextWithAbbreviations } from '@/components/ui';
-import { getTimelineEras, TimelineEvent, FrameworkId } from '@/data';
+import { getTimelineEras, TimelineEvent, FrameworkId, getSection, bibliography } from '@/data';
+
+// Helper to get source URL from source ID
+function getSourceUrl(sourceId: string): { url: string | null; title: string; authors: string } {
+  const source = bibliography.find(s => s.id === sourceId);
+  if (!source) return { url: null, title: '', authors: '' };
+
+  // Prefer DOI, then URL
+  const url = source.doi
+    ? `https://doi.org/${source.doi}`
+    : source.url || null;
+
+  return {
+    url,
+    title: source.title,
+    authors: source.authors.length > 0 ? source.authors[0] : '',
+  };
+}
+
+const sectionConfig = getSection('timeline')!;
 
 // Default collapsed height (approximately one viewport)
 const COLLAPSED_HEIGHT = 600;
@@ -173,6 +193,35 @@ function EventCard({
             </motion.p>
           )}
         </AnimatePresence>
+
+        {/* Source links - shown when expanded */}
+        {expanded && event.sourceIds && event.sourceIds.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-3 pt-3 border-t border-[var(--border)] flex flex-wrap gap-2"
+          >
+            <span className="text-xs text-[var(--text-muted)]">Sources:</span>
+            {event.sourceIds.map((sourceId) => {
+              const sourceInfo = getSourceUrl(sourceId);
+              if (!sourceInfo.url) return null;
+              return (
+                <a
+                  key={sourceId}
+                  href={sourceInfo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-[var(--chart-secondary)] hover:text-[var(--accent-orange)] transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                  title={sourceInfo.title}
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  <span>{sourceInfo.authors.split(' ').pop()} {bibliography.find(s => s.id === sourceId)?.year}</span>
+                </a>
+              );
+            })}
+          </motion.div>
+        )}
 
         {/* Researcher callout - inline with content */}
         {hasResearcher && (
@@ -488,11 +537,11 @@ export function HistoricalTimeline() {
   );
 
   return (
-    <Section id="timeline" className="bg-[var(--bg-secondary)]" ref={sectionRef}>
+    <Section id={sectionConfig.id} className="bg-[var(--bg-secondary)]" ref={sectionRef}>
       <Container>
         <SectionHeader
-          title="A Century of Search"
-          subtitle="From the first case in 1906 to today's controversies: the long road that led us here."
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         {/* Sticky Filter Bar */}

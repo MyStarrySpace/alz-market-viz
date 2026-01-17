@@ -32,7 +32,7 @@ export const caseStudies: CaseStudy[] = [
     quote:
       'The current study should not be seen to support the use of unlicensed subcutaneous etanercept for the treatment of AD dementia.',
     quoteSource: 'Phase 2 trial conclusion, 2015',
-    cost: '$4,000/month (for arthritis)',
+    cost: '$7,000-9,500/month (for arthritis; Medicare-negotiated: $2,355 starting 2026)',
     patentStatus: 'generic',
   },
   {
@@ -45,11 +45,11 @@ export const caseStudies: CaseStudy[] = [
       'A decade of MIT research: 40Hz light/sound activates microglia, clears amyloid, reduces brain atrophy, improves memory in mice and early human trials. Cost: LED lights and speakers.',
     whatShouldHappen: 'Fast-track trials given low cost and safety profile',
     whatActuallyHappened:
-      'Still in Phase 3 after 10+ years of promising preclinical data. Only 15 patients in Phase 2a. FDA Breakthrough Device designation but no accelerated pathway. If it works, the intervention could cost under $100—but that means no blockbuster revenue to fund trials.',
+      'Still in Phase 3 after 10+ years of promising preclinical data. Only 15 patients in Phase 2a. No accelerated pathway. If it works, the intervention could potentially cost under $100 (LED lights and speakers are inexpensive)—but that means no blockbuster revenue to fund trials.',
     quote:
       'Safe; late-onset AD patients showed better cognitive scores than matched controls.',
     quoteSource: 'MIT long-term pilot study',
-    cost: '<$100 (if proven)',
+    cost: 'Potentially low-cost (LED/audio equipment)',
     patentStatus: 'device',
   },
   {
@@ -62,7 +62,7 @@ export const caseStudies: CaseStudy[] = [
       'Non-invasively opens the BBB to enhance drug delivery 5-8x. In Phase 2a, reduced amyloid WITHOUT any drug co-administration. Could make existing treatments far more effective.',
     whatShouldHappen: 'Rapid combination trials with approved antibodies, standalone studies',
     whatActuallyHappened:
-      'FDA Breakthrough Device designation, but progress remains slow. Only ~30 patients in Phase 2a. Could transform efficacy of lecanemab/donanemab but no pharma company is racing to prove their expensive drugs work better at lower doses.',
+      'FDA Breakthrough Device designation for related brain applications (BBB disruption for brain tumors), but AD-specific trials remain slow. Only ~30 patients in Phase 2a. Could transform efficacy of lecanemab/donanemab but no pharma company is racing to prove their expensive drugs work better at lower doses.',
     quote:
       'FUS enhanced antibody delivery to targeted brain regions by 5-8x.',
     quoteSource: 'FUS + Aducanumab combination trial',
@@ -178,7 +178,7 @@ export const keyStatistics = {
   projectedBy2050: 165000000,
   trialFailureRate: 99,
   approvedTreatments: 7,
-  investmentRatio: 1000,
-  patentedInvestment: 50000000000,
-  genericInvestment: 50000000,
+  investmentRatio: 850, // $42.5B / ~$50M
+  patentedInvestment: 42500000000, // $42.5 billion (Cummings 2022)
+  genericInvestment: 50000000, // ~$50 million (estimate)
 };

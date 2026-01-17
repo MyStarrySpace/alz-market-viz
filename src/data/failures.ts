@@ -18,7 +18,7 @@ export const marketFailures: MarketFailure[] = [
     description:
       'Only novel molecules generate return on investment. Generic drugs and supplements, regardless of evidence, cannot recoup clinical trial costs.',
     impact:
-      '$50 billion investment in patented drugs vs. ~$50 million in generics (1000:1 ratio)',
+      '$42.5 billion investment in patented drugs vs. ~$50 million in generics (850:1 ratio)',
     connections: ['trial-economics', 'fda-structure'],
     icon: FileText,
     order: 1,

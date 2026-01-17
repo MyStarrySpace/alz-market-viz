@@ -10,7 +10,16 @@
       "WebFetch(domain:link.springer.com)",
       "WebFetch(domain:www.fda.gov)",
       "Bash(npx tsc:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(grep:*)",
+      "Bash(node scripts/check-theme-colors.js:*)",
+      "WebFetch(domain:pubmed.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:www.medchemexpress.com)",
+      "WebFetch(domain:www.nature.com)",
+      "Bash(npx tsx:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(npm run calculate-pathways:*)"
     ]
   }
 }

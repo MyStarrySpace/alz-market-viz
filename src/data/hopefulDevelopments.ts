@@ -74,7 +74,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
       },
     ],
     cost: '~$26,500/year',
-    availability: 'FDA approved January 2023 (accelerated), July 2024 (traditional)',
+    availability: 'FDA approved January 2023 (accelerated), July 2023 (traditional)',
     caveats: [
       '27% slowing is modest,patients still decline',
       'Requires regular MRI monitoring for ARIA',
@@ -362,7 +362,7 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
       },
     ],
     cost: 'High (specialized equipment required)',
-    availability: 'Phase 2 trials ongoing; FDA Breakthrough Device designation',
+    availability: 'Phase 2 trials ongoing; FDA Breakthrough Device designation for related brain applications (BBB disruption for brain tumors)',
     caveats: [
       'Requires MRI-guided specialized equipment',
       'Long-term safety of repeated BBB opening unknown',
@@ -400,6 +400,86 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
       'Neuroinflammation hypothesis still being validated',
     ],
     sourceIds: ['mindimmune-2025'],
+  },
+
+  {
+    id: 'sri-011381',
+    name: 'SRI-011381 (C381)',
+    category: 'pipeline_drug',
+    status: 'preclinical',
+    description:
+      'Orally bioavailable, brain-penetrant small molecule that restores lysosomal function and enhances microglial amyloid-β clearance through dual complementary mechanisms. IND-enabling toxicology complete since 2022. Key challenge: TGF-β pathway is neuroprotective in brain but pro-fibrotic peripherally—founders building brain-selective delivery platform to address this.',
+    mechanism:
+      'Dual mechanism: (1) v-ATPase activation → lysosomal acidification → enhanced degradation of phagocytosed cargo; (2) TGF-β1/Smad activation → TMEM119 upregulation → maintained microglial homeostasis → increased Aβ phagocytic capacity.',
+    whyHopeful:
+      'Extraordinary preclinical validation: 11+ validation studies across multiple disease models by independent labs. Efficacy in AD (5xFAD, 3xTG), PD (MPTP), MS (EAE), and TBI models. Works even in mid-stage disease. Dual mechanism: (1) lysosomal acidification and (2) TGF-β/TMEM119 microglial enhancement. The TGF-β pathway is a double-edged sword—neuroprotective in brain but pro-fibrotic peripherally. Rather than abandoning C381, founders pivoted to building QinoTrans, a BBB delivery platform to achieve brain-selective exposure while avoiding systemic TGF-β activation. Eli Lilly partnership (Oct 2024) validates the platform approach. C381 isn\'t abandoned—it\'s waiting for the right delivery technology.',
+    evidence: [
+      {
+        trialName: 'Vest et al. 2022 (PNAS)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'Neuroprotection in FTD (Grn⁻/⁻) and PD (MPTP) models',
+        result:
+          'Protected dopaminergic neurons, reduced p-α-synuclein, improved motor and cognitive function. IND-enabling toxicology complete.',
+        limitation: 'Mouse studies only',
+      },
+      {
+        trialName: 'Liu et al. 2025 (Immunity)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'Aβ clearance and cognition in 5xFAD and 3xTG mice',
+        result:
+          'Reduced plaque burden, improved Morris water maze and Y-maze. Mid-stage treatment (starting at 5 months) still effective.',
+        limitation: 'Mouse studies only',
+      },
+      {
+        trialName: 'Chou et al. 2025 (Nature Cell Biology)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'Human AD neurons (tNeurons)',
+        result:
+          '20-46% reduction in intracellular Aβ42, reduced inflammatory cytokines, improved neuronal survival',
+        limitation: 'In vitro human neurons, not in vivo',
+      },
+      {
+        trialName: 'Wu et al. 2021 (Theranostics)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'MS (EAE model)',
+        result:
+          'Rescued demyelination, reduced gliosis and inflammatory infiltration',
+        limitation: 'Mouse model only',
+      },
+      {
+        trialName: 'Li et al. 2024 (Neurotrauma Reports)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'Repetitive mild TBI model',
+        result: 'Reversed TBI-induced gene expression changes, attenuated vascular damage',
+        limitation: 'Mouse model only',
+      },
+      {
+        trialName: 'QinoTrans/Eli Lilly Partnership',
+        trialPhase: 'Platform development',
+        primaryOutcome: 'BBB-selective delivery technology',
+        result:
+          'Oct 2024: Lilly entered research collaboration for novel BBB delivery vehicles; same team that discovered C381',
+        limitation: 'Platform not yet validated for C381 specifically',
+      },
+    ],
+    cost: 'Unknown (early stage; small molecule economics favorable)',
+    availability: 'IND-ready since 2022 but no clinical trials registered as of January 2026',
+    caveats: [
+      'TGF-β agonism: neuroprotective in brain but pro-fibrotic in peripheral organs (heart, lung, liver, kidney)',
+      'Oral systemic delivery may cause peripheral fibrosis with chronic use—delivery technology needed',
+      'Founders building QinoTrans BBB platform to achieve brain-selective exposure',
+      'Eli Lilly partnership (Oct 2024) validates brain-targeted delivery approach',
+      'Independent oral C381 development may be premature—safest path may be via QinoTrans or similar',
+    ],
+    sourceIds: [
+      'vest-2022-pnas',
+      'liu-2025-immunity',
+      'chou-2025-nature-cell-bio',
+      'wu-2021-theranostics',
+      'li-2024-neurotrauma',
+      'luo-2023-neural-regen-res',
+      'qinotrans-lilly-2024',
+    ],
   },
 
   {

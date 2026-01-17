@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Quote, Calendar, DollarSign, AlertCircle, ChevronRight } from 'lucide-react';
 import { Container, Section, SectionHeader, Card, CardContent, TextWithAbbreviations } from '@/components/ui';
-import { caseStudies } from '@/data';
+import { caseStudies, getSection } from '@/data';
+
+const sectionConfig = getSection('cases')!;
 
 export function CaseStudies() {
   const [activeCase, setActiveCase] = useState(caseStudies[0].id);
@@ -12,11 +14,11 @@ export function CaseStudies() {
   const currentCase = caseStudies.find((c) => c.id === activeCase) || caseStudies[0];
 
   return (
-    <Section id="cases" className="bg-[var(--bg-secondary)]">
+    <Section id={sectionConfig.id} className="bg-[var(--bg-secondary)]">
       <Container>
         <SectionHeader
-          title="Case Studies in Market Failure"
-          subtitle="Real stories of promising treatments that were abandoned not for scientific reasons, but economic ones."
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

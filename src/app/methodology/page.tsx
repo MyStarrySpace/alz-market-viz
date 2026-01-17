@@ -90,10 +90,10 @@ export default function MethodologyPage() {
               <StatisticCard
                 icon={<BarChart3 className="w-6 h-6" />}
                 stat="~850:1"
-                label="Novel molecule vs. repurposed drug trial ratio (Phase 3)"
+                label="Patented vs. generic drug R&D investment ratio"
                 source='Cummings, Jeffrey L., et al. "Who Funds Alzheimer&apos;s Disease Drug Development?" Alzheimer&apos;s &amp; Dementia: Translational Research &amp; Clinical Interventions, vol. 7, no. 1, 2021, e12185.'
                 sourceUrl="https://alz-journals.onlinelibrary.wiley.com/doi/10.1002/trc2.12185"
-                note="Pharma sponsors 10/11 Phase 3 trials for new molecules; Academic/NIH sponsor 18/22 Phase 2 trials for repurposed agents."
+                note="$42.5B on patented drugs vs. ~$50M estimated on generic repurposing. Trial ratio is ~2:1 (67% novel vs. 33% repurposed in pipeline)."
               />
             </div>
 

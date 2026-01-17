@@ -3993,6 +3993,217 @@ export const module12Edges: MechanisticEdge[] = [
       },
     ],
   },
+  // AQP4 and glymphatic machinery edges (added 2026-01-17)
+  {
+    id: 'E12.013',
+    source: 'aqp4_polarization',
+    target: 'csf_isf_exchange',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'AQP4_CSF_ISF_exchange',
+    mechanismDescription:
+      'AQP4 water channels at astrocyte endfeet enable CSF-ISF exchange. TGN-020 (AQP4 inhibitor) blocks 40Hz-mediated amyloid clearance. AQP4 knockout eliminates exercise benefits',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '38418876',
+        firstAuthor: 'Murdock',
+        year: 2024,
+        title:
+          'Multisensory gamma stimulation promotes glymphatic clearance of amyloid',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+      {
+        pmid: '35142700',
+        firstAuthor: 'Liu',
+        year: 2022,
+        title:
+          'Aquaporin 4 deficiency eliminates the beneficial effects of voluntary exercise in a mouse model of Alzheimers disease',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight: 'AQP4 is REQUIRED for both exercise and 40Hz stimulation benefits',
+  },
+  {
+    id: 'E12.014',
+    source: 'csf_isf_exchange',
+    target: 'glymphatic_clearance',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'CSF_ISF_glymphatic',
+    mechanismDescription:
+      'CSF-ISF exchange is the core mechanism of glymphatic clearance. CSF influx via periarterial spaces, waste-laden ISF efflux via perivenous spaces',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '22896675',
+        firstAuthor: 'Iliff',
+        year: 2012,
+        title:
+          'A paravascular pathway facilitates CSF flow through the brain parenchyma and the clearance of interstitial solutes, including amyloid β',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.015',
+    source: 'aging',
+    target: 'aqp4_depolarization',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'age_AQP4_depolarization',
+    mechanismDescription:
+      'Aging disrupts DAPC anchoring → AQP4 redistributes from endfeet to parenchymal membrane. AQP4 polarization ratio declines with age, contributing to 80-90% glymphatic decline',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '33068891',
+        firstAuthor: 'Chandra',
+        year: 2020,
+        title:
+          'Aquaporin-4 polymorphisms predict amyloid burden and clinical outcome in the Alzheimers disease spectrum',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E12.016',
+    source: 'aqp4_depolarization',
+    target: 'glymphatic_clearance',
+    relation: 'decreases',
+    moduleId: 'M12',
+    mechanismLabel: 'AQP4_depol_glymphatic_impair',
+    mechanismDescription:
+      'AQP4 depolarization impairs CSF-ISF exchange → reduced glymphatic clearance. DTNB (β-dystrobrevin) is an AD risk gene that encodes AQP4 anchoring complex component',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '35256747',
+        firstAuthor: 'Prokopenko',
+        year: 2022,
+        title:
+          'Region-based analysis of rare genomic variants in whole-genome sequencing datasets reveal two novel Alzheimers disease-associated genes: DTNB and DLG2',
+        methodType: 'case_control',
+        causalConfidence: 'L6',
+      },
+    ],
+    keyInsight:
+      'GENETIC EVIDENCE: DTNB (AQP4 anchor) is an AD risk gene (p=4.74×10⁻⁸)',
+  },
+  {
+    id: 'E12.017',
+    source: 'arterial_pulsatility',
+    target: 'csf_isf_exchange',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'pulsatility_CSF_flow',
+    mechanismDescription:
+      'Arterial pulsatility (vasomotion) drives CSF influx along periarterial spaces. Two-photon imaging shows 40Hz increases high-amplitude vasomotor events. Arterial stiffening with age reduces flow',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '38418876',
+        firstAuthor: 'Murdock',
+        year: 2024,
+        title:
+          'Multisensory gamma stimulation promotes glymphatic clearance of amyloid',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.018',
+    source: 'exercise',
+    target: 'aqp4_polarization',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'exercise_AQP4_restoration',
+    mechanismDescription:
+      'Aerobic exercise (swimming, running) upregulates Lama1 and Dp71 transcription → restores DAPC → restores AQP4 polarization at endfeet. Effect requires intact AQP4',
+    causalConfidence: 'L4',
+    crossModule: 'M15 → M12',
+    evidence: [
+      {
+        pmid: '39971255',
+        firstAuthor: 'Liang',
+        year: 2025,
+        title:
+          'Aerobic exercise improves clearance of amyloid-β via the glymphatic system in a mouse model of Alzheimers Disease',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+      {
+        pmid: '28579942',
+        firstAuthor: 'He',
+        year: 2017,
+        title:
+          'Voluntary Exercise Promotes Glymphatic Clearance of Amyloid Beta and Reduces the Activation of Astrocytes and Microglia in Aged Mice',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight:
+      'Exercise restores AQP4 polarization via DAPC gene upregulation (Lama1, Dp71)',
+  },
+  {
+    id: 'E12.019',
+    source: 'exercise',
+    target: 'arterial_pulsatility',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'exercise_cardiac_pulsatility',
+    mechanismDescription:
+      'Exercise increases cardiac output → increased arterial pulsatility → enhanced perivascular CSF flow. Converges with 40Hz gamma stimulation (VIP-mediated pulsatility)',
+    causalConfidence: 'L4',
+    crossModule: 'M15 → M12',
+    evidence: [
+      {
+        pmid: '39971255',
+        firstAuthor: 'Liang',
+        year: 2025,
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.020',
+    source: 'sleep_disruption',
+    target: 'aqp4_depolarization',
+    relation: 'increases',
+    moduleId: 'M12',
+    mechanismLabel: 'sleep_AQP4_polarization',
+    mechanismDescription:
+      'Sleep deprivation impairs AQP4 polarization maintenance. AQP4 SNPs moderate the relationship between sleep and brain Aβ burden in humans',
+    causalConfidence: 'L5',
+    evidence: [
+      {
+        pmid: '29479071',
+        firstAuthor: 'Rainey-Smith',
+        year: 2018,
+        title:
+          'Genetic variation in Aquaporin-4 moderates the relationship between sleep and brain Aβ-amyloid burden',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+      {
+        pmid: '29632177',
+        firstAuthor: 'Shokri-Kojori',
+        year: 2018,
+        title:
+          'β-Amyloid accumulation in the human brain after one night of sleep deprivation',
+        methodType: 'intervention_human',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight:
+      'HUMAN EVIDENCE: 1 night sleep deprivation → increased Aβ in hippocampus/thalamus',
+  },
 ];
 
 // ============================================================================

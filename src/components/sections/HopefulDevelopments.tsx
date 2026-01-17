@@ -22,6 +22,9 @@ import {
   type HopefulDevelopment,
   type DevelopmentCategory,
 } from '@/data/hopefulDevelopments';
+import { getSection } from '@/data';
+
+const sectionConfig = getSection('hopeful-developments')!;
 
 // Status badge styles - minimal palette with typography emphasis
 const statusStyles: Record<string, { bg: string; text: string; label: string; weight: string }> = {
@@ -245,11 +248,11 @@ export function HopefulDevelopments() {
   ] as const;
 
   return (
-    <Section id="hopeful-developments" className="bg-[var(--bg-primary)]">
+    <Section id={sectionConfig.id} className="bg-[var(--bg-primary)]">
       <Container>
         <SectionHeader
-          title="Reasons for Hope"
-          subtitle="For the first time in history, we have treatments that slow cognitive decline, plus evidence-based interventions available to everyone today."
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         {/* Summary stats - typography-driven */}

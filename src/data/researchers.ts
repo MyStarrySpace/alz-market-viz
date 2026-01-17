@@ -13,7 +13,7 @@ export const sidelinedResearchers: SidelinedResearcher[] = [
   {
     id: 'de-la-torre',
     name: 'Jack de la Torre',
-    institution: 'UT Austin / Banner Institute',
+    institution: 'UT Austin / Banner Sun Health Research Institute',
     hypothesis: 'Vascular Hypothesis',
     year: 1993,
     keyFinding: 'Chronic brain hypoperfusion initiates neurodegeneration',
@@ -214,7 +214,7 @@ export const mechanisticCascade: CascadeStage[] = [
     description: 'Amyloid is produced through both neuronal and oligodendrocyte pathways.',
     mechanisms: [
       'Neuronal pathway: Axonal swellings accumulate APP/BACE1 machinery',
-      'OL pathway: OLs directly produce Aβ (~25% of plaques)',
+      'OL pathway: OLs directly produce Aβ (~30% of plaques per Sasmita 2024)',
       'PANTHOS: Lysosomal failure leads to intracellular Aβ aggregation',
     ],
     evidenceLevel: '5-star (Depp 2023; Sasmita 2024)',

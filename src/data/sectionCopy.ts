@@ -44,7 +44,7 @@ Over the next decade, others followed. One proposed mitochondrial failure. Anoth
 Each was underfunded.`,
 
   // The billion-dollar bet
-  betNarrative: `From 2002 to 2024, pharmaceutical companies and the NIH bet over $50 billion on the amyloid hypothesis.
+  betNarrative: `From 2002 to 2024, pharmaceutical companies and the NIH bet $42.5 billion on the amyloid hypothesis.
 
 The result?
 
@@ -234,7 +234,7 @@ Follow the money.`,
   // Patented side
   patentedSide: {
     label: 'Patented Approaches',
-    amount: '$50+ Billion',
+    amount: '$42.5 Billion',
     examples: ['Lecanemab', 'Donanemab', 'Aducanumab'],
     outcome: '27-35% slowing at best',
     costToPatient: '$26,500-$32,000/year',
@@ -251,8 +251,8 @@ Follow the money.`,
 
   // The ratio callout
   ratioCallout: {
-    ratio: '1000:1',
-    explanation: 'For every dollar spent on generic approaches, $1,000 went to patented drugs.',
+    ratio: '850:1',
+    explanation: 'For every dollar spent on generic approaches, $850 went to patented drugs.',
   },
 
   // Key insight

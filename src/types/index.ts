@@ -46,6 +46,8 @@ export interface ComparisonRow {
   patented: string;
   generic: string;
   delta?: string;
+  sourceId?: string;
+  keyFinding?: string; // The specific quote from the source that supports this row
 }
 
 export interface TimelineEvent {

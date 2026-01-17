@@ -63,7 +63,7 @@ export function Hero() {
             className="grid grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto"
           >
             <StatCard value="32M+" label="People with Alzheimer's worldwide" />
-            <StatCard value="850:1" label="Novel vs. repurposed drug trials" />
+            <StatCard value="850:1" label="Patented vs. generic R&D investment" />
             <StatCard value="$42.5B" label="Private R&D spent (1995-2021)" />
           </motion.div>
         </div>
@@ -72,6 +72,7 @@ export function Hero() {
       {/* Scroll indicator */}
       <motion.button
         onClick={scrollToContent}
+        aria-label="Scroll to explore content"
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer group"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, y: [0, 8, 0] }}
@@ -80,10 +81,10 @@ export function Hero() {
           y: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
         }}
       >
-        <span className="text-sm text-[var(--text-muted)] mb-2 group-hover:text-[var(--text-body)] transition-colors">
+        <span aria-hidden="true" className="text-sm text-[var(--text-muted)] mb-2 group-hover:text-[var(--text-body)] transition-colors">
           Scroll to explore
         </span>
-        <ChevronDown className="w-8 h-8 text-[var(--text-muted)] group-hover:text-[var(--text-body)] transition-colors" />
+        <ChevronDown aria-hidden="true" className="w-8 h-8 text-[var(--text-muted)] group-hover:text-[var(--text-body)] transition-colors" />
       </motion.button>
     </section>
   );
@@ -96,11 +97,15 @@ interface StatCardProps {
 
 function StatCard({ value, label }: StatCardProps) {
   return (
-    <div className="bg-[var(--bg-secondary)] rounded border border-[var(--border)] p-6 text-center">
-      <span className="text-2xl sm:text-3xl font-bold font-serif text-[var(--accent-orange)] block">
+    <figure
+      role="group"
+      aria-label={`${value} - ${label}`}
+      className="bg-[var(--bg-secondary)] rounded border border-[var(--border)] p-6 text-center"
+    >
+      <span aria-hidden="true" className="text-2xl sm:text-3xl font-bold font-serif text-[var(--accent-orange)] block">
         {value}
       </span>
-      <p className="mt-2 text-sm text-[var(--text-muted)]">{label}</p>
-    </div>
+      <figcaption className="mt-2 text-sm text-[var(--text-muted)]">{label}</figcaption>
+    </figure>
   );
 }

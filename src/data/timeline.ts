@@ -61,7 +61,7 @@ export const timelineEvents: TimelineEvent[] = [
     description:
       'At a psychiatry conference in Tübingen, Alois Alzheimer describes "a peculiar disease of the cortex" based on his patient Auguste Deter, a 51-year-old woman who had suffered progressive memory loss, confusion, and paranoia.',
     expandedDescription:
-      'Auguste Deter was admitted to the Frankfurt asylum in 1901 at age 51 with symptoms including memory loss, disorientation, and paranoid delusions. When asked to write her name, she could only manage "Mrs." before stopping, saying "I have lost myself." After her death in 1906, Alzheimer used newly developed silver staining techniques to examine her brain, finding two distinctive abnormalities: extracellular plaques (later identified as Aβ) and intracellular tangles (later identified as tau). His presentation received no questions,the audience was waiting for the next talk. The original case file was lost for decades until rediscovered in 1995.',
+      'Auguste Deter was admitted to the Frankfurt asylum in 1901 at age 51 with symptoms including memory loss, disorientation, and paranoid delusions. When asked to write her name, she could only manage "Mrs." before stopping, saying "I have lost myself." After her death in 1906, Alzheimer used newly developed silver staining techniques to examine her brain, finding two distinctive abnormalities: extracellular plaques (later identified as Aβ) and intracellular tangles (later identified as tau). His presentation received no questions, the audience was waiting for the next talk. The original case file was lost for decades until rediscovered in 1995.',
     type: 'discovery',
     framework: null,
     significance: 'major',
@@ -83,9 +83,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Davies discovers acetylcholine depletion in AD brains',
     shortTitle: 'ACh deficit found',
     description:
-      'Peter Davies and A.J.F. Maloney discover severe depletion of acetylcholine (ACh) in AD brains,the first biochemical abnormality linked to the disease.',
+      'Peter Davies and A.J.F. Maloney discover severe depletion of acetylcholine (ACh) in AD brains, the first biochemical abnormality linked to the disease.',
     expandedDescription:
-      'Acetylcholine is a neurotransmitter critical for memory and learning. Davies found that the enzyme choline acetyltransferase (ChAT), which synthesizes ACh, was reduced by 60-90% in AD patients\' cortex and hippocampus. This reduction correlated with cognitive impairment severity. The finding established that AD had a specific biochemical signature and suggested a treatment strategy: boost ACh levels. This led directly to cholinesterase inhibitors, which remain the most commonly prescribed AD medications today.',
+      'Acetylcholine is a neurotransmitter critical for memory and learning. Davies found that the enzyme choline acetyltransferase (ChAT), which synthesizes ACh, was reduced by 30-90% in AD patients\' cortex and hippocampus. This reduction correlated with cognitive impairment severity. The finding established that AD had a specific biochemical signature and suggested a treatment strategy: boost ACh levels. This led directly to cholinesterase inhibitors, which remain the most commonly prescribed AD medications today.',
     type: 'discovery',
     framework: 'cholinergic',
     significance: 'major',
@@ -124,7 +124,7 @@ export const timelineEvents: TimelineEvent[] = [
     description:
       'George Glenner and Caine Wong purify and sequence the amyloid-beta (Aβ) protein from AD brain plaques, revealing the molecular identity of the "clumps" Alzheimer saw 80 years earlier.',
     expandedDescription:
-      'Working at UC San Diego, Glenner and Wong extracted protein from cerebrovascular amyloid deposits in AD and Down syndrome brains. They identified a 4-kilodalton peptide (now called Aβ) with a unique amino acid sequence. Crucially, they noted the same protein in Down syndrome patients, who have an extra copy of chromosome 21,leading them to predict the gene encoding Aβ would be on chromosome 21. This prediction was confirmed in 1987 when APP (amyloid precursor protein) was mapped to chromosome 21.',
+      'Working at UC San Diego, Glenner and Wong extracted protein from cerebrovascular amyloid deposits in AD and Down syndrome brains. They identified a 4-kilodalton peptide (now called Aβ) with a unique amino acid sequence. Crucially, they noted the same protein in Down syndrome patients, who have an extra copy of chromosome 21, leading them to predict the gene encoding Aβ would be on chromosome 21. This prediction was confirmed in 1987 when APP (amyloid precursor protein) was mapped to chromosome 21.',
     type: 'discovery',
     framework: 'amyloid',
     significance: 'major',
@@ -143,7 +143,7 @@ export const timelineEvents: TimelineEvent[] = [
     description:
       'Alison Goate discovers that mutations in the amyloid precursor protein (APP) gene on chromosome 21 cause early-onset familial Alzheimer\'s disease.',
     expandedDescription:
-      'Goate\'s team at St. Mary\'s Hospital in London studied families with autosomal dominant AD,a rare inherited form where affected individuals develop symptoms in their 40s-50s. They found a missense mutation (Val717Ile) in the APP gene that segregated perfectly with disease. This genetic evidence was powerful: if mutations in the amyloid-producing gene cause AD, then amyloid must be causally involved. However, these familial mutations account for less than 1% of all AD cases; the relevance to sporadic (non-inherited) AD remained an assumption.',
+      'Goate\'s team at St. Mary\'s Hospital in London studied families with autosomal dominant AD, a rare inherited form where affected individuals develop symptoms in their 40s-50s. They found a missense mutation (Val717Ile) in the APP gene that segregated perfectly with disease. This genetic evidence was powerful: if mutations in the amyloid-producing gene cause AD, then amyloid must be causally involved. However, these familial mutations account for less than 1% of all AD cases; the relevance to sporadic (non-inherited) AD remained an assumption.',
     type: 'milestone',
     framework: 'amyloid',
     significance: 'major',
@@ -180,7 +180,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'APOE4 discovered as major genetic risk factor',
     shortTitle: 'APOE4 risk gene',
     description:
-      'Allen Roses and colleagues at Duke discover that the APOE4 allele dramatically increases risk for late-onset Alzheimer\'s,the first major genetic risk factor for sporadic AD.',
+      'Allen Roses and colleagues at Duke discover that the APOE4 allele dramatically increases risk for late-onset Alzheimer\'s, the first major genetic risk factor for sporadic AD.',
     expandedDescription:
       'Allen Roses used a genetic linkage approach rather than assuming amyloid involvement. His team found that the epsilon-4 allele of the APOE gene (APOE4) dramatically increases late-onset AD risk: one copy increases risk 3-4 fold; two copies increase risk 12-15 fold. About 25% of people carry at least one APOE4 allele. APOE encodes apolipoprotein E, which transports cholesterol and lipids in the brain. APOE4 is associated with poorer lipid transport, reduced amyloid clearance, greater inflammation, and impaired synaptic repair. This discovery highlighted that sporadic AD involves complex metabolic and clearance processes, not just amyloid production.',
     type: 'discovery',
@@ -253,7 +253,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Swerdlow proposes the mitochondrial cascade hypothesis',
     shortTitle: 'Mitochondrial hypothesis',
     description:
-      'Russell Swerdlow argues that mitochondrial dysfunction,not amyloid,is the primary driver of sporadic AD, noting the amyloid hypothesis only explains rare familial cases.',
+      'Russell Swerdlow argues that mitochondrial dysfunction, not amyloid, is the primary driver of sporadic AD, noting the amyloid hypothesis only explains rare familial cases.',
     expandedDescription:
       'Swerdlow observed that the amyloid cascade hypothesis was built on familial AD mutations, which cause only 1-5% of cases. For the other 95%+ of sporadic cases, he proposed that inherited variation in mitochondrial DNA and age-related mitochondrial decline are the primary drivers. His "mitochondrial cascade hypothesis" posits: aging mitochondria → reduced ATP production → impaired cellular functions → increased oxidative stress → APP processing shifts toward Aβ production. Supporting evidence includes: AD brains show reduced cytochrome oxidase activity, FDG-PET shows hypometabolism years before amyloid appears, and AD patient mitochondria transferred to healthy cells cause AD-like changes (cybrid studies).',
     type: 'hypothesis',
@@ -276,7 +276,7 @@ export const timelineEvents: TimelineEvent[] = [
     description:
       'Suzanne de la Monte discovers that brain insulin resistance precedes amyloid and proposes AD as a metabolic disease,"Type 3 Diabetes."',
     expandedDescription:
-      'De la Monte\'s research showed that AD brains have dramatically reduced expression of insulin and insulin-like growth factor (IGF) receptors, along with downstream signaling defects. When she disrupted brain insulin signaling in mice, they developed AD-like pathology including tau hyperphosphorylation. Her "Type 3 Diabetes" concept proposes: brain insulin resistance → impaired glucose uptake → energy starvation → activation of GSK-3β (which phosphorylates tau) → neurodegeneration. This links AD to the diabetes epidemic and explains why type 2 diabetics have 2-4x higher AD risk. It also suggests that insulin-sensitizing drugs (metformin, intranasal insulin, GLP-1 agonists) might help.',
+      'De la Monte\'s research showed that AD brains have dramatically reduced expression of insulin and insulin-like growth factor (IGF) receptors, along with downstream signaling defects. When she disrupted brain insulin signaling in mice, they developed AD-like pathology including tau hyperphosphorylation. Her "Type 3 Diabetes" concept proposes: brain insulin resistance → impaired glucose uptake → energy starvation → activation of GSK-3β (which phosphorylates tau) → neurodegeneration. This links AD to the diabetes epidemic and explains why type 2 diabetics have ~1.5-2x higher AD risk (per meta-analyses). It also suggests that insulin-sensitizing drugs (metformin, intranasal insulin, GLP-1 agonists) might help.',
     type: 'hypothesis',
     framework: 'metabolic',
     significance: 'major',
@@ -316,9 +316,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Bapineuzumab Phase 3 trials terminated after no clinical benefit',
     shortTitle: 'Bapineuzumab fails',
     description:
-      'Pfizer and Johnson & Johnson terminate all Phase 3 trials of bapineuzumab,the first anti-amyloid antibody,after two large studies show no clinical benefit, despite biomarker evidence that the drug engaged its target.',
+      'Pfizer and Johnson & Johnson terminate all Phase 3 trials of bapineuzumab, the first anti-amyloid antibody, after two large studies show no clinical benefit, despite biomarker evidence that the drug engaged its target.',
     expandedDescription:
-      'Bapineuzumab was the first passive immunotherapy to complete Phase 3 trials. It targeted the N-terminus of Aβ and was tested in over 4,500 patients across four studies. The antibody engaged its target: PET scans showed reduced amyloid in treated patients, and cerebrospinal fluid biomarkers shifted. However, there was no significant difference in cognitive decline between drug and placebo groups. The trials also revealed amyloid-related imaging abnormalities (ARIA),brain swelling and microbleeds,in about 10% of patients. The failure prompted debate: was the drug given too late in disease, or was the hypothesis wrong? Most researchers concluded treatment timing was the issue.',
+      'Bapineuzumab was the first passive immunotherapy to complete Phase 3 trials. It targeted the N-terminus of Aβ and was tested in over 4,500 patients across four studies. The antibody engaged its target: PET scans showed reduced amyloid in treated patients, and cerebrospinal fluid biomarkers shifted. However, there was no significant difference in cognitive decline between drug and placebo groups. The trials also revealed amyloid-related imaging abnormalities (ARIA), brain swelling and microbleeds, in about 10% of patients. The failure prompted debate: was the drug given too late in disease, or was the hypothesis wrong? Most researchers concluded treatment timing was the issue.',
     type: 'failure',
     framework: 'amyloid',
     significance: 'major',
@@ -403,10 +403,10 @@ export const timelineEvents: TimelineEvent[] = [
     id: 'nixon-panthos',
     year: 2022,
     month: 6,
-    title: 'Nixon discovers PANTHOS,plaques form inside neurons',
+    title: 'Nixon discovers PANTHOS, plaques form inside neurons',
     shortTitle: 'PANTHOS discovery',
     description:
-      'Ralph Nixon reveals that amyloid plaques form inside neurons from lysosomal failure (PANTHOS), then are released when the cells die,reversing the assumed causality.',
+      'Ralph Nixon reveals that amyloid plaques form inside neurons from lysosomal failure (PANTHOS), then are released when the cells die, reversing the assumed causality.',
     expandedDescription:
       'Nixon\'s research identified a previously unknown pathway he called PANTHOS (Poisonous Anthos, or "flower"). Using advanced electron microscopy, his team showed that in AD neurons, lysosomes (the cell\'s recycling centers) become dysfunctional, accumulate APP and its processing enzymes, and generate Aβ intracellularly. These damaged lysosomes form flower-shaped structures that eventually rupture, killing the neuron and releasing their amyloid content. This suggests plaques are a consequence of neuronal death, not a cause. The finding connects presenilin mutations (which disrupt lysosomal acidification) directly to lysosomal failure, providing a mechanistic link between familial AD genetics and cellular pathology.',
     type: 'hypothesis',
@@ -445,7 +445,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Nave shows myelin dysfunction drives amyloid deposition',
     shortTitle: 'Myelin drives Aβ',
     description:
-      'Klaus-Armin Nave publishes in Nature showing that myelin dysfunction is upstream of amyloid,damaged myelin drives plaque formation, not vice versa.',
+      'Klaus-Armin Nave publishes in Nature showing that myelin dysfunction is upstream of amyloid, damaged myelin drives plaque formation, not vice versa.',
     expandedDescription:
       'Nave\'s team at Max Planck showed that oligodendrocytes (myelin-producing cells) express BACE1 and APP, and can directly produce Aβ. When they genetically damaged oligodendrocyte function in mice, amyloid plaque deposition increased. Their data indicated that ~25% of brain amyloid may come from oligodendrocytes rather than neurons. The paper\'s key insight: myelin damage (which occurs with normal aging) creates a feed-forward loop where damaged oligodendrocytes produce more Aβ, which further damages myelin. This provides a mechanism linking brain aging directly to amyloid deposition and suggests that protecting myelin health could be a therapeutic target.',
     type: 'hypothesis',
@@ -466,7 +466,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Nature retracts Lesné\'s Aβ*56 paper',
     shortTitle: 'Aβ*56 retracted',
     description:
-      'Nature formally retracts the 2006 Aβ*56 paper,the second most-cited retracted paper in history,after all authors except Lesné agree to retraction.',
+      'Nature formally retracts the 2006 Aβ*56 paper, the second most-cited retracted paper in history, after all authors except Lesné agree to retraction.',
     expandedDescription:
       'Nature retracted the paper after an institutional investigation by the University of Minnesota concluded there was evidence of image manipulation. Five of the six authors agreed to the retraction; Lesné did not respond. With over 2,300 citations, it became one of the most-cited retracted papers in scientific history. The retraction raised questions about how much research had built on these findings. However, many AD researchers noted that the oligomer hypothesis (that soluble Aβ species are toxic) had support from multiple independent laboratories beyond Lesné\'s work, and that the retraction did not invalidate the broader amyloid hypothesis.',
     type: 'scandal',
@@ -485,7 +485,7 @@ export const timelineEvents: TimelineEvent[] = [
     description:
       'Biogen discontinues aducanumab (Aduhelm), the drug it fought so hard to approve, citing "financial reasons."',
     expandedDescription:
-      'Biogen announced it would discontinue aducanumab development and commercial operations, citing the need to focus resources on lecanemab (which showed clearer efficacy data). The drug had faced multiple obstacles since approval: CMS restricted Medicare coverage to patients enrolled in clinical trials, neurologists were reluctant to prescribe given the controversial approval, the required ARIA monitoring was burdensome, and lecanemab\'s successful trial made aducanumab\'s uncertain data less compelling. Biogen recorded approximately $2.6 billion in impairment charges related to aducanumab. The drug was prescribed to only about 2,000 patients during its brief commercial life.',
+      'Biogen announced it would discontinue aducanumab development and commercial operations, citing the need to focus resources on lecanemab (which showed clearer efficacy data). The drug had faced multiple obstacles since approval: CMS restricted Medicare coverage to patients enrolled in clinical trials, neurologists were reluctant to prescribe given the controversial approval, the required ARIA monitoring was burdensome, and lecanemab\'s successful trial made aducanumab\'s uncertain data less compelling. Biogen recorded hundreds of millions in impairment charges related to aducanumab (including ~$286M inventory write-offs, ~$119M idle capacity, and ~$60M close-out costs). The drug was prescribed to only about 2,000 patients during its brief commercial life.',
     type: 'failure',
     framework: 'amyloid',
     significance: 'major',
@@ -537,7 +537,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Rivastigmine and galantamine expand cholinergic options',
     shortTitle: 'More ChEIs approved',
     description:
-      'FDA approves rivastigmine (Exelon) in 2000 and galantamine (Razadyne) in 2001, completing the cholinesterase inhibitor class. Three drugs that actually help patients,all based on cholinergic hypothesis.',
+      'FDA approves rivastigmine (Exelon) in 2000 and galantamine (Razadyne) in 2001, completing the cholinesterase inhibitor class. Three drugs that actually help patients, all based on cholinergic hypothesis.',
     expandedDescription:
       'Rivastigmine (2000) inhibits both acetylcholinesterase and butyrylcholinesterase, with a unique patch formulation that reduces GI side effects. Galantamine (2001) combines cholinesterase inhibition with nicotinic receptor modulation. Both show similar efficacy to donepezil (2-3 point ADAS-cog improvement). These drugs can slow symptom progression for 6-12 months on average and may delay nursing home placement. They do not modify disease course or stop progression. A fourth drug, memantine (approved 2003), works via a different mechanism (NMDA receptor modulation) and is often used in combination with cholinesterase inhibitors in moderate-to-severe AD.',
     type: 'approval',
@@ -555,7 +555,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Tau protein discovered as microtubule-associated protein',
     shortTitle: 'Tau discovered',
     description:
-      'Marc Bhavani Kirschner and colleagues discover tau as a protein that promotes microtubule assembly,the structural scaffolding inside neurons that the tangles Alzheimer saw would later be shown to contain.',
+      'Marc Bhavani Kirschner and colleagues discover tau as a protein that promotes microtubule assembly, the structural scaffolding inside neurons that the tangles Alzheimer saw would later be shown to contain.',
     expandedDescription:
       'Kirschner\'s team at Princeton identified tau while studying how microtubules (the cell\'s internal scaffolding) assemble. They found tau was essential for stabilizing microtubules, which form the "tracks" along which cargo is transported in neurons. Tau\'s name comes from the Greek letter τ (the initial of "tubulin-associated unit"). In healthy neurons, tau binds to microtubules and keeps them stable. In AD, tau becomes hyperphosphorylated (too many phosphate groups attached), causing it to detach from microtubules and aggregate into the neurofibrillary tangles Alzheimer observed in 1906. The discovery of tau\'s normal function helped explain why tangles are so destructive.',
     type: 'discovery',
@@ -570,9 +570,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Neurofibrillary tangles identified as hyperphosphorylated tau',
     shortTitle: 'Tangles are tau',
     description:
-      'Multiple groups independently show that the neurofibrillary tangles Alzheimer described in 1906 are composed of hyperphosphorylated tau protein,finally revealing the molecular identity of the second hallmark.',
+      'Multiple groups independently show that the neurofibrillary tangles Alzheimer described in 1906 are composed of hyperphosphorylated tau protein, finally revealing the molecular identity of the second hallmark.',
     expandedDescription:
-      'Grundke-Iqbal, Iqbal, and colleagues showed that AD tangles contained abnormally phosphorylated tau. Normally, tau has 2-3 phosphate groups; in AD, it has 8-10. This hyperphosphorylation causes tau to detach from microtubules and aggregate into paired helical filaments (PHFs),the building blocks of tangles. The finding explained a paradox: tau\'s normal job is to stabilize microtubules, but in disease it forms toxic aggregates. It also provided therapeutic targets: kinases that phosphorylate tau (like GSK-3β and CDK5) and phosphatases that remove phosphates. Understanding tau\'s role took 80 years after Alzheimer\'s initial observation.',
+      'Grundke-Iqbal, Iqbal, and colleagues showed that AD tangles contained abnormally phosphorylated tau. Normally, tau has 2-3 phosphate groups; in AD, it has 8-10. This hyperphosphorylation causes tau to detach from microtubules and aggregate into paired helical filaments (PHFs), the building blocks of tangles. The finding explained a paradox: tau\'s normal job is to stabilize microtubules, but in disease it forms toxic aggregates. It also provided therapeutic targets: kinases that phosphorylate tau (like GSK-3β and CDK5) and phosphatases that remove phosphates. Understanding tau\'s role took 80 years after Alzheimer\'s initial observation.',
     type: 'discovery',
     framework: 'tau',
     significance: 'major',
@@ -590,7 +590,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Braak & Braak establish tau staging of AD',
     shortTitle: 'Braak staging',
     description:
-      'Heiko and Eva Braak publish their landmark study showing neurofibrillary tangles spread through the brain in a predictable 6-stage pattern that correlates with clinical progression,better than amyloid does.',
+      'Heiko and Eva Braak publish their landmark study showing neurofibrillary tangles spread through the brain in a predictable 6-stage pattern that correlates with clinical progression, better than amyloid does.',
     expandedDescription:
       'The Braaks examined 83 brains and defined 6 stages of tau pathology spread: Stages I-II (transentorhinal cortex, clinically silent), Stages III-IV (limbic regions including hippocampus, early symptoms), Stages V-VI (neocortex, dementia). Critically, they showed that Braak stage correlated strongly with clinical dementia severity, while amyloid plaque burden did not. Some individuals with high plaque loads had minimal cognitive impairment if tau pathology was limited. This work suggested that tau spread, not amyloid accumulation, tracks disease progression. The Braak staging system remains the standard for neuropathological diagnosis.',
     type: 'hypothesis',
@@ -611,7 +611,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'First tau PET tracers enable imaging of tangles in living patients',
     shortTitle: 'Tau PET imaging',
     description:
-      'FDA approves flortaucipir (Tauvid) for PET imaging of tau tangles. For the first time, researchers can visualize tau pathology in living patients,confirming what Braak showed in autopsy: tau correlates with symptoms.',
+      'FDA approves flortaucipir (Tauvid) for PET imaging of tau tangles. For the first time, researchers can visualize tau pathology in living patients, confirming what Braak showed in autopsy: tau correlates with symptoms.',
     expandedDescription:
       'Flortaucipir (Tauvid, formerly known as AV-1451 or T807) is a radiotracer that binds selectively to aggregated tau in neurofibrillary tangles. FDA approved it in 2020 for PET imaging in adults with cognitive impairment being evaluated for AD. Studies consistently show that tau PET signal correlates more strongly with cognitive impairment than amyloid PET. Tau PET can also predict future cognitive decline: regions showing tau accumulation in early scans show subsequent atrophy and functional decline. The regional pattern of tau matches Braak staging, enabling noninvasive staging in living patients.',
     type: 'milestone',
@@ -627,9 +627,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Frost and Diamond show tau spreads like a prion',
     shortTitle: 'Tau prion spreading',
     description:
-      'Researchers demonstrate that misfolded tau can template normal tau into pathological forms and spread between cells,a prion-like mechanism that explains Braak staging.',
+      'Researchers demonstrate that misfolded tau can template normal tau into pathological forms and spread between cells, a prion-like mechanism that explains Braak staging.',
     expandedDescription:
-      'Frost and Diamond demonstrated that extracellular tau aggregates can be taken up by cells and template the misfolding of normal intracellular tau,a prion-like mechanism. This spread occurs through synaptic connections, explaining the predictable anatomical progression described by Braak staging: tau begins in entorhinal cortex, spreads to hippocampus, then to neocortex. The mechanism involves release of tau from affected neurons, uptake by connected neurons, and seeding of new aggregates. This has therapeutic implications: blocking tau release, uptake, or seeding could potentially halt disease spread even after it has begun.',
+      'Frost and Diamond demonstrated that extracellular tau aggregates can be taken up by cells and template the misfolding of normal intracellular tau, a prion-like mechanism. This spread occurs through synaptic connections, explaining the predictable anatomical progression described by Braak staging: tau begins in entorhinal cortex, spreads to hippocampus, then to neocortex. The mechanism involves release of tau from affected neurons, uptake by connected neurons, and seeding of new aggregates. This has therapeutic implications: blocking tau release, uptake, or seeding could potentially halt disease spread even after it has begun.',
     type: 'discovery',
     framework: 'tau',
     significance: 'major',
@@ -644,7 +644,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Semorinemab and gosuranemab fail Phase 2 trials',
     shortTitle: 'Tau antibodies fail',
     description:
-      'Two anti-tau antibodies,Roche\'s semorinemab and Biogen\'s gosuranemab,fail Phase 2 trials, showing no cognitive benefit despite reducing tau.',
+      'Two anti-tau antibodies, Roche\'s semorinemab and Biogen\'s gosuranemab, fail Phase 2 trials, showing no cognitive benefit despite reducing tau.',
     expandedDescription:
       'Semorinemab (Roche) targets the N-terminus of tau and showed CSF tau reduction but no cognitive benefit in the LAURIET Phase 2 trial (272 patients, prodromal-to-mild AD). Gosuranemab (Biogen) targets extracellular tau but failed to slow decline in a Phase 2 trial. These failures raised questions similar to those from amyloid trials: Is it the wrong target, wrong stage of disease, or wrong approach to that target? Tau-targeting therapies continue in development with different strategies including antisense oligonucleotides, small molecules, and vaccines.',
     type: 'failure',
@@ -662,7 +662,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Itzhaki links herpes virus to Alzheimer\'s',
     shortTitle: 'Herpes-AD link',
     description:
-      'Ruth Itzhaki and colleagues discover that the combination of herpes simplex virus (HSV-1) in the brain and the APOE4 gene increases Alzheimer\'s risk 12-fold,proposing infection as a trigger for the disease.',
+      'Ruth Itzhaki and colleagues discover that the combination of herpes simplex virus (HSV-1) in the brain and the APOE4 gene increases Alzheimer\'s risk 12-fold, proposing infection as a trigger for the disease.',
     expandedDescription:
       'Itzhaki\'s team found that HSV-1 DNA was present in the brains of ~70% of AD patients vs. ~40% of controls, and was specifically localized within amyloid plaques. The key finding was a gene-environment interaction: HSV-1 in brain plus APOE4 genotype increased AD risk 12-fold, while neither factor alone significantly increased risk. The proposed mechanism: HSV-1 periodically reactivates in the brain, and APOE4 carriers may have impaired ability to suppress viral replication. This would explain why antiviral treatments (studied in Taiwan) reduced dementia risk in herpes patients. The work suggests Aβ may serve as an antimicrobial defense.',
     type: 'hypothesis',
@@ -683,9 +683,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Moir discovers Aβ is an antimicrobial peptide',
     shortTitle: 'Aβ is antimicrobial',
     description:
-      'Robert Moir at Harvard discovers that Aβ kills bacteria and viruses,it\'s an ancient antimicrobial defense. Plaques may be the brain\'s attempt to fight infection, not a disease cause.',
+      'Robert Moir at Harvard discovers that Aβ kills bacteria and viruses—it\'s an ancient antimicrobial defense. Plaques may be the brain\'s attempt to fight infection, not a disease cause.',
     expandedDescription:
-      'Moir showed that Aβ has antimicrobial activity against common pathogens including E. coli, S. aureus, and Candida albicans,comparable to the known antimicrobial peptide LL-37. Subsequent work showed Aβ can form fibrils that trap and kill pathogens, essentially creating a "molecular flypaper" around infections. In transgenic AD mice, Aβ protected against bacterial and viral infections. This reframed the amyloid hypothesis: rather than being purely pathological, Aβ may be part of the innate immune system, with plaques forming as an excessive defense response to real or perceived infections. This explains why Aβ is evolutionarily conserved across species.',
+      'Moir showed that Aβ has antimicrobial activity against common pathogens including E. coli, S. aureus, and Candida albicans, comparable to the known antimicrobial peptide LL-37. Subsequent work showed Aβ can form fibrils that trap and kill pathogens, essentially creating a "molecular flypaper" around infections. In transgenic AD mice, Aβ protected against bacterial and viral infections. This reframed the amyloid hypothesis: rather than being purely pathological, Aβ may be part of the innate immune system, with plaques forming as an excessive defense response to real or perceived infections. This explains why Aβ is evolutionarily conserved across species.',
     type: 'discovery',
     framework: 'infection',
     significance: 'major',
@@ -700,9 +700,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Gum disease bacteria found in Alzheimer\'s brains',
     shortTitle: 'P. gingivalis in AD',
     description:
-      'A Science Advances paper reports finding Porphyromonas gingivalis,the bacterium that causes gum disease,in Alzheimer\'s brains, with its toxic proteins correlating with tau pathology.',
+      'A Science Advances paper reports finding Porphyromonas gingivalis (the bacterium that causes gum disease) in Alzheimer\'s brains, with its toxic proteins correlating with tau pathology.',
     expandedDescription:
-      'Researchers found P. gingivalis DNA in 96% of AD brain samples (vs. 39% of controls), and its toxic proteases (gingipains) were found in neurons. Higher gingipain levels correlated with higher tau and ubiquitin pathology. In mice, oral P. gingivalis infection led to brain colonization, Aβ production, and neurodegeneration,effects blocked by gingipain inhibitors. The company Cortexyme developed a gingipain inhibitor (atuzaginstat/COR388) which entered Phase 2/3 trials but failed to meet endpoints in 2022. Questions remain about whether P. gingivalis is causative or merely opportunistic in AD brains with compromised blood-brain barriers.',
+      'Researchers found P. gingivalis DNA in 96% of AD brain samples (vs. 39% of controls), and its toxic proteases (gingipains) were found in neurons. Higher gingipain levels correlated with higher tau and ubiquitin pathology. In mice, oral P. gingivalis infection led to brain colonization, Aβ production, and neurodegeneration, effects blocked by gingipain inhibitors. The company Cortexyme developed a gingipain inhibitor (atuzaginstat/COR388) which entered Phase 2/3 trials but failed to meet endpoints in 2022. Questions remain about whether P. gingivalis is causative or merely opportunistic in AD brains with compromised blood-brain barriers.',
     type: 'discovery',
     framework: 'infection',
     significance: 'major',
@@ -732,10 +732,10 @@ export const timelineEvents: TimelineEvent[] = [
   {
     id: 'microglia-discovery',
     year: 1919,
-    title: 'del Río-Hortega discovers microglia,the brain\'s immune cells',
+    title: 'del Río-Hortega discovers microglia (the brain\'s immune cells)',
     shortTitle: 'Microglia discovered',
     description:
-      'Spanish neuroscientist Pío del Río-Hortega identifies microglia as a distinct cell type in the brain,the resident immune cells that would later be implicated in AD neuroinflammation.',
+      'Spanish neuroscientist Pío del Río-Hortega identifies microglia as a distinct cell type in the brain, the resident immune cells that would later be implicated in AD neuroinflammation.',
     expandedDescription:
       'Using his silver carbonate staining method, del Río-Hortega distinguished microglia from other brain cells based on their morphology and behavior. He recognized them as distinct from neurons, astrocytes, and oligodendrocytes (which he also discovered in 1921). Microglia comprise 5-10% of brain cells and serve as the brain\'s immune system: they survey the environment, engulf debris and pathogens, and release inflammatory signals. In healthy brains, they maintain a "resting" state with ramified branches; when activated, they retract branches and become amoeboid. In AD, chronically activated microglia surround plaques and release inflammatory cytokines that may damage neurons.',
     type: 'discovery',
@@ -778,9 +778,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Tobinick reports rapid improvement with TNF inhibitor',
     shortTitle: 'TNF-α pilot',
     description:
-      'Edward Tobinick reports that perispinal etanercept, a TNF-alpha inhibitor used for arthritis, produces rapid cognitive improvement in Alzheimer\'s patients,some within minutes.',
+      'Edward Tobinick reports that perispinal etanercept, a TNF-alpha inhibitor used for arthritis, produces rapid cognitive improvement in Alzheimer\'s patients, some within minutes.',
     expandedDescription:
-      'Tobinick administered etanercept (a TNF-alpha inhibitor used for rheumatoid arthritis) via perispinal injection to deliver the drug to the brain via cerebrospinal venous drainage. He reported rapid improvement in some patients,within minutes to hours,in verbal fluency and other cognitive measures. TNF-alpha is elevated in AD brains and CSF and can directly impair synaptic function. The rapid improvement (if real) suggests TNF-alpha may acutely suppress cognition rather than causing structural damage. However, the findings remain controversial: the studies were open-label and uncontrolled. A small randomized controlled trial showed no significant benefit. Larger trials have not been conducted.',
+      'Tobinick administered etanercept (a TNF-alpha inhibitor used for rheumatoid arthritis) via perispinal injection to deliver the drug to the brain via cerebrospinal venous drainage. He reported rapid improvement in some patients, within minutes to hours, in verbal fluency and other cognitive measures. TNF-alpha is elevated in AD brains and CSF and can directly impair synaptic function. The rapid improvement (if real) suggests TNF-alpha may acutely suppress cognition rather than causing structural damage. However, the findings remain controversial: the studies were open-label and uncontrolled. A small randomized controlled trial showed no significant benefit. Larger trials have not been conducted.',
     type: 'hypothesis',
     framework: 'neuroinflammation',
     significance: 'major',
@@ -794,9 +794,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'TREM2 mutations dramatically increase AD risk',
     shortTitle: 'TREM2 discovered',
     description:
-      'Two independent studies discover that rare mutations in TREM2,a gene expressed in microglia,increase Alzheimer\'s risk 3-4 fold, comparable to APOE4. The immune system is central to AD.',
+      'Two independent studies discover that rare mutations in TREM2 (a gene expressed in microglia) increase Alzheimer\'s risk 3-4 fold, comparable to APOE4. The immune system is central to AD.',
     expandedDescription:
-      'Two independent genome-wide association studies simultaneously reported that the R47H variant of TREM2 (Triggering Receptor Expressed on Myeloid cells 2) increased AD risk 2-4 fold. TREM2 is expressed almost exclusively on microglia in the brain and modulates their response to damage,including their ability to clear amyloid and cellular debris. The R47H variant impairs TREM2 function, leading to defective microglial responses. This established that the brain\'s immune system plays a central role in AD, independent of amyloid production. TREM2 biology has since become a major research focus, with several TREM2-targeting therapies in development.',
+      'Two independent genome-wide association studies simultaneously reported that the R47H variant of TREM2 (Triggering Receptor Expressed on Myeloid cells 2) increased AD risk 2-4 fold. TREM2 is expressed almost exclusively on microglia in the brain and modulates their response to damage, including their ability to clear amyloid and cellular debris. The R47H variant impairs TREM2 function, leading to defective microglial responses. This established that the brain\'s immune system plays a central role in AD, independent of amyloid production. TREM2 biology has since become a major research focus, with several TREM2-targeting therapies in development.',
     type: 'discovery',
     framework: 'neuroinflammation',
     significance: 'major',
@@ -813,9 +813,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Ehrlich discovers the blood-brain barrier',
     shortTitle: 'BBB discovered',
     description:
-      'Paul Ehrlich observes that dyes injected into the bloodstream stain all organs except the brain,the first evidence of the blood-brain barrier that protects the brain but also complicates drug delivery.',
+      'Paul Ehrlich observes that dyes injected into the bloodstream stain all organs except the brain, the first evidence of the blood-brain barrier that protects the brain but also complicates drug delivery.',
     expandedDescription:
-      'Ehrlich, who would later win the Nobel Prize for immunology, noticed that when he injected vital dyes (like trypan blue) into animals, all tissues were stained except the brain and spinal cord. His student Edwin Goldmann later showed the reverse: dye injected into cerebrospinal fluid stained the brain but not peripheral tissues. This demonstrated a selective barrier between blood and brain. The BBB is formed by specialized endothelial cells with tight junctions, surrounded by astrocyte "feet" and pericytes. It protects the brain from pathogens and toxins but also blocks 98% of small-molecule drugs and essentially all large molecules,a major obstacle for AD drug development.',
+      'Ehrlich, who would later win the Nobel Prize for immunology, noticed that when he injected vital dyes (like trypan blue) into animals, all tissues were stained except the brain and spinal cord. His student Edwin Goldmann later showed the reverse: dye injected into cerebrospinal fluid stained the brain but not peripheral tissues. This demonstrated a selective barrier between blood and brain. The BBB is formed by specialized endothelial cells with tight junctions, surrounded by astrocyte "feet" and pericytes. It protects the brain from pathogens and toxins but also blocks 98% of small-molecule drugs and essentially all large molecules, a major obstacle for AD drug development.',
     type: 'discovery',
     framework: 'vascular',
     significance: 'major',
@@ -851,9 +851,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Zlokovic shows blood-brain barrier breakdown precedes AD',
     shortTitle: 'BBB breakdown',
     description:
-      'Berislav Zlokovic demonstrates that blood-brain barrier dysfunction occurs early in AD and may initiate the cascade,before significant amyloid accumulation.',
+      'Berislav Zlokovic demonstrates that blood-brain barrier dysfunction occurs early in AD and may initiate the cascade, before significant amyloid accumulation.',
     expandedDescription:
-      'Zlokovic\'s research identified specific mechanisms of BBB dysfunction in AD: loss of pericytes (cells that maintain barrier integrity), reduced expression of tight junction proteins, and impaired transport of Aβ across the barrier. In mouse models, pericyte loss led to BBB breakdown, accumulation of blood-derived proteins in brain, neurodegeneration, and cognitive deficits,before significant amyloid deposition. Human imaging studies showed that BBB permeability increases in the hippocampus early in cognitive decline, correlating with pericyte injury markers in CSF. This suggests vascular dysfunction may be an early, potentially preventable step in AD pathogenesis.',
+      'Zlokovic\'s research identified specific mechanisms of BBB dysfunction in AD: loss of pericytes (cells that maintain barrier integrity), reduced expression of tight junction proteins, and impaired transport of Aβ across the barrier. In mouse models, pericyte loss led to BBB breakdown, accumulation of blood-derived proteins in brain, neurodegeneration, and cognitive deficits, before significant amyloid deposition. Human imaging studies showed that BBB permeability increases in the hippocampus early in cognitive decline, correlating with pericyte injury markers in CSF. This suggests vascular dysfunction may be an early, potentially preventable step in AD pathogenesis.',
     type: 'discovery',
     framework: 'vascular',
     significance: 'major',
@@ -870,7 +870,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Nasal insulin improves cognition in AD patients',
     shortTitle: 'Nasal insulin trial',
     description:
-      'Suzanne Craft shows that intranasal insulin improves memory and cognition in AD patients,providing clinical validation of the "Type 3 Diabetes" hypothesis.',
+      'Suzanne Craft shows that intranasal insulin improves memory and cognition in AD patients, providing clinical validation of the "Type 3 Diabetes" hypothesis.',
     expandedDescription:
       'Intranasal insulin delivery bypasses the blood-brain barrier by traveling along olfactory and trigeminal nerve pathways directly to the brain. Craft\'s trial tested 40 IU of regular insulin or insulin detemir intranasally twice daily in 60 adults with MCI or early AD. The regular insulin group showed improved delayed memory recall (primary endpoint) and preserved brain glucose metabolism on FDG-PET compared to placebo. Effects were most pronounced in APOE4-negative participants. A larger follow-up trial (SNIFF 120) showed similar trends but missed its primary endpoint. The approach remains promising given its low cost and safety profile.',
     type: 'milestone',
@@ -905,9 +905,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Altmann identifies mitochondria as the cell\'s power plants',
     shortTitle: 'Mitochondria discovered',
     description:
-      'Richard Altmann describes "bioblasts",later named mitochondria,as ubiquitous cellular structures. Their role as energy producers would be established over the following decades.',
+      'Richard Altmann describes "bioblasts" (later named mitochondria) as ubiquitous cellular structures. Their role as energy producers would be established over the following decades.',
     expandedDescription:
-      'Altmann observed granular structures in cells using a special staining technique and proposed they were fundamental living units ("bioblasts"). The name "mitochondria" (Greek: thread + granule) was coined by Carl Benda in 1898. Over subsequent decades, researchers established that mitochondria are the cell\'s primary energy producers, generating ATP through oxidative phosphorylation. Neurons are especially dependent on mitochondria,the brain uses 20% of the body\'s energy despite being only 2% of body weight. Mitochondria also regulate calcium, generate reactive oxygen species, and control cell death. Their dysfunction would later be implicated in AD and aging.',
+      'Altmann observed granular structures in cells using a special staining technique and proposed they were fundamental living units ("bioblasts"). The name "mitochondria" (Greek: thread + granule) was coined by Carl Benda in 1898. Over subsequent decades, researchers established that mitochondria are the cell\'s primary energy producers, generating ATP through oxidative phosphorylation. Neurons are especially dependent on mitochondria; the brain uses 20% of the body\'s energy despite being only 2% of body weight. Mitochondria also regulate calcium, generate reactive oxygen species, and control cell death. Their dysfunction would later be implicated in AD and aging.',
     type: 'discovery',
     framework: 'mitochondrial',
     significance: 'major',
@@ -922,9 +922,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Cybrid studies prove mitochondrial defects are primary',
     shortTitle: 'Cybrid studies',
     description:
-      'Swerdlow creates "cybrids",cells with AD patient mitochondria in healthy cell backgrounds. The AD mitochondria alone produce AD-like changes, proving mitochondrial dysfunction is upstream.',
+      'Swerdlow creates "cybrids" (cells with AD patient mitochondria in healthy cell backgrounds). The AD mitochondria alone produce AD-like changes, proving mitochondrial dysfunction is upstream.',
     expandedDescription:
-      'Cybrids (cytoplasmic hybrids) are created by depleting cells of their mitochondria and repopulating them with mitochondria from donor patients. Swerdlow created cybrids using mitochondria from AD patients placed into neuroblastoma cells with deleted mitochondrial DNA. These AD-cybrids showed: reduced cytochrome oxidase activity, increased oxidative stress, altered calcium handling, and changes in APP processing that favored Aβ production,even though the nuclear DNA was identical. This demonstrated that mitochondrial DNA variation can drive AD-like cellular phenotypes, supporting the hypothesis that mitochondrial dysfunction is upstream of amyloid pathology in sporadic AD.',
+      'Cybrids (cytoplasmic hybrids) are created by depleting cells of their mitochondria and repopulating them with mitochondria from donor patients. Swerdlow created cybrids using mitochondria from AD patients placed into neuroblastoma cells with deleted mitochondrial DNA. These AD-cybrids showed: reduced cytochrome oxidase activity, increased oxidative stress, altered calcium handling, and changes in APP processing that favored Aβ production, even though the nuclear DNA was identical. This demonstrated that mitochondrial DNA variation can drive AD-like cellular phenotypes, supporting the hypothesis that mitochondrial dysfunction is upstream of amyloid pathology in sporadic AD.',
     type: 'discovery',
     framework: 'mitochondrial',
     significance: 'major',
@@ -957,9 +957,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Christian de Duve discovers lysosomes',
     shortTitle: 'Lysosomes discovered',
     description:
-      'Belgian biochemist Christian de Duve discovers lysosomes,membrane-bound organelles that serve as the cell\'s recycling centers, breaking down proteins, lipids, and other cellular debris.',
+      'Belgian biochemist Christian de Duve discovers lysosomes, membrane-bound organelles that serve as the cell\'s recycling centers, breaking down proteins, lipids, and other cellular debris.',
     expandedDescription:
-      'De Duve identified lysosomes while studying insulin action on liver cells at the Catholic University of Louvain. Using differential centrifugation, he found a fraction containing acid hydrolases (enzymes active at low pH) enclosed in membrane-bound vesicles. He coined the term "lysosome" (from Greek: "digestive body"). His discovery revealed that cells have a sophisticated waste disposal system,lysosomes contain 50+ enzymes that break down proteins, carbohydrates, lipids, and nucleic acids. Lysosomal dysfunction would later be implicated in 70+ "lysosomal storage diseases" and, eventually, Alzheimer\'s. De Duve received the Nobel Prize in 1974.',
+      'De Duve identified lysosomes while studying insulin action on liver cells at the Catholic University of Louvain. Using differential centrifugation, he found a fraction containing acid hydrolases (enzymes active at low pH) enclosed in membrane-bound vesicles. He coined the term "lysosome" (from Greek: "digestive body"). His discovery revealed that cells have a sophisticated waste disposal system; lysosomes contain 50+ enzymes that break down proteins, carbohydrates, lipids, and nucleic acids. Lysosomal dysfunction would later be implicated in 70+ "lysosomal storage diseases" and, eventually, Alzheimer\'s. De Duve received the Nobel Prize in 1974.',
     type: 'discovery',
     framework: 'lysosomal',
     significance: 'major',
@@ -969,7 +969,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     id: 'cathepsin-discovery',
     year: 1929,
-    title: 'Cathepsins discovered,the lysosomal proteases',
+    title: 'Cathepsins (lysosomal proteases) discovered',
     shortTitle: 'Cathepsins discovered',
     description:
       'Scientists identify cathepsins, the primary protein-degrading enzymes within lysosomes that will later be implicated in both normal APP processing and AD pathology.',
@@ -984,10 +984,10 @@ export const timelineEvents: TimelineEvent[] = [
   {
     id: 'autophagy-discovery',
     year: 1963,
-    title: 'Autophagy discovered,cells eating themselves',
+    title: 'Autophagy ("self-eating") discovered',
     shortTitle: 'Autophagy discovered',
     description:
-      'De Duve coins "autophagy" to describe the process by which cells engulf their own components and deliver them to lysosomes for recycling,a process critical for neuronal health.',
+      'De Duve coins "autophagy" to describe the process by which cells engulf their own components and deliver them to lysosomes for recycling, a process critical for neuronal health.',
     expandedDescription:
       'Autophagy (from Greek "self-eating") is the process by which cells sequester damaged organelles and protein aggregates into double-membrane vesicles (autophagosomes) that fuse with lysosomes for degradation. De Duve observed this process in rat liver cells after glucagon treatment. Neurons are especially dependent on autophagy because they are post-mitotic (cannot dilute damaged components by division) and extremely long-lived. Yoshinori Ohsumi later characterized the molecular machinery of autophagy, receiving the 2016 Nobel Prize. In AD, autophagy is impaired at multiple steps: autophagosome formation, lysosomal fusion, and lysosomal degradation.',
     type: 'discovery',
@@ -1022,7 +1022,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Presenilin linked to lysosomal acidification',
     shortTitle: 'PSEN affects lysosomes',
     description:
-      'Research reveals that presenilin 1,mutated in familial AD,is required for proper lysosomal acidification. Without it, lysosomes cannot digest their contents.',
+      'Research reveals that presenilin 1 (mutated in familial AD) is required for proper lysosomal acidification. Without it, lysosomes cannot digest their contents.',
     expandedDescription:
       'Lee and colleagues showed that PSEN1 is essential for the proper function of v-ATPase, the proton pump that acidifies lysosomes. AD-causing PSEN1 mutations impair this function, raising lysosomal pH and inactivating acid-dependent enzymes. This provided a mechanism by which familial AD mutations could cause disease independent of gamma-secretase activity and Aβ production: by disabling the cell\'s recycling system. The finding suggested that lysosomal dysfunction might be the primary driver of familial AD, with increased Aβ42/40 ratio being a secondary consequence of gamma-secretase dysfunction.',
     type: 'discovery',
@@ -1055,9 +1055,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Rudolf Virchow describes myelin',
     shortTitle: 'Myelin described',
     description:
-      'German physician Rudolf Virchow describes and names myelin,the lipid-rich insulation surrounding nerve fibers that enables rapid electrical signaling.',
+      'German physician Rudolf Virchow describes and names myelin, the lipid-rich insulation surrounding nerve fibers that enables rapid electrical signaling.',
     expandedDescription:
-      'Virchow, the father of cellular pathology, identified a white, fatty substance surrounding nerve fibers and named it "myelin" from the Greek "myelos" (marrow). Myelin is produced by oligodendrocytes in the central nervous system and Schwann cells in the peripheral nervous system. It wraps around axons in a spiral fashion, creating an insulating sheath interrupted by gaps (nodes of Ranvier) where electrical signals regenerate. This enables saltatory conduction,signals jumping between nodes,which speeds neural transmission 10-100 fold. Myelin comprises about 80% lipid and 20% protein, making it the most lipid-rich structure in the body.',
+      'Virchow, the father of cellular pathology, identified a white, fatty substance surrounding nerve fibers and named it "myelin" from the Greek "myelos" (marrow). Myelin is produced by oligodendrocytes in the central nervous system and Schwann cells in the peripheral nervous system. It wraps around axons in a spiral fashion, creating an insulating sheath interrupted by gaps (nodes of Ranvier) where electrical signals regenerate. This enables saltatory conduction (signals jumping between nodes), which speeds neural transmission 10-100 fold. Myelin comprises about 80% lipid and 20% protein, making it the most lipid-rich structure in the body.',
     type: 'discovery',
     framework: 'myelin',
     significance: 'major',
@@ -1120,7 +1120,7 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'APOE4 damages oligodendrocytes independent of amyloid',
     shortTitle: 'APOE4 harms myelin',
     description:
-      'Single-cell sequencing reveals that APOE4,the strongest AD genetic risk factor,is highly expressed in and damages oligodendrocytes, independent of neurons or amyloid.',
+      'Single-cell sequencing reveals that APOE4 (the strongest AD genetic risk factor) is highly expressed in and damages oligodendrocytes, independent of neurons or amyloid.',
     expandedDescription:
       'Single-cell RNA sequencing of human brains showed that APOE is most highly expressed not in neurons (as often assumed) but in astrocytes and oligodendrocytes. In APOE4 carriers, oligodendrocytes showed gene expression changes indicating cellular stress, reduced cholesterol synthesis, and impaired myelination. Oligodendrocytes require massive lipid synthesis to maintain myelin, and APOE4 impairs lipid transport. This provided a mechanism for APOE4\'s effect independent of amyloid: poor lipid supply → oligodendrocyte dysfunction → myelin breakdown → cognitive decline and secondary amyloid accumulation.',
     type: 'discovery',
@@ -1155,7 +1155,7 @@ export const timelineEvents: TimelineEvent[] = [
     description:
       'The U.S. Congress passes the National Alzheimer\'s Project Act, creating a national strategic plan and committing to find prevention or effective treatment by 2025.',
     expandedDescription:
-      'NAPA created the first national strategic plan for AD and mandated annual updates on progress. The law led to substantial increases in NIH funding for AD research,from ~$500M in 2011 to over $3.5B by 2023. However, critics noted that the bulk of funding continued to flow to amyloid-focused research rather than being diversified across alternative hypotheses. The 2025 treatment goal was not met.',
+      'NAPA created the first national strategic plan for AD and mandated annual updates on progress. The law led to substantial increases in NIH funding for AD research, from ~$500M in 2011 to over $3.5B by 2023. However, critics noted that the bulk of funding continued to flow to amyloid-focused research rather than being diversified across alternative hypotheses. The 2025 treatment goal was not met.',
     type: 'policy',
     framework: null,
     significance: 'major',
@@ -1168,9 +1168,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'FINGER study proves lifestyle intervention works',
     shortTitle: 'FINGER lifestyle trial',
     description:
-      'The Finnish FINGER study,the first large RCT of lifestyle intervention for dementia prevention,shows that diet, exercise, cognitive training, and vascular risk management significantly improve cognition in at-risk elderly.',
+      'The Finnish FINGER study (the first large RCT of lifestyle intervention for dementia prevention) shows that diet, exercise, cognitive training, and vascular risk management significantly improve cognition in at-risk elderly.',
     expandedDescription:
-      'The FINGER trial randomized 1,260 at-risk elderly Finns to either intensive lifestyle intervention (diet, exercise, cognitive training, vascular monitoring) or standard care. After 2 years, the intervention group showed 25% better performance on cognitive tests, with particular benefits for executive function and processing speed. This was the first large RCT demonstrating that lifestyle modification could meaningfully slow cognitive decline,validating decades of observational data and providing hope independent of drug development.',
+      'The FINGER trial randomized 1,260 at-risk elderly Finns to either intensive lifestyle intervention (diet, exercise, cognitive training, vascular monitoring) or standard care. After 2 years, the intervention group showed 25% better performance on cognitive tests, with particular benefits for executive function and processing speed. This was the first large RCT demonstrating that lifestyle modification could meaningfully slow cognitive decline, validating decades of observational data and providing hope independent of drug development.',
     type: 'milestone',
     framework: null,
     significance: 'major',
@@ -1337,7 +1337,7 @@ export function getTimelineEras(): TimelineEra[] {
       title: 'The Discovery',
       startYear: 1900,
       endYear: 1983,
-      description: 'A disease is named and the first biochemical clue,acetylcholine depletion,emerges.',
+      description: 'A disease is named and the first biochemical clue (acetylcholine depletion) emerges.',
       events: sortEvents(timelineEvents.filter(e => e.year >= 1900 && e.year <= 1983)),
     },
     {

@@ -18,42 +18,18 @@ interface InteractivePieBarChartProps {
 /**
  * Interactive Pie-to-Bar Chart
  * - Hover: Other segments fade out
- * - Click: Transforms from pie to horizontal bar for easier comparison
- * - Shift+Click: Multi-select items for side-by-side comparison
+ * - Click: Toggles between pie and bar view
  */
 export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBarChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
   const [viewMode, setViewMode] = useState<'pie' | 'bar'>('pie');
 
   const total = useMemo(() => data.reduce((sum, d) => sum + d.amount, 0), [data]);
   const maxAmount = useMemo(() => Math.max(...data.map(d => d.amount)), [data]);
 
-  // Handle click with shift-key support
-  const handleClick = (index: number, e: React.MouseEvent) => {
-    if (e.shiftKey) {
-      // Shift+Click: Toggle selection for multi-compare
-      setSelectedIndices(prev => {
-        const next = new Set(prev);
-        if (next.has(index)) {
-          next.delete(index);
-        } else {
-          next.add(index);
-        }
-        return next;
-      });
-      if (viewMode === 'pie') setViewMode('bar');
-    } else {
-      // Normal click: Single select and switch to bar view
-      if (selectedIndices.has(index) && selectedIndices.size === 1) {
-        // Clicking selected item again - deselect and go back to pie
-        setSelectedIndices(new Set());
-        setViewMode('pie');
-      } else {
-        setSelectedIndices(new Set([index]));
-        setViewMode('bar');
-      }
-    }
+  // Click toggles between pie and bar view
+  const handleClick = () => {
+    setViewMode(viewMode === 'pie' ? 'bar' : 'pie');
   };
 
   // Calculate pie slices
@@ -103,32 +79,20 @@ export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBar
     });
   }, [data, total]);
 
-  // Sort data for bar view - selected items first, then by amount
+  // Sort data for bar view by amount (descending)
   const sortedForBar = useMemo(() => {
     return [...data]
       .map((item, originalIndex) => ({ item, originalIndex }))
-      .sort((a, b) => {
-        const aSelected = selectedIndices.has(a.originalIndex);
-        const bSelected = selectedIndices.has(b.originalIndex);
-        if (aSelected && !bSelected) return -1;
-        if (!aSelected && bSelected) return 1;
-        return b.item.amount - a.item.amount;
-      });
-  }, [data, selectedIndices]);
+      .sort((a, b) => b.item.amount - a.item.amount);
+  }, [data]);
 
+  // Only fade non-hovered items on hover
   const isItemActive = (index: number) => {
-    if (selectedIndices.size === 0) return hoveredIndex === null || hoveredIndex === index;
-    return selectedIndices.has(index);
+    return hoveredIndex === null || hoveredIndex === index;
   };
 
   return (
-    <div className="relative" style={{ height }}>
-      {/* View mode toggle hint */}
-      <div className="absolute top-0 right-0 text-[10px] text-[var(--text-muted)] z-10">
-        {viewMode === 'pie' ? 'Click to compare' : 'Click segment to return'}
-        {selectedIndices.size > 0 && ' · Shift+click for multi-select'}
-      </div>
-
+    <div className="relative flex flex-col" style={{ height }}>
       <AnimatePresence mode="wait">
         {viewMode === 'pie' ? (
           <motion.div
@@ -139,63 +103,77 @@ export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBar
             transition={{ duration: 0.3 }}
             className="flex items-center justify-center h-full"
           >
-            <svg width="180" height="180" viewBox="0 0 180 180">
-              {pieSlices.map(({ path, item, index }) => (
-                <motion.path
-                  key={index}
-                  d={path}
-                  fill={item.color}
-                  stroke="white"
-                  strokeWidth={2}
-                  style={{ cursor: 'pointer' }}
-                  initial={{ opacity: 1 }}
-                  animate={{
-                    opacity: isItemActive(index) ? 1 : 0.25,
-                    scale: hoveredIndex === index ? 1.05 : 1,
-                  }}
-                  transition={{ duration: 0.2 }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={(e) => handleClick(index, e)}
-                />
-              ))}
-              {/* Center text */}
-              <text
-                x="90"
-                y="85"
-                textAnchor="middle"
-                className="text-xs fill-[var(--text-muted)]"
-              >
-                Total
-              </text>
-              <text
-                x="90"
-                y="100"
-                textAnchor="middle"
-                className="text-sm font-bold fill-[var(--text-primary)]"
-              >
-                ${(total / 1000).toFixed(1)}B
-              </text>
-            </svg>
-
-            {/* Hover tooltip */}
-            <AnimatePresence>
-              {hoveredIndex !== null && (
-                <motion.div
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 5 }}
-                  className="absolute bottom-0 left-0 right-0 text-center"
+            <svg width="280" height="180" viewBox="0 0 280 180">
+              {/* Donut chart centered at 140, 90 */}
+              <g transform="translate(50, 0)">
+                {pieSlices.map(({ path, item, index }) => (
+                  <motion.path
+                    key={index}
+                    d={path}
+                    fill={item.color}
+                    stroke="white"
+                    strokeWidth={2}
+                    style={{ cursor: 'pointer' }}
+                    initial={{ opacity: 1 }}
+                    animate={{
+                      opacity: isItemActive(index) ? 1 : 0.25,
+                      scale: hoveredIndex === index ? 1.05 : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    onClick={handleClick}
+                  />
+                ))}
+                {/* Center text */}
+                <text
+                  x="90"
+                  y="85"
+                  textAnchor="middle"
+                  className="text-xs fill-[var(--text-muted)]"
                 >
-                  <span
-                    className="inline-block px-2 py-1 text-xs font-medium text-white"
-                    style={{ backgroundColor: data[hoveredIndex].color }}
-                  >
-                    {data[hoveredIndex].name}: ${data[hoveredIndex].amount}M ({data[hoveredIndex].percentage}%)
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  Total
+                </text>
+                <text
+                  x="90"
+                  y="100"
+                  textAnchor="middle"
+                  className="text-sm font-bold fill-[var(--text-primary)]"
+                >
+                  ${(total / 1000).toFixed(1)}B
+                </text>
+              </g>
+
+              {/* Labels around the donut */}
+              {pieSlices.map(({ labelX, labelY, midAngle, item, index }) => {
+                // Determine text anchor based on position (left or right of center)
+                const isRightSide = midAngle > -90 && midAngle < 90;
+                const adjustedX = labelX + 50; // Account for the g transform
+
+                return (
+                  <g key={`label-${index}`}>
+                    <text
+                      x={adjustedX}
+                      y={labelY - 5}
+                      textAnchor={isRightSide ? 'start' : 'end'}
+                      className="text-[9px] fill-[var(--text-body)] font-medium"
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      {item.name}
+                    </text>
+                    <text
+                      x={adjustedX}
+                      y={labelY + 6}
+                      textAnchor={isRightSide ? 'start' : 'end'}
+                      className="text-[8px] fill-[var(--text-muted)]"
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      {item.percentage}%
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
           </motion.div>
         ) : (
           <motion.div
@@ -208,7 +186,6 @@ export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBar
           >
             <div className="space-y-1.5">
               {sortedForBar.map(({ item, originalIndex }, sortedIndex) => {
-                const isSelected = selectedIndices.has(originalIndex);
                 const barWidth = (item.amount / maxAmount) * 100;
 
                 return (
@@ -224,18 +201,14 @@ export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBar
                     className="cursor-pointer group"
                     onMouseEnter={() => setHoveredIndex(originalIndex)}
                     onMouseLeave={() => setHoveredIndex(null)}
-                    onClick={(e) => handleClick(originalIndex, e)}
+                    onClick={handleClick}
                   >
                     <div className="flex items-center gap-2">
                       <div
                         className="w-2 h-2 shrink-0"
                         style={{ backgroundColor: item.color }}
                       />
-                      <span
-                        className={`text-[10px] w-24 truncate ${
-                          isSelected ? 'font-semibold text-[var(--text-primary)]' : 'text-[var(--text-muted)]'
-                        }`}
-                      >
+                      <span className="text-[10px] w-24 truncate text-[var(--text-muted)]">
                         {item.name}
                       </span>
                       <div className="flex-1 h-4 bg-[var(--bg-secondary)] relative overflow-hidden">
@@ -246,7 +219,7 @@ export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBar
                           animate={{ width: `${barWidth}%` }}
                           transition={{ duration: 0.5, delay: sortedIndex * 0.05 }}
                         />
-                        <span className="absolute right-1 top-0 h-full flex items-center text-[9px] font-mono text-[var(--text-body)]">
+                        <span className="absolute left-1 top-0 h-full flex items-center text-[9px] font-serif text-white">
                           ${item.amount}M
                         </span>
                       </div>
@@ -255,26 +228,14 @@ export function InteractivePieBarChart({ data, height = 180 }: InteractivePieBar
                 );
               })}
             </div>
-
-            {/* Comparison summary for multi-select */}
-            {selectedIndices.size > 1 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-3 pt-2 border-t border-[var(--border)] text-xs"
-              >
-                <span className="text-[var(--text-muted)]">Selected total: </span>
-                <span className="font-mono font-semibold text-[var(--text-primary)]">
-                  ${Array.from(selectedIndices).reduce((sum, i) => sum + data[i].amount, 0)}M
-                </span>
-                <span className="text-[var(--text-muted)]">
-                  {' '}({Math.round(Array.from(selectedIndices).reduce((sum, i) => sum + data[i].percentage, 0))}% of total)
-                </span>
-              </motion.div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* View mode toggle hint - below chart */}
+      <div className="text-center text-[10px] text-[var(--text-muted)] mt-2">
+        {viewMode === 'pie' ? 'Click to compare' : 'Click to return'}
+      </div>
     </div>
   );
 }

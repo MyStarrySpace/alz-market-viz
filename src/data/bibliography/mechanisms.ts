@@ -666,6 +666,132 @@ export const mechanismsSources: Source[] = [
     ],
   },
 
+  {
+    id: 'iliff-paravascular-2012',
+    type: 'journal',
+    authors: ['Jeffrey J. Iliff', 'Minghuan Wang', 'Yonghong Liao', 'et al.'],
+    title: 'A paravascular pathway facilitates CSF flow through the brain parenchyma and the clearance of interstitial solutes, including amyloid β',
+    publication: 'Science Translational Medicine',
+    year: 2012,
+    volume: '4(147)',
+    pages: '147ra111',
+    doi: '10.1126/scitranslmed.3003748',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/22896675/',
+    citations: [
+      {
+        id: 'iliff-2012-glymphatic-discovery',
+        quote: 'CSF enters the brain along para-arterial channels to exchange with the interstitial fluid, which is in turn cleared along paravenous drainage pathways. This pathway, which we have termed the "glymphatic" system, facilitates the efficient clearance of interstitial solutes, including amyloid-β, from the brain.',
+        usedIn: ['mechanisticCascade', 'frameworks'],
+        context: 'LANDMARK paper discovering the glymphatic system and demonstrating its role in Aβ clearance.',
+      },
+    ],
+  },
+
+  {
+    id: 'murdock-40hz-glymphatic-2024',
+    type: 'journal',
+    authors: ['Mitchell H. Murdock', 'Cheng-Yi Yang', 'Na Sun', 'et al.'],
+    title: 'Multisensory gamma stimulation promotes glymphatic clearance of amyloid',
+    publication: 'Nature',
+    year: 2024,
+    volume: '627(8002)',
+    pages: '149-156',
+    doi: '10.1038/s41586-024-07132-6',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/38418876/',
+    citations: [
+      {
+        id: 'murdock-2024-40hz-aqp4',
+        quote: 'We found that gamma stimulation increased CSF influx, CSF–ISF exchange, and glymphatic clearance of Aβ from the cortex. VIP-expressing interneurons, which respond to gamma activity, are necessary for increased arterial pulsatility and AQP4 polarization during gamma stimulation.',
+        usedIn: ['mechanisticCascade', 'hopefulDevelopments'],
+        context: '40Hz gamma entrainment promotes glymphatic clearance via VIP interneurons. AQP4 required for effect. TGN-020 (AQP4 inhibitor) blocks the benefit.',
+      },
+    ],
+  },
+
+  {
+    id: 'prokopenko-dtnb-2022',
+    type: 'journal',
+    authors: ['Dmitry Prokopenko', 'Sanghyun Lee', 'Julian Hecker', 'et al.'],
+    title: 'Region-based analysis of rare genomic variants in whole-genome sequencing datasets reveal two novel Alzheimer\'s disease-associated genes: DTNB and DLG2',
+    publication: 'Molecular Psychiatry',
+    year: 2022,
+    volume: '27(4)',
+    pages: '1963-1969',
+    doi: '10.1038/s41380-022-01475-0',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/35256747/',
+    citations: [
+      {
+        id: 'prokopenko-2022-dtnb',
+        quote: 'Rare variants in DTNB reached genome-wide significance for AD association (p_meta = 4.74 × 10⁻⁸) in WGS analysis of 2,247 individuals from AD families with replication in ADSP case-control samples. DTNB encodes β-dystrobrevin, a component of the dystrophin-associated protein complex.',
+        usedIn: ['mechanisticCascade', 'genetics'],
+        context: 'GENETIC EVIDENCE: DTNB encodes β-dystrobrevin, component of the DAPC that anchors AQP4 to astrocyte endfeet. Direct genetic link between glymphatic machinery and AD risk.',
+      },
+    ],
+  },
+
+  {
+    id: 'liang-swimming-glymphatic-2025',
+    type: 'journal',
+    authors: ['Sheng Liang', 'Huanhuan Liu', 'Xinxin Wang', 'et al.'],
+    title: 'Aerobic exercise improves clearance of amyloid-β via the glymphatic system in a mouse model of Alzheimer\'s Disease',
+    publication: 'Brain Research Bulletin',
+    year: 2025,
+    volume: '222',
+    pages: '111263',
+    doi: '10.1016/j.brainresbull.2025.111263',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/39971255/',
+    citations: [
+      {
+        id: 'liang-2025-swimming-aqp4',
+        quote: 'Swimming training restored glymphatic function and AQP4 polarization in APP/PS1 mice by upregulating transcription of Lama1 (laminin α1) and Dp71 (dystrophin). AQP4 knockdown eliminated the exercise benefits.',
+        usedIn: ['mechanisticCascade', 'hopefulDevelopments'],
+        context: 'Exercise (swimming) restores AQP4 polarization via DAPC gene upregulation. Effect requires intact AQP4.',
+      },
+    ],
+  },
+
+  {
+    id: 'ehninger-mwm-paradox-2006',
+    type: 'journal',
+    authors: ['Dan Ehninger', 'Gerd Kempermann'],
+    title: 'Paradoxical effects of learning the Morris water maze on adult hippocampal neurogenesis in mice may be explained by a combination of stress and physical activity',
+    publication: 'Genes, Brain and Behavior',
+    year: 2006,
+    volume: '5(1)',
+    pages: '29-39',
+    doi: '10.1111/j.1601-183X.2005.00129.x',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/16436187/',
+    citations: [
+      {
+        id: 'ehninger-2006-mwm-confound',
+        quote: 'Morris water maze training is associated with locomotion, and physical activity robustly increases hippocampal neurogenesis... HID animals were found to travel longer average distances per trial to reach the platform, raising the possibility that a different degree of physical activity might account for the differential effects on adult hippocampal neurogenesis.',
+        usedIn: ['translationalFailures'],
+        context: 'METHODOLOGICAL CONFOUND: MWM testing involves swimming exercise which itself increases neurogenesis, potentially confounding AD drug testing results.',
+      },
+    ],
+  },
+
+  {
+    id: 'shokri-kojori-sleep-deprivation-2018',
+    type: 'journal',
+    authors: ['Ehsan Shokri-Kojori', 'Gene-Jack Wang', 'Corinde E. Wiers', 'et al.'],
+    title: 'β-Amyloid accumulation in the human brain after one night of sleep deprivation',
+    publication: 'PNAS',
+    year: 2018,
+    volume: '115(17)',
+    pages: '4483-4488',
+    doi: '10.1073/pnas.1721694115',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/29632177/',
+    citations: [
+      {
+        id: 'shokri-kojori-2018-human',
+        quote: 'One night of sleep deprivation, relative to baseline, resulted in a significant increase in Aβ accumulation in the right hippocampus and thalamus.',
+        usedIn: ['mechanisticCascade', 'frameworks'],
+        context: 'HUMAN EVIDENCE: Sleep deprivation directly increases Aβ in humans, demonstrating glymphatic impairment has immediate pathological consequences.',
+      },
+    ],
+  },
+
   // ============================================
   // CHOLINERGIC PATHWAY
   // ============================================

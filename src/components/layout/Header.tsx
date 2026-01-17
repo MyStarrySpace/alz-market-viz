@@ -5,36 +5,10 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Container } from '@/components/ui';
+import { getNavConfig } from '@/data';
 
-// Acts with their sections
-interface ActConfig {
-  label: string;
-  sections: { id: string; label: string }[];
-}
-
-const acts: ActConfig[] = [
-  {
-    label: 'I',
-    sections: [
-      { id: 'timeline', label: 'Timeline' },
-      { id: 'trial-barriers', label: 'Trials' },
-    ],
-  },
-  {
-    label: 'II',
-    sections: [
-      { id: 'system', label: 'System' },
-      { id: 'cases', label: 'Cases' },
-    ],
-  },
-  {
-    label: 'III',
-    sections: [
-      { id: 'hopeful-developments', label: 'Hope' },
-      { id: 'promising-frontier', label: 'Frontier' },
-    ],
-  },
-];
+// Get navigation config from centralized sections data
+const acts = getNavConfig();
 
 // Flatten sections for scroll tracking
 const allSections = acts.flatMap(act => act.sections);
@@ -180,6 +154,8 @@ export function Header() {
                     {/* Act label - clickable */}
                     <button
                       onClick={() => scrollToAct(actIndex)}
+                      aria-label={`Navigate to Act ${act.label}`}
+                      aria-current={activeActIndex === actIndex ? 'true' : undefined}
                       className={`hidden sm:block px-2 py-1 text-xs font-semibold transition-colors ${
                         activeActIndex === actIndex
                           ? 'text-[var(--accent-orange)]'
@@ -195,6 +171,8 @@ export function Header() {
                         key={section.id}
                         ref={(el) => setButtonRef(section.id, el)}
                         onClick={() => scrollToSection(section.id)}
+                        aria-current={activeSection === section.id ? 'true' : undefined}
+                        aria-label={`Navigate to ${section.label} section`}
                         className={`px-2 sm:px-3 py-2 text-sm font-medium transition-colors ${
                           activeSection === section.id
                             ? 'text-[var(--accent-orange)]'

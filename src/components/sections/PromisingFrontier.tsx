@@ -11,6 +11,9 @@ import {
 } from 'lucide-react';
 import { Container, Section, SectionHeader, TextWithAbbreviations } from '@/components/ui';
 import { promisingFrontierData, type PromisingDrug } from '@/data/promisingFrontier';
+import { getSection } from '@/data';
+
+const sectionConfig = getSection('promising-frontier')!;
 
 // Two-panel list component for drugs
 function DrugsList({ drugs }: { drugs: PromisingDrug[] }) {
@@ -162,11 +165,11 @@ function DrugsList({ drugs }: { drugs: PromisingDrug[] }) {
 
 export function PromisingFrontier() {
   return (
-    <Section id="promising-frontier" className="bg-[var(--bg-primary)]">
+    <Section id={sectionConfig.id} className="bg-[var(--bg-primary)]">
       <Container>
         <SectionHeader
-          title="The Promising Frontier"
-          subtitle="Drugs with strong mechanistic rationale that deserve proper trials—but can't attract funding."
+          title={sectionConfig.title}
+          subtitle={sectionConfig.subtitle}
         />
 
         {/* Summary stats - simplified to just numbers */}

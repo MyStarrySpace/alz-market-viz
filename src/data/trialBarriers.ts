@@ -125,6 +125,8 @@ export const adDevelopmentStatistics = {
 };
 
 // Estimated costs comparison by disease (Phase 3 only)
+// NOTE: AD costs are from Cummings 2022. Other disease costs are rough industry
+// estimates without specific citations - treat as approximate order-of-magnitude.
 export const trialCostComparison = {
   alzheimerPhase3: {
     lowEstimate: 300_000_000,
@@ -187,7 +189,7 @@ export const fundingSources: FundingSource[] = [
     name: 'NIH/NIA (National Institute on Aging)',
     type: 'government',
     country: 'USA',
-    annualBudget: 3_800, // $3.8 billion
+    annualBudget: 4_510, // $4.51 billion (FY2024 enacted: $4,507,623,000)
     budgetYear: 2024,
     description:
       'Primary US federal funder of AD research. Budget has grown 7x since 2011 through advocacy.',
@@ -367,7 +369,7 @@ export const nihBudgetBreakdown: NIHBudgetCategory[] = [
 
 // Detailed breakdown of why NIH can't fill the gap
 export const nihLimitations = {
-  totalBudget: 3800, // $3.8B in 2024
+  totalBudget: 4510, // $4.51B in FY2024 (enacted: $4,507,623,000)
   clinicalTrialBudget: 570, // $570M for ALL clinical trials
   amyloidTrialBudget: 400, // Most clinical trial $ goes to amyloid approaches
   nonAmyloidTrialBudget: 170, // Only ~$170M for non-amyloid trials
@@ -408,27 +410,24 @@ export const nihLimitations = {
 // NIA spending by research focus area (for pie/bar chart)
 // Source: NIH Reporter analysis (nih-reporter-ad-portfolio-2024)
 export const niaSpendingByFocus = [
-  { name: 'Amyloid-focused', amount: 1140, percentage: 30, color: '#486393' }, // primary blue
-  { name: 'Tau-focused', amount: 380, percentage: 10, color: '#E5AF19' }, // warning yellow
-  { name: 'Neuroinflammation', amount: 228, percentage: 6, color: '#C3577F' }, // pink
-  { name: 'Vascular/Metabolic', amount: 190, percentage: 5, color: '#007385' }, // teal
-  { name: 'Care & Caregiving', amount: 380, percentage: 10, color: '#7ED3FF' }, // sky blue
-  { name: 'Basic Neuroscience', amount: 760, percentage: 20, color: '#787473' }, // muted
-  { name: 'Infrastructure/Training', amount: 342, percentage: 9, color: '#FFA380' }, // light orange
-  { name: 'Other', amount: 380, percentage: 10, color: '#C9461D' }, // accent orange
+  { name: 'Amyloid', amount: 1140, percentage: 30, color: '#486393' }, // primary blue
+  { name: 'Neuroscience', amount: 760, percentage: 20, color: '#007385' }, // teal
+  { name: 'Non-amyloid', amount: 1900, percentage: 50, color: '#787473' }, // muted gray (tau, neuroinflammation, vascular, care, infrastructure, other combined)
 ];
 export const niaSpendingSourceId = 'nih-reporter-ad-portfolio-2024';
 
 // Basic vs Applied research funding comparison
+// NOTE: These percentages are rough estimates based on NIH RePORTER analysis.
+// Exact breakdown varies by year and classification methodology.
 // Source: NIH RePORTER (nih-basic-vs-applied-2023)
 export const basicVsAppliedFunding = [
   {
     category: 'NIH/NIA',
-    basic: 2660, // ~70% of $3.8B
-    applied: 570, // ~15% clinical trials
+    basic: 2660, // ~70% estimate
+    applied: 570, // ~15% clinical trials estimate
     other: 570, // ~15% care, infrastructure
-    basicPercent: 70,
-    appliedPercent: 15,
+    basicPercent: 70, // approximate
+    appliedPercent: 15, // approximate
   },
   {
     category: 'Pharma Industry',
@@ -447,8 +446,8 @@ export const grantCycleComparison = {
   nihGrant: {
     label: 'Typical NIH R01 Grant',
     duration: '5 years',
-    totalBudget: 2.5, // $2.5M over 5 years
-    annualBudget: 0.5, // $500K/year
+    totalBudget: 2.85, // $2.85M over 5 years (using ~$570K/year FY2023 average)
+    annualBudget: 0.57, // $570K/year (FY2023 average: $550-600K)
     renewalRequired: true,
     renewalUncertainty: 'High, must compete for renewal',
   },
@@ -461,8 +460,8 @@ export const grantCycleComparison = {
     commitmentRequired: 'Full funding must be secured upfront',
   },
   gap: {
-    budgetMultiple: 185, // Phase 3 costs 185x more than an R01
-    insight: 'A single Phase 3 trial costs as much as 185 R01 grants. NIH would need to consolidate nearly 200 grants to fund one trial, something the grant system isn\'t designed to do.',
+    budgetMultiple: 162, // Phase 3 costs ~162x more than an R01 ($462M / $2.85M)
+    insight: 'A single Phase 3 trial costs as much as ~160 R01 grants. NIH would need to consolidate well over 100 grants to fund one trial, something the grant system isn\'t designed to do.',
   },
   sourceIds: ['nih-r01-funding-levels-2024', 'cummings-ad-drug-development-2022'],
 };
@@ -561,9 +560,9 @@ export const fundingComparisonData = [
   },
   {
     name: 'NIH/NIA (Total Budget)',
-    amount: 3800,
+    amount: 4510,
     color: 'emerald',
-    description: 'But only 15% funds clinical trials',
+    description: 'But only ~13% funds clinical trials',
   },
   {
     name: 'NIH Clinical Trials',
@@ -579,9 +578,9 @@ export const fundingComparisonData = [
   },
   {
     name: 'All Nonprofits Combined',
-    amount: 173,
+    amount: 173, // Calculated sum: Alz Assoc ($105M) + ARUK ($43M) + BrightFocus ($10M) + ADDF ($15M)
     color: 'purple',
-    description: 'Alzheimer\'s Assoc, ADDF, etc.',
+    description: 'Alzheimer\'s Assoc, ARUK, BrightFocus, ADDF combined annual budgets',
   },
   {
     name: 'Single Phase 3 Trial',
@@ -612,7 +611,7 @@ export function getFundingGapAnalysis() {
     ),
     nihCouldFundTrials: Math.floor(nihBudget / phase3Cost),
     keyInsight:
-      'All major AD nonprofits combined (~$173M/year) cannot fund a single Phase 3 trial ($462M). NIH could theoretically fund ~8 trials/year, but most funding goes to basic research. This leaves Phase 3 trials almost entirely dependent on industry, which prioritizes patentable compounds.',
+      'All major AD nonprofits combined (~$173M/year, calculated from individual budgets) cannot fund a single Phase 3 trial ($462M). NIH could theoretically fund ~8 trials/year, but most funding goes to basic research. This leaves Phase 3 trials almost entirely dependent on industry, which prioritizes patentable compounds.',
   };
 }
 
@@ -683,8 +682,8 @@ export const redirectedDrugs: RedirectedDrug[] = [
     originalTarget: 'Hypertension',
     adRationale: 'Hypertension is a major AD risk factor; telmisartan uniquely activates PPAR-γ (like pioglitazone) while controlling blood pressure',
     currentIndications: ['Hypertension', 'Cardiovascular risk reduction'],
-    adTrialStatus: 'none',
-    whyNotAD: 'Blood pressure trials use clear endpoints (mmHg reduction) over months. An AD trial would need cognitive endpoints over years. Generic status means no commercial incentive despite plausible mechanism.',
+    adTrialStatus: 'phase_2',
+    whyNotAD: 'Two academic trials exist (NCT02085265, NCT02471833), but generic status means no pharma investment. Blood pressure trials use clear endpoints (mmHg reduction) over months; AD trials need cognitive endpoints over years.',
     sourceIds: ['telmisartan-pparg-2004'],
   },
   {

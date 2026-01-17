@@ -476,7 +476,7 @@ export default function ShowcasePage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <StatDisplay value="55 million+" label="People living with dementia worldwide (2020)" />
                 <StatDisplay value="99%" label="Clinical trial failure rate (2002-2012)" highlight />
-                <StatDisplay value="~850:1" label="Novel molecule vs. repurposed drug trial ratio" />
+                <StatDisplay value="~850:1" label="Patented vs. generic R&D investment ratio" />
                 <StatDisplay value="$42.5 Billion" label="Cumulative private R&D expenditure (1995-2001)" />
               </div>
             </CardContent>
