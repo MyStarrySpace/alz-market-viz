@@ -184,27 +184,43 @@ export const hopefulDevelopments: HopefulDevelopment[] = [
     category: 'approved_drug',
     status: 'fda_approved',
     description:
-      'Cholinesterase inhibitor with additional nicotinic receptor modulation. Derived from daffodil bulbs.',
+      'Cholinesterase inhibitor and α7 nAChR positive allosteric modulator. Recent research reveals a previously unrecognized BBB-protective mechanism via the splenic anti-inflammatory pathway.',
     mechanism:
-      'Inhibits acetylcholinesterase and also modulates nicotinic acetylcholine receptors, potentially enhancing cholinergic neurotransmission through dual mechanisms.',
+      'Triple mechanism: (1) AChE inhibition → ↑ synaptic ACh; (2) α7 nAChR allosteric modulation → enhanced neurotransmission; (3) α7 nAChR activation on splenic immune cells → ↓ systemic TNF-α/IL-1β → ↑ tight junction proteins (claudin-5, occludin) → BBB protection.',
     whyHopeful:
-      'Dual mechanism may provide additional benefit. Now generic and affordable.',
+      'The Dash lab discovered that galantamine protects BBB integrity via a systemic neuroimmune circuit (vagus → spleen → cytokines → BBB). Effects persist 10 days after drug discontinuation—suggesting structural stabilization, not just acute ACh elevation. This may explain why galantamine works in TBI and vascular dementia, not just AD. Raises important question: should we measure BBB permeability in AD trials?',
     evidence: [
       {
-        trialName: 'Phase 3 trials',
+        trialName: 'Phase 3 trials (AD)',
         trialPhase: 'Phase 3',
-        primaryOutcome: 'ADAS-cog (Alzheimer\'s Disease Assessment Scale - Cognitive Subscale): 11 tasks testing word recall, naming objects, following commands, copying shapes, and orientation to time/place; higher scores = worse cognition (0-70 scale)',
-        result: 'Similar efficacy to other cholinesterase inhibitors (2-3 point improvement on 70-point scale)',
-        limitation: 'Symptomatic only',
+        primaryOutcome: 'ADAS-cog',
+        result: '2-3 point improvement on 70-point scale, similar to other AChEIs',
+        limitation: 'Traditionally considered symptomatic only',
+      },
+      {
+        trialName: 'Dash Lab TBI Study (Zhao et al. 2017)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'BBB permeability, cognitive function',
+        result: 'Galantamine ↓ TBI-triggered BBB permeability, ↓ GABAergic neuron loss, ↑ Morris water maze performance. Effects persisted 10 days post-treatment.',
+        limitation: 'TBI model, not AD; needs replication in AD context',
+      },
+      {
+        trialName: 'Dash Lab α7 nAChR Study (2016)',
+        trialPhase: 'Preclinical',
+        primaryOutcome: 'BBB permeability mechanism',
+        result: 'α7 nAChR knockout mice have ↑ BBB permeability after TBI. CRITICAL: α-bungarotoxin INTO SPLEEN → ↑ BBB permeability; splenectomy abolished drug effect. Proves splenic α7 nAChR is REQUIRED.',
+        limitation: 'Mechanistic study in TBI; AD confirmation needed',
       },
     ],
     cost: '<$30/month (generic)',
     availability: 'FDA approved 2001; generic available',
     caveats: [
-      'Symptomatic only',
-      'No clear advantage over other cholinesterase inhibitors',
+      'BBB protection demonstrated in TBI, not yet confirmed in AD models',
+      'Mainstream clinical understanding still focuses only on AChE inhibition',
+      'The splenic mechanism suggests BBB permeability should be measured in trials',
+      'May have advantages in mixed/vascular dementia given BBB mechanism',
     ],
-    sourceIds: ['galantamine-fda-2001'],
+    sourceIds: ['galantamine-fda-2001', 'dash-galantamine-2017', 'dash-alpha7-bbb-2016'],
   },
 
   {

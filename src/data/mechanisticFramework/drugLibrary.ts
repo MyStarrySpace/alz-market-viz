@@ -535,6 +535,45 @@ export const treatmentLibrary: TreatmentLibraryEntry[] = [
   },
 
   // ---------------------------------------------------------------------------
+  // GALANTAMINE
+  // ---------------------------------------------------------------------------
+  {
+    id: 'galantamine',
+    name: 'Galantamine (Razadyne)',
+    type: 'small_molecule',
+    fdaStatus: 'approved',
+    availability: 'prescription',
+    mechanismSummary: 'AChE inhibitor and α7 nAChR positive allosteric modulator that protects BBB integrity via splenic anti-inflammatory pathway',
+    primaryTargets: [
+      {
+        nodeId: 'ach_reduced',
+        effect: 'inhibits',
+        strength: 'moderate',
+        mechanism: 'Inhibits AChE, increasing acetylcholine at synapses',
+      },
+      {
+        nodeId: 'bbb_integrity',
+        effect: 'activates',
+        strength: 'moderate',
+        mechanism: 'α7 nAChR PAM activity → splenic α7 activation → ↓ systemic TNF-α/IL-1β → ↑ tight junction proteins (claudin-5, occludin)',
+      },
+      {
+        nodeId: 'neuroinflammation',
+        effect: 'inhibits',
+        strength: 'moderate',
+        mechanism: 'Cholinergic anti-inflammatory pathway via vagus → spleen → ↓ cytokines',
+      },
+    ],
+    adEvidence: {
+      level: 'L1',
+      summary: 'FDA-approved for AD. Dash lab (2016-2017) showed galantamine reduces TBI-triggered BBB permeability via α7 nAChR on splenic immune cells. Effects persist 10 days after drug termination.',
+      pmids: ['29088998', '26937017'],
+    },
+    annualCost: 360,
+    notes: 'BBB protection may be a major unrecognized mechanism. The splenic α7 nAChR → systemic inflammation → BBB axis explains why effects persist after discontinuation. May warrant measuring BBB permeability in AD trials.',
+  },
+
+  // ---------------------------------------------------------------------------
   // CAFFEIC ACID DERIVATIVE (COMPOUND 12d)
   // ---------------------------------------------------------------------------
   {
