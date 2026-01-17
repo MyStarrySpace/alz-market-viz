@@ -1,19 +1,28 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { Search, Pill, FlaskConical, Beaker, Leaf, X } from 'lucide-react';
-import { drugLibrary, type DrugLibraryEntry, type FDAStatus, type DrugType } from '@/data/mechanisticFramework/drugLibrary';
+import { Search, Pill, FlaskConical, Beaker, Leaf, X, Zap, Activity, ShieldCheck } from 'lucide-react';
+import {
+  treatmentLibrary,
+  type TreatmentLibraryEntry,
+  type RegulatoryStatus,
+  type TreatmentType,
+  // Keep old aliases for backward compatibility
+  type DrugLibraryEntry,
+  type FDAStatus,
+  type DrugType,
+} from '@/data/mechanisticFramework/drugLibrary';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
 interface DrugLibraryPickerProps {
-  /** Called when a drug is selected */
-  onSelectDrug: (drug: DrugLibraryEntry) => void;
+  /** Called when a treatment is selected */
+  onSelectDrug: (drug: TreatmentLibraryEntry) => void;
   /** Called to close the picker */
   onClose: () => void;
-  /** Currently selected drug ID (for highlighting) */
+  /** Currently selected treatment ID (for highlighting) */
   selectedDrugId?: string | null;
 }
 
@@ -21,21 +30,30 @@ interface DrugLibraryPickerProps {
 // CONSTANTS
 // ============================================================================
 
-const FDA_STATUS_LABELS: Record<FDAStatus, { label: string; color: string }> = {
+const STATUS_LABELS: Record<RegulatoryStatus, { label: string; color: string }> = {
   approved: { label: 'FDA Approved', color: '#5a8a6e' },
   phase3: { label: 'Phase 3', color: '#007385' },
   phase2: { label: 'Phase 2', color: '#486393' },
   phase1: { label: 'Phase 1', color: '#a78bfa' },
   preclinical: { label: 'Preclinical', color: '#787473' },
   no_pathway: { label: 'No FDA Pathway', color: '#c75146' },
+  lifestyle: { label: 'Lifestyle', color: '#34d399' },
+  device_cleared: { label: 'FDA Cleared Device', color: '#007385' },
 };
+// Keep alias for backward compatibility
+const FDA_STATUS_LABELS = STATUS_LABELS;
 
-const DRUG_TYPE_ICONS: Record<DrugType, typeof Pill> = {
+const TREATMENT_TYPE_ICONS: Record<TreatmentType, typeof Pill> = {
   small_molecule: Pill,
   antibody: FlaskConical,
   biologic: Beaker,
   supplement: Leaf,
+  device: Zap,
+  lifestyle: Activity,
+  behavioral: ShieldCheck,
 };
+// Keep alias for backward compatibility
+const DRUG_TYPE_ICONS = TREATMENT_TYPE_ICONS;
 
 // ============================================================================
 // COMPONENT
@@ -47,38 +65,38 @@ export function DrugLibraryPicker({
   selectedDrugId,
 }: DrugLibraryPickerProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState<FDAStatus | 'all'>('all');
+  const [filterStatus, setFilterStatus] = useState<RegulatoryStatus | 'all'>('all');
 
-  // Filter drugs based on search and status
-  const filteredDrugs = useMemo(() => {
-    return drugLibrary.filter(drug => {
+  // Filter treatments based on search and status
+  const filteredTreatments = useMemo(() => {
+    return treatmentLibrary.filter(treatment => {
       // Search filter
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch =
-        drug.name.toLowerCase().includes(searchLower) ||
-        drug.mechanismSummary.toLowerCase().includes(searchLower) ||
-        drug.primaryTargets.some(t => t.nodeId.toLowerCase().includes(searchLower));
+        treatment.name.toLowerCase().includes(searchLower) ||
+        treatment.mechanismSummary.toLowerCase().includes(searchLower) ||
+        treatment.primaryTargets.some(t => t.nodeId.toLowerCase().includes(searchLower));
 
       // Status filter
-      const matchesStatus = filterStatus === 'all' || drug.fdaStatus === filterStatus;
+      const matchesStatus = filterStatus === 'all' || treatment.fdaStatus === filterStatus;
 
       return matchesSearch && matchesStatus;
     });
   }, [searchQuery, filterStatus]);
 
-  // Group by FDA status for display
-  const groupedDrugs = useMemo(() => {
-    const groups: Record<string, DrugLibraryEntry[]> = {};
-    filteredDrugs.forEach(drug => {
-      const key = drug.fdaStatus;
+  // Group by status for display
+  const groupedTreatments = useMemo(() => {
+    const groups: Record<string, TreatmentLibraryEntry[]> = {};
+    filteredTreatments.forEach(treatment => {
+      const key = treatment.fdaStatus;
       if (!groups[key]) groups[key] = [];
-      groups[key].push(drug);
+      groups[key].push(treatment);
     });
     return groups;
-  }, [filteredDrugs]);
+  }, [filteredTreatments]);
 
-  const handleDrugClick = useCallback((drug: DrugLibraryEntry) => {
-    onSelectDrug(drug);
+  const handleTreatmentClick = useCallback((treatment: TreatmentLibraryEntry) => {
+    onSelectDrug(treatment);
   }, [onSelectDrug]);
 
   return (
@@ -86,7 +104,7 @@ export function DrugLibraryPicker({
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-[var(--border)]">
         <span className="text-sm font-medium text-[var(--text-primary)]">
-          Drug Library
+          Treatment Library
         </span>
         <button
           onClick={onClose}
@@ -102,7 +120,7 @@ export function DrugLibraryPicker({
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
           <input
             type="text"
-            placeholder="Search drugs or targets..."
+            placeholder="Search treatments or targets..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 text-sm border border-[var(--border)] rounded
@@ -122,10 +140,10 @@ export function DrugLibraryPicker({
               : 'bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:bg-[var(--border)]'
           }`}
         >
-          All ({drugLibrary.length})
+          All ({treatmentLibrary.length})
         </button>
-        {(['approved', 'phase3', 'phase2', 'phase1', 'no_pathway'] as FDAStatus[]).map(status => {
-          const count = drugLibrary.filter(d => d.fdaStatus === status).length;
+        {(['approved', 'phase3', 'phase2', 'phase1', 'no_pathway', 'lifestyle', 'device_cleared'] as RegulatoryStatus[]).map(status => {
+          const count = treatmentLibrary.filter(d => d.fdaStatus === status).length;
           if (count === 0) return null;
           return (
             <button
@@ -137,46 +155,46 @@ export function DrugLibraryPicker({
                   : 'bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:bg-[var(--border)]'
               }`}
             >
-              {FDA_STATUS_LABELS[status].label.replace('FDA ', '')} ({count})
+              {STATUS_LABELS[status].label.replace('FDA ', '')} ({count})
             </button>
           );
         })}
       </div>
 
-      {/* Drug list */}
+      {/* Treatment list */}
       <div className="flex-1 overflow-y-auto p-2">
-        {filteredDrugs.length === 0 ? (
+        {filteredTreatments.length === 0 ? (
           <div className="text-center py-8 text-[var(--text-muted)] text-sm">
-            No drugs match your search
+            No treatments match your search
           </div>
         ) : (
           <div className="space-y-1">
-            {filteredDrugs.map(drug => {
-              const TypeIcon = DRUG_TYPE_ICONS[drug.type];
-              const statusInfo = FDA_STATUS_LABELS[drug.fdaStatus];
-              const isSelected = selectedDrugId === drug.id;
+            {filteredTreatments.map(treatment => {
+              const TypeIcon = TREATMENT_TYPE_ICONS[treatment.type];
+              const statusInfo = STATUS_LABELS[treatment.fdaStatus];
+              const isSelected = selectedDrugId === treatment.id;
 
               return (
                 <button
-                  key={drug.id}
-                  onClick={() => handleDrugClick(drug)}
+                  key={treatment.id}
+                  onClick={() => handleTreatmentClick(treatment)}
                   className={`w-full text-left p-2 rounded transition-all ${
                     isSelected
                       ? 'bg-[var(--accent-orange-light)] border border-[var(--accent-orange)]'
                       : 'bg-[var(--bg-secondary)] hover:bg-[var(--border)] border border-transparent'
                   }`}
                 >
-                  {/* Drug name and icon */}
+                  {/* Treatment name and icon */}
                   <div className="flex items-center gap-2">
                     <TypeIcon className="w-4 h-4 flex-shrink-0" style={{ color: statusInfo.color }} />
                     <span className="text-sm font-medium text-[var(--text-primary)] truncate">
-                      {drug.name}
+                      {treatment.name}
                     </span>
                   </div>
 
                   {/* Targets */}
                   <div className="mt-1 flex flex-wrap gap-1">
-                    {drug.primaryTargets.map(target => (
+                    {treatment.primaryTargets.map(target => (
                       <span
                         key={target.nodeId}
                         className="text-[10px] px-1.5 py-0.5 bg-white rounded border border-[var(--border)]"
@@ -200,13 +218,13 @@ export function DrugLibraryPicker({
                       {statusInfo.label}
                     </span>
                     <span className="text-[9px] text-[var(--text-muted)]">
-                      Evidence: {drug.adEvidence.level}
+                      Evidence: {treatment.adEvidence.level}
                     </span>
                   </div>
 
                   {/* Mechanism summary (truncated) */}
                   <div className="mt-1 text-[10px] text-[var(--text-muted)] line-clamp-2">
-                    {drug.mechanismSummary}
+                    {treatment.mechanismSummary}
                   </div>
                 </button>
               );
@@ -217,7 +235,7 @@ export function DrugLibraryPicker({
 
       {/* Footer */}
       <div className="p-2 border-t border-[var(--border)] text-[10px] text-[var(--text-muted)] text-center">
-        {filteredDrugs.length} of {drugLibrary.length} drugs
+        {filteredTreatments.length} of {treatmentLibrary.length} treatments
       </div>
     </div>
   );

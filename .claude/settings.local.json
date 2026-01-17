@@ -19,7 +19,14 @@
       "Bash(npx tsx:*)",
       "Bash(python:*)",
       "Bash(pip install:*)",
-      "Bash(npm run calculate-pathways:*)"
+      "Bash(npm run calculate-pathways:*)",
+      "Bash(wc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix animated edges and rename Drug to Treatment in UI\n\n- Remove default animation from directlyIncreases/directlyDecreases edges\n- Add animation for treatment pathway edges when focus mode is active\n- Rename toolbar button from \"Drugs\" to \"Treatments\"\n- Update button tooltip to reference \"treatment library\"\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(npm run test:run:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run test:coverage:*)"
     ]
   }
 }
