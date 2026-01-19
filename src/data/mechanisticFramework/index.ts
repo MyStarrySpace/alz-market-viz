@@ -53,6 +53,7 @@ export {
   module16Nodes,
   module17Nodes,
   module18Nodes,
+  module19Nodes,
 } from './nodes';
 export {
   allEdges,

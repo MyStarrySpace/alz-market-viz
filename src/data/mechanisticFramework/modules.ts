@@ -549,6 +549,55 @@ Crucially, these changes occur 10-20 YEARS before cognitive symptoms, making thi
     color: '#DDA0DD',
     icon: 'GitBranch',
   },
+
+  // ============================================================================
+  // PERIPHERAL SINK / SYSTEMIC CLEARANCE MODULE (19)
+  // ============================================================================
+  {
+    id: 'M19',
+    name: 'Peripheral Sink & Systemic Clearance',
+    shortName: 'Peripheral Sink',
+    description: 'Peripheral organs and mechanisms for Aβ clearance outside the CNS',
+    overview: `
+Module 19 describes the "peripheral sink hypothesis" and the actual mechanisms by which
+anti-Aβ antibodies work. Key insight: antibodies do NOT enter the brain effectively
+(~0.1% uptake due to FcRn efflux). Instead, they work by:
+
+1. Binding plasma Aβ and forming immune complexes
+2. Splenic/hepatic macrophages clear these complexes via Fc receptors
+3. Theoretically, this shifts brain→blood Aβ equilibrium (peripheral sink)
+
+Critical nodes in this pathway:
+• FcRn transport (effluxes antibodies OUT of brain)
+• Splenic clearance (primary site for immune complex removal)
+• Hepatic clearance (Kupffer cells, LRP1)
+• Cervical lymph nodes (CNS antigens enter peripheral immune system)
+
+This module explains why ARIA is NOT the clearance mechanism (it's an adverse effect),
+and why antibody trials show modest effects despite complete plaque removal on PET.
+    `.trim(),
+    keyFindings: [
+      'FcRn actively effluxes IgG from brain→blood (~0.1% brain uptake)',
+      'Splenic macrophages are primary clearers of antibody-Aβ complexes',
+      'Liver clears 40-60% of peripheral Aβ via Kupffer cells and LRP1',
+      'Peripheral sink equilibrium is slow (weeks) and transport-limited',
+      'ARIA is an adverse effect of vessel wall inflammation, not clearance',
+    ],
+    paradigmShifts: [
+      { year: 2001, discovery: 'DeMattos shows m266 raises plasma Aβ without entering brain', pmid: '11689470' },
+      { year: 2016, discovery: 'Wang shows liver is major site of peripheral Aβ clearance', pmid: '27520374' },
+    ],
+    upstreamModules: ['M12', 'M06'], // BBB/Glymphatic, Amyloid
+    downstreamModules: [],
+    landmarkPapers: [
+      { pmid: '11689470', discovery: 'DeMattos 2001 - Peripheral anti-Aβ antibody raises plasma Aβ' },
+      { pmid: '27520374', discovery: 'Wang 2016 - Liver as major Aβ clearance organ' },
+    ],
+    therapeuticTargets: ['splenic_clearance', 'hepatic_clearance', 'fcrn_transport'],
+    interventionWindow: 'treatment',
+    color: '#8B4513', // Saddle brown (liver/spleen color)
+    icon: 'Filter',
+  },
 ];
 
 export default modules;
