@@ -164,6 +164,114 @@ export const module12Nodes: MechanisticNode[] = [
     sharedWith: ['M05', 'M02', 'M13'], // Connects astrocytes, lysosomes, cholinergic
     roles: ['LEVERAGE_POINT', 'THERAPEUTIC_TARGET'],
   },
+
+  // ============================================================================
+  // ANTIBODY CLEARANCE MECHANISMS (added 2026-01-19)
+  // These explain why anti-Aβ antibodies have limited brain efficacy
+  // ============================================================================
+  {
+    id: 'fcrn_transport',
+    label: 'FcRn Transport (BBB)',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    references: {
+      protein: 'UniProt:P55899', // FCGRT (FcRn heavy chain)
+      process: 'GO:0006898', // receptor-mediated endocytosis
+    },
+    description: 'Neonatal Fc receptor-mediated antibody transcytosis across BBB',
+    mechanism:
+      'FcRn binds IgG at pH 6.0 (endosome) and releases at pH 7.4 (extracellular). Brain endothelial FcRn primarily effluxes IgG OUT of brain (brain→blood direction). Anti-Aβ antibodies achieve only ~0.1% brain uptake because FcRn actively pumps them back out. This explains why massive plasma antibody concentrations are needed for minimal brain effect.',
+    roles: ['RATE_LIMITER'],
+  },
+  {
+    id: 'fcrn_recycling',
+    label: 'FcRn Recycling (Periphery)',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    references: {
+      protein: 'UniProt:P55899',
+    },
+    description: 'FcRn salvage pathway extends IgG half-life in blood',
+    mechanism:
+      'FcRn in endothelial cells and monocytes rescues IgG from lysosomal degradation, extending half-life to ~21 days. This recycling maintains high peripheral antibody concentrations but does not improve brain penetration. Antibody Fc engineering can modulate FcRn binding for different PK profiles.',
+  },
+  {
+    id: 'peripheral_sink_hypothesis',
+    label: 'Peripheral Sink Hypothesis',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Theory that peripheral Aβ removal shifts brain→blood equilibrium',
+    mechanism:
+      'Hypothesis: Reducing plasma Aβ via peripheral antibodies or dialysis creates concentration gradient that pulls Aβ from brain. Evidence: Mixed. DeMattos 2001 showed m266 antibody raised plasma Aβ without entering brain. However, brain Aβ reduction was modest. The equilibrium between brain and blood Aβ is slow (half-life ~weeks) and limited by receptor-mediated transport, not simple diffusion.',
+    roles: ['THERAPEUTIC_TARGET'],
+  },
+  {
+    id: 'intramural_periarterial_drainage',
+    label: 'Intramural Periarterial Drainage (IPAD)',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Aβ drains along basement membranes of cerebral arteries',
+    mechanism:
+      'Soluble Aβ drains from brain parenchyma along basement membranes within artery walls (OPPOSITE direction to blood flow). Impaired in CAA (cerebral amyloid angiopathy) where Aβ deposits in vessel walls. APOE4 worsens IPAD efficiency. Arterial stiffening with age reduces the pulsatile motive force for IPAD.',
+    roles: ['THERAPEUTIC_TARGET'],
+  },
+  {
+    id: 'cervical_lymph_nodes',
+    label: 'Cervical Lymph Node Drainage',
+    category: 'STOCK',
+    subtype: 'CompartmentState',
+    moduleId: 'M12',
+    description: 'CNS antigens drain to deep cervical lymph nodes',
+    mechanism:
+      'Meningeal lymphatics → deep cervical lymph nodes → systemic circulation. This is where brain-derived Aβ first contacts the peripheral immune system. Antibody-Aβ immune complexes formed here can be cleared by splenic/hepatic macrophages.',
+  },
+  {
+    id: 'splenic_clearance',
+    label: 'Splenic Aβ Clearance',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Spleen filters Aβ-antibody immune complexes from blood',
+    mechanism:
+      'Splenic macrophages express Fc receptors that bind antibody-Aβ complexes for phagocytic clearance. The spleen is the primary site for removing opsonized particles from circulation. Splenectomy may reduce efficacy of peripheral Aβ immunotherapy. Importantly, this represents the ACTUAL clearance mechanism for anti-Aβ antibodies - they work in periphery, not brain.',
+    roles: ['LEVERAGE_POINT'],
+  },
+  {
+    id: 'hepatic_clearance',
+    label: 'Hepatic Aβ Clearance',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Liver Kupffer cells clear Aβ from blood',
+    mechanism:
+      'Kupffer cells (liver macrophages) and liver sinusoidal endothelial cells can bind and clear Aβ and Aβ-antibody complexes. LRP1 on hepatocytes also mediates Aβ uptake. The liver may be responsible for 40-60% of peripheral Aβ clearance. This pathway works in parallel with splenic clearance.',
+  },
+  {
+    id: 'aria_edema',
+    label: 'ARIA-E (Edema)',
+    category: 'STATE',
+    subtype: 'AdverseEvent',
+    moduleId: 'M12',
+    description: 'Amyloid-related imaging abnormality - edema/effusion',
+    mechanism:
+      'Anti-Aβ antibodies cause vasogenic edema, likely from: (1) Complement activation at vessel walls where CAA is present; (2) Transient BBB disruption during immune complex formation; (3) Inflammatory response to Aβ clearance. ARIA-E occurs in 20-35% of patients on anti-Aβ antibodies, higher in APOE4 carriers. NOT the primary clearance mechanism - it is an adverse effect.',
+    roles: ['BIOMARKER'],
+  },
+  {
+    id: 'aria_hemorrhage',
+    label: 'ARIA-H (Hemorrhage)',
+    category: 'STATE',
+    subtype: 'AdverseEvent',
+    moduleId: 'M12',
+    description: 'Amyloid-related imaging abnormality - microhemorrhage',
+    mechanism:
+      'Microbleeds and superficial siderosis from vessel wall weakening during amyloid removal. Associated with pre-existing CAA burden. Severe ARIA-H can cause symptomatic brain bleeds. Risk factors: APOE4/4 genotype, high baseline CAA, anticoagulant use.',
+    roles: ['BIOMARKER'],
+  },
 ];
 
 // ============================================================================
