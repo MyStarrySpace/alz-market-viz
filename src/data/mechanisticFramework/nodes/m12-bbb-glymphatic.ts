@@ -166,9 +166,48 @@ export const module12Nodes: MechanisticNode[] = [
   },
 
   // ============================================================================
-  // BRAIN-SIDE Aβ DRAINAGE PATHWAYS
-  // (Peripheral clearance mechanisms are in M19)
+  // ANTIBODY CLEARANCE MECHANISMS (added 2026-01-19)
+  // These explain why anti-Aβ antibodies have limited brain efficacy
   // ============================================================================
+  {
+    id: 'fcrn_transport',
+    label: 'FcRn Transport (BBB)',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    references: {
+      protein: 'UniProt:P55899', // FCGRT (FcRn heavy chain)
+      process: 'GO:0006898', // receptor-mediated endocytosis
+    },
+    description: 'Neonatal Fc receptor-mediated antibody transcytosis across BBB',
+    mechanism:
+      'FcRn binds IgG at pH 6.0 (endosome) and releases at pH 7.4 (extracellular). Brain endothelial FcRn primarily effluxes IgG OUT of brain (brain→blood direction). Anti-Aβ antibodies achieve only ~0.1% brain uptake because FcRn actively pumps them back out. This explains why massive plasma antibody concentrations are needed for minimal brain effect.',
+    roles: ['RATE_LIMITER'],
+  },
+  {
+    id: 'fcrn_recycling',
+    label: 'FcRn Recycling (Periphery)',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    references: {
+      protein: 'UniProt:P55899',
+    },
+    description: 'FcRn salvage pathway extends IgG half-life in blood',
+    mechanism:
+      'FcRn in endothelial cells and monocytes rescues IgG from lysosomal degradation, extending half-life to ~21 days. This recycling maintains high peripheral antibody concentrations but does not improve brain penetration. Antibody Fc engineering can modulate FcRn binding for different PK profiles.',
+  },
+  {
+    id: 'peripheral_sink_hypothesis',
+    label: 'Peripheral Sink Hypothesis',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Theory that peripheral Aβ removal shifts brain→blood equilibrium',
+    mechanism:
+      'Hypothesis: Reducing plasma Aβ via peripheral antibodies or dialysis creates concentration gradient that pulls Aβ from brain. Evidence: Mixed. DeMattos 2001 showed m266 antibody raised plasma Aβ without entering brain. However, brain Aβ reduction was modest. The equilibrium between brain and blood Aβ is slow (half-life ~weeks) and limited by receptor-mediated transport, not simple diffusion.',
+    roles: ['THERAPEUTIC_TARGET'],
+  },
   {
     id: 'intramural_periarterial_drainage',
     label: 'Intramural Periarterial Drainage (IPAD)',
@@ -181,24 +220,36 @@ export const module12Nodes: MechanisticNode[] = [
     roles: ['THERAPEUTIC_TARGET'],
   },
   {
-    id: 'lrp1_bbb',
-    label: 'LRP1 at BBB',
+    id: 'cervical_lymph_nodes',
+    label: 'Cervical Lymph Node Drainage',
     category: 'STOCK',
-    subtype: 'ReceptorPool',
+    subtype: 'CompartmentState',
     moduleId: 'M12',
-    references: {
-      protein: 'UniProt:Q07954', // LRP1
-    },
-    description: 'LRP1-mediated Aβ efflux from brain to blood',
+    description: 'CNS antigens drain to deep cervical lymph nodes',
     mechanism:
-      'Low-density lipoprotein receptor-related protein 1 (LRP1) on brain endothelial cells mediates Aβ transcytosis from brain→blood. This is a major brain Aβ clearance pathway. LRP1 expression decreases with aging and in AD, contributing to Aβ accumulation. APOE isoform affects LRP1-mediated clearance (APOE4 < APOE3 < APOE2).',
-    roles: ['THERAPEUTIC_TARGET'],
+      'Meningeal lymphatics → deep cervical lymph nodes → systemic circulation. This is where brain-derived Aβ first contacts the peripheral immune system. Antibody-Aβ immune complexes formed here can be cleared by splenic/hepatic macrophages.',
   },
-
-  // ============================================================================
-  // ARIA (Adverse effects of anti-Aβ antibodies at BBB)
-  // NOT clearance mechanisms - these are adverse effects
-  // ============================================================================
+  {
+    id: 'splenic_clearance',
+    label: 'Splenic Aβ Clearance',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Spleen filters Aβ-antibody immune complexes from blood',
+    mechanism:
+      'Splenic macrophages express Fc receptors that bind antibody-Aβ complexes for phagocytic clearance. The spleen is the primary site for removing opsonized particles from circulation. Splenectomy may reduce efficacy of peripheral Aβ immunotherapy. Importantly, this represents the ACTUAL clearance mechanism for anti-Aβ antibodies - they work in periphery, not brain.',
+    roles: ['LEVERAGE_POINT'],
+  },
+  {
+    id: 'hepatic_clearance',
+    label: 'Hepatic Aβ Clearance',
+    category: 'STATE',
+    subtype: 'BiologicalProcess',
+    moduleId: 'M12',
+    description: 'Liver Kupffer cells clear Aβ from blood',
+    mechanism:
+      'Kupffer cells (liver macrophages) and liver sinusoidal endothelial cells can bind and clear Aβ and Aβ-antibody complexes. LRP1 on hepatocytes also mediates Aβ uptake. The liver may be responsible for 40-60% of peripheral Aβ clearance. This pathway works in parallel with splenic clearance.',
+  },
   {
     id: 'aria_edema',
     label: 'ARIA-E (Edema)',
@@ -207,7 +258,7 @@ export const module12Nodes: MechanisticNode[] = [
     moduleId: 'M12',
     description: 'Amyloid-related imaging abnormality - edema/effusion',
     mechanism:
-      'Anti-Aβ antibodies cause vasogenic edema, likely from: (1) Complement activation at vessel walls where CAA is present; (2) Transient BBB disruption during immune complex formation; (3) Inflammatory response to Aβ clearance. ARIA-E occurs in 20-35% of patients on anti-Aβ antibodies, higher in APOE4 carriers. NOT the primary clearance mechanism - it is an adverse effect of the small amount of antibody that reaches brain vasculature.',
+      'Anti-Aβ antibodies cause vasogenic edema, likely from: (1) Complement activation at vessel walls where CAA is present; (2) Transient BBB disruption during immune complex formation; (3) Inflammatory response to Aβ clearance. ARIA-E occurs in 20-35% of patients on anti-Aβ antibodies, higher in APOE4 carriers. NOT the primary clearance mechanism - it is an adverse effect.',
     roles: ['BIOMARKER'],
   },
   {
@@ -218,18 +269,7 @@ export const module12Nodes: MechanisticNode[] = [
     moduleId: 'M12',
     description: 'Amyloid-related imaging abnormality - microhemorrhage',
     mechanism:
-      'Microbleeds and superficial siderosis from vessel wall weakening during amyloid removal from CAA. Associated with pre-existing CAA burden. Severe ARIA-H can cause symptomatic brain bleeds. Risk factors: APOE4/4 genotype, high baseline CAA, anticoagulant use.',
-    roles: ['BIOMARKER'],
-  },
-  {
-    id: 'cerebral_amyloid_angiopathy',
-    label: 'Cerebral Amyloid Angiopathy (CAA)',
-    category: 'STATE',
-    subtype: 'DiseaseStage',
-    moduleId: 'M12',
-    description: 'Aβ deposition in cerebral blood vessel walls',
-    mechanism:
-      'Aβ40 preferentially deposits in vessel walls via failed IPAD. CAA is present in >80% of AD brains at autopsy. CAA severity correlates with ARIA risk during anti-Aβ therapy. CAA causes vessel wall fragility, microbleeds, and impairs perivascular drainage creating a vicious cycle.',
+      'Microbleeds and superficial siderosis from vessel wall weakening during amyloid removal. Associated with pre-existing CAA burden. Severe ARIA-H can cause symptomatic brain bleeds. Risk factors: APOE4/4 genotype, high baseline CAA, anticoagulant use.',
     roles: ['BIOMARKER'],
   },
 ];
