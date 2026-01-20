@@ -86,6 +86,23 @@ export const caseStudies: CaseStudy[] = [
     cost: '$287M/year misdirected',
     patentStatus: 'patented',
   },
+  {
+    id: 'butylphthalide',
+    title: 'The Phthalide Gap',
+    drug: 'Butylphthalide (NBP)',
+    summary: 'Positive Phase 3 for AD in China, FDA orphan status for ALS—but no Western AD trials.',
+    year: 2024,
+    keyFinding:
+      'A multi-target neuroprotectant derived from celery seeds, approved in China since 2002 for stroke. The EBMCI trial (2024) showed significant cognitive improvement in MCI due to AD. Reduces Aβ/tau, inhibits NLRP3 inflammasome, protects mitochondria, and improves microcirculation. Has 20+ years of human safety data.',
+    whatShouldHappen: 'Western replication of the positive EBMCI trial; Phase 3 AD prevention study; inclusion in combination therapy trials with approved anti-amyloid antibodies',
+    whatActuallyHappened:
+      'FDA granted orphan drug designation—but for ALS (2018), not AD. A US Phase 3 trial is underway—but for stroke, not AD. The positive EBMCI results for MCI due to AD have no Western replication pathway. The drug is being developed where orphan economics work (rare ALS) rather than where the evidence points (common AD).',
+    quote:
+      'NBP was associated with lower odds of deterioration (OR=0.19) and cognitive decline (OR=0.10) in AD patients. Yet Western development focuses on stroke and ALS—not the disease where it shows the strongest signal.',
+    quoteSource: 'EBMCI trial and cohort studies, 2021-2024',
+    cost: '<$100/month (generic in China)',
+    patentStatus: 'generic',
+  },
 ];
 
 export const evidenceGraveyardData = [

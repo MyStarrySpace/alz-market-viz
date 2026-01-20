@@ -45,7 +45,12 @@
       "WebFetch(domain:www.clinicaleducation.org)",
       "WebFetch(domain:wiki.apoe4.info)",
       "WebFetch(domain:fastlifehacks.com)",
-      "WebFetch(domain:www.apollohealthco.com)"
+      "WebFetch(domain:www.apollohealthco.com)",
+      "WebFetch(domain:aact.ctti-clinicaltrials.org)",
+      "WebFetch(domain:clinicaltrials.gov)",
+      "Bash(npm run dev:*)",
+      "WebFetch(domain:papers.ssrn.com)",
+      "WebFetch(domain:www.accessdata.fda.gov)"
     ]
   }
 }

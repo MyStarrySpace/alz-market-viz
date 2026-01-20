@@ -115,7 +115,7 @@ export default function ShowcasePage() {
                   </div>
                   <div>
                     <p className="text-sm text-[var(--text-muted)] mb-2">Heading 3 (Neuton)</p>
-                    <Heading as="h3" animate={false}>Case Studies in Market Failure</Heading>
+                    <Heading as="h3" animate={false}>How Promising Treatments Get Lost</Heading>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>

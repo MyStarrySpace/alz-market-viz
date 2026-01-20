@@ -60,8 +60,8 @@ export const sections: SectionConfig[] = [
   },
   {
     id: 'cases',
-    title: 'Case Studies in Market Failure',
-    subtitle: 'Real stories of promising treatments that were abandoned not for scientific reasons, but economic ones.',
+    title: 'How Promising Treatments Get Lost',
+    subtitle: 'Real stories of promising treatments blocked by economics, regulation, paradigm, or stigma—not science.',
     navLabel: 'Cases',
     act: 'II',
   },
