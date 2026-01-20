@@ -612,4 +612,46 @@ export const hypothesesSources: Source[] = [
       },
     ],
   },
+
+  // ============================================
+  // INTEGRATIVE / CLEARANCE FRAMEWORKS
+  // ============================================
+  {
+    id: 'izrael-frenkel-2026',
+    type: 'journal',
+    authors: ['Michal Izrael', 'Orli Miriam Frenkel'],
+    title: 'The Cerebral Clearance Cascade as a Driver of Alzheimer\'s Disease Progression',
+    publication: 'Journal of Dementia and Alzheimer\'s Disease',
+    year: 2026,
+    volume: '3(1)',
+    pages: '1',
+    doi: '10.3390/jdad3010001',
+    url: 'https://www.mdpi.com/3042-4518/3/1/1',
+    citations: [
+      {
+        id: 'izrael-2026-cascade',
+        quote: 'This narrative review presents an integrated model linking dysfunction across these systems to establish a "cerebral clearance cascade" that could drive AD progression.',
+        usedIn: ['timeline', 'frameworks'],
+        context: 'Proposes unified framework integrating CP, CSF, ISF, glymphatic, and BBB systems.',
+      },
+      {
+        id: 'izrael-2026-intervention',
+        quote: 'The cerebral clearance cascade positions early intervention targeting CP function, CSF dynamics, ISF flow, glymphatic activity, and BBB integrity as potentially disease-modifying approaches.',
+        usedIn: ['frameworks'],
+        context: 'Places clearance mechanisms as actionable therapeutic targets.',
+      },
+      {
+        id: 'izrael-2026-cp',
+        quote: 'The choroid plexus serves as both the primary source of CSF production and a key regulator of CSF composition, producing approximately 500 mL of CSF daily in humans.',
+        usedIn: ['frameworks'],
+        context: 'Highlights choroid plexus as critical but understudied component.',
+      },
+      {
+        id: 'izrael-2026-synthesis',
+        quote: 'The five interconnected systems that constitute the brain\'s waste clearance network: choroid plexus and CSF production, CSF circulation and drainage pathways, ISF dynamics, glymphatic system, and BBB transport mechanisms.',
+        usedIn: ['frameworks'],
+        context: 'Synthesizes five clearance systems into unified model.',
+      },
+    ],
+  },
 ];

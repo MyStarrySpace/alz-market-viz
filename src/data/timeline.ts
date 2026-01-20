@@ -1268,6 +1268,23 @@ export const timelineEvents: TimelineEvent[] = [
     significance: 'supporting',
     sourceIds: ['amp-ad-2014'],
   },
+
+  {
+    id: 'cerebral-clearance-cascade',
+    year: 2025,
+    month: 12,
+    title: 'Cerebral Clearance Cascade framework proposed',
+    shortTitle: 'Clearance cascade',
+    description:
+      'Izrael and Frenkel propose unified "cerebral clearance cascade" framework integrating choroid plexus, CSF, ISF, glymphatic, and BBB systems as interconnected drivers of AD progression.',
+    expandedDescription:
+      'This comprehensive review synthesized 544 citations to propose that five clearance systems form an interconnected network: choroid plexus/CSF production, CSF circulation, interstitial fluid dynamics, glymphatic system, and BBB transport. The authors argue that dysfunction in any component cascades through the entire network, impairing waste clearance including Aβ and tau. This framework places clearance mechanisms as upstream targets for disease modification, unifying previously separate vascular, glymphatic, and BBB hypotheses. The model suggests early intervention on clearance function could be disease-modifying before amyloid accumulation becomes irreversible.',
+    type: 'hypothesis',
+    framework: 'vascular',
+    significance: 'major',
+    sourceIds: ['izrael-frenkel-2026'],
+    citationIds: ['izrael-2026-cascade', 'izrael-2026-synthesis'],
+  },
 ];
 
 // ============================================
@@ -1377,10 +1394,10 @@ export function getTimelineEras(): TimelineEra[] {
       id: 'reckoning',
       title: 'The Reckoning',
       startYear: 2020,
-      endYear: 2025,
+      endYear: 2026,
       description:
         'Fraud is exposed. Controversial approvals. New evidence suggests the sidelined frameworks were right.',
-      events: sortEvents(timelineEvents.filter(e => e.year >= 2020 && e.year <= 2025)),
+      events: sortEvents(timelineEvents.filter(e => e.year >= 2020 && e.year <= 2026)),
     },
   ];
 }

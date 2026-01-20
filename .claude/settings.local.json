@@ -50,7 +50,8 @@
       "WebFetch(domain:clinicaltrials.gov)",
       "Bash(npm run dev:*)",
       "WebFetch(domain:papers.ssrn.com)",
-      "WebFetch(domain:www.accessdata.fda.gov)"
+      "WebFetch(domain:www.accessdata.fda.gov)",
+      "WebFetch(domain:www.mdpi.com)"
     ]
   }
 }
