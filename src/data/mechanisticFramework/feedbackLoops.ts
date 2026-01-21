@@ -43,12 +43,7 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
       dysfunction is progressive in AD.
     `.trim(),
     edgeIds: ['E01.001', 'E01.008', 'E01.009', 'E01.010'],
-    ghostEdge: {
-      source: 'irs1_serine_phosphorylated',
-      target: 'insulin_resistance',
-      relation: 'increases',
-      mechanism: 'IRS-1 serine phosphorylation impairs insulin signaling cascade',
-    },
+    // Note: Ghost edge (irs1_serine_phosphorylated → insulin_resistance) already exists as E01.010
     clinicalImplication: 'Breaking the cycle requires intervention at any node',
     interventionPoints: [
       'mtorc1_hyperactive',  // Rapamycin/rapalogs
@@ -82,12 +77,7 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
       This creates exponential progression once initiated.
     `.trim(),
     edgeIds: ['E04.005', 'E04.006', 'E04.007', 'E04.008', 'E04.010'],
-    ghostEdge: {
-      source: 'tau_aggregated',
-      target: 'nlrp3_active',
-      relation: 'increases',
-      mechanism: 'PHF/NFT tau seeds phagocytosed by microglia → lysosomal rupture → NLRP3',
-    },
+    // Note: Loop completion edge (tau_aggregated → nlrp3_active) already exists as E04.010
     clinicalImplication: 'Explains rapid progression once tau pathology begins',
     interventionPoints: [
       'nlrp3_active',       // NLRP3 inhibitors (MCC950, OLT1177)
@@ -120,13 +110,8 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
 
       This explains why Aβ accumulation accelerates over time.
     `.trim(),
-    edgeIds: ['E05.007', 'E05.008'],
-    ghostEdge: {
-      source: 'abeta_oligomers',
-      target: 'microglia_activated',
-      relation: 'increases',
-      mechanism: 'Aβ oligomers trigger microglial activation',
-    },
+    edgeIds: ['E05.007', 'E05.008', 'E05.015'],
+    // E05.015: abeta_oligomers → microglia_activated (completes the loop)
     clinicalImplication: 'DGAT2 inhibitors may break this loop by reducing lipid droplets',
     interventionPoints: [
       'srebp1_active',      // SREBP1 inhibitors
@@ -159,13 +144,8 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
 
       IL-1β and other cytokines increase lysosomal stress, completing the loop.
     `.trim(),
-    edgeIds: ['E01.004', 'E02.001', 'E02.002', 'E02.003', 'E02.004', 'E02.005'],
-    ghostEdge: {
-      source: 'il1b',
-      target: 'lysosomal_dysfunction',
-      relation: 'increases',
-      mechanism: 'Pro-inflammatory cytokines increase cellular stress on lysosomes',
-    },
+    edgeIds: ['E01.004', 'E02.001', 'E02.002', 'E02.003', 'E02.004', 'E02.005', 'E02.021'],
+    // E02.021: il1b → lysosomal_dysfunction (completes the loop)
     clinicalImplication: 'Breaking at lipofuscin is impossible (irreversible); must target upstream',
     interventionPoints: [
       'mtorc1_hyperactive',  // Restore lysosomal biogenesis
@@ -198,13 +178,8 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
 
       Type I IFN signaling impairs cellular quality control, feeding back.
     `.trim(),
-    edgeIds: ['E03.009', 'E04.003', 'E04.004'],
-    ghostEdge: {
-      source: 'type_i_ifn',
-      target: 'damaged_mito_pool',
-      relation: 'increases',
-      mechanism: 'IFN signaling impairs mitochondrial quality control',
-    },
+    edgeIds: ['E03.009', 'E04.003', 'E04.004', 'E03.011'],
+    // E03.011: type_i_ifn → damaged_mito_pool (completes the loop)
     clinicalImplication: 'STING inhibitors show promise for aging-related inflammation',
     interventionPoints: [
       'pink1_parkin',       // Urolithin A, mitophagy enhancers
@@ -236,13 +211,8 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
       complement-mediated synapse elimination → neuronal stress signals →
       more microglial activation.
     `.trim(),
-    edgeIds: ['E05.010', 'E05.011', 'E05.012', 'E05.013', 'E05.014'],
-    ghostEdge: {
-      source: 'synapses',
-      target: 'microglia_activated',
-      relation: 'decreases', // Synapse loss reduces tonic inhibition
-      mechanism: 'Synapse loss releases tonic microglial inhibition (CX3CL1/CX3CR1)',
-    },
+    edgeIds: ['E05.010', 'E05.011', 'E05.012', 'E05.013', 'E05.014', 'E05.016'],
+    // E05.016: synapses → microglia_activated (decreases; synapse loss releases tonic inhibition)
     clinicalImplication: 'Complement inhibitors have early therapeutic window',
     interventionPoints: [
       'c1q',                // Anti-C1q antibodies (ANX005)
@@ -277,13 +247,8 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
       This loop is SLOW (years timescale) but starts EARLY (22+ years pre-symptom).
       Critical: APOE4 accelerates via cholesterol supply failure to OLs.
     `.trim(),
-    edgeIds: ['E13.010', 'E13.012', 'E13.018', 'E13.019', 'E13.020'],
-    ghostEdge: {
-      source: 'myelin_breakdown',
-      target: 'opcs',
-      relation: 'decreases',
-      mechanism: 'Myelin debris inhibits OPC differentiation (Nogo receptor activation); chronic demyelination exhausts OPC pool',
-    },
+    edgeIds: ['E13.010', 'E13.012', 'E13.018', 'E13.019', 'E13.020', 'E13.023'],
+    // E13.023: myelin_breakdown → opcs (decreases; completes the loop)
     clinicalImplication: 'Early white matter changes (DTI) may be the earliest modifiable biomarker. 22-year prodrome suggests large intervention window.',
     interventionPoints: [
       'opcs',               // Anti-LINGO1, clemastine, OPC transplant
@@ -318,13 +283,8 @@ export const feedbackLoops: FeedbackLoopWithTipping[] = [
       This balancing loop maintains BBB until OPCs are depleted.
       CRITICAL: Human OPCs use NOS1/NO signaling absent in mouse models.
     `.trim(),
-    edgeIds: ['E13.014', 'E13.015', 'E13.016', 'E13.017'],
-    ghostEdge: {
-      source: 'bbb_integrity',
-      target: 'opcs',
-      relation: 'increases',
-      mechanism: 'Intact BBB protects OPCs from peripheral insults; BBB breakdown exposes OPCs to serum factors',
-    },
+    edgeIds: ['E13.014', 'E13.015', 'E13.016', 'E13.017', 'E13.024'],
+    // E13.024: bbb_integrity → opcs (increases; completes the balancing loop)
     clinicalImplication: 'OPC health may be critical for BBB maintenance. Current BBB models lack OPCs - major translational gap.',
     interventionPoints: [
       'opcs',               // OPC protection/transplantation

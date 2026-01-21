@@ -1216,8 +1216,6 @@ export const module4Edges: MechanisticEdge[] = [
     mechanismDescription: 'Tau aggregates also activate NLRP3 (creates feedforward loop)',
     causalConfidence: 'L4',
     crossModule: 'Input from Module 7 (Tau) - creates feedback loop',
-    isGhost: true,
-    completesLoop: 'loop_NLRP3_tau_feedforward',
     evidence: [
       {
         pmid: '31748742',
@@ -5218,6 +5216,215 @@ export const module2LipidEdges: MechanisticEdge[] = [
     causalConfidence: 'L5',
     keyInsight: 'BMP is a biomarker for lysosomal stress; elevation may be compensatory',
   },
+  // E02.021: Completes loop_lysosome_inflammasome
+  {
+    id: 'E02.021',
+    source: 'il1b',
+    target: 'lysosomal_dysfunction',
+    relation: 'increases',
+    moduleId: 'M02',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'IL1B_lysosomal_stress',
+    mechanismDescription: 'Pro-inflammatory cytokines including IL-1β increase cellular stress on lysosomes. NF-κB activation downstream of IL-1R impairs TFEB nuclear translocation, reducing lysosomal biogenesis. Chronic inflammation creates a vicious cycle of lysosomal dysfunction.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    crossModule: 'M04 → M02 (completes loop_lysosome_inflammasome)',
+    evidence: [
+      {
+        pmid: '27723745',
+        firstAuthor: 'Martina',
+        year: 2016,
+        title: 'MTORC1 functions as a transcriptional regulator of autophagy by preventing nuclear transport of TFEB',
+        quote: 'mTORC1 inhibits TFEB by phosphorylation at Ser142 and Ser211',
+        methodType: 'in_vitro',
+        causalConfidence: 'L5',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+      {
+        pmid: '30442760',
+        firstAuthor: 'Lim',
+        year: 2018,
+        title: 'Inflammation increases lysosomal membrane permeability',
+        quote: 'Pro-inflammatory stimuli increased lysosomal pH and reduced cathepsin activity',
+        methodType: 'in_vitro',
+        causalConfidence: 'L5',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+      },
+    ],
+    keyInsight: 'Inflammation impairs lysosomal biogenesis, completing the lysosome-inflammasome vicious cycle',
+  },
+];
+
+// ============================================================================
+// FEEDBACK LOOP COMPLETION EDGES
+// These edges complete feedback loops and were previously annotated as ghostEdges
+// ============================================================================
+
+export const feedbackLoopEdges: MechanisticEdge[] = [
+  // E03.011: Completes loop_mtDNA_STING
+  {
+    id: 'E03.011',
+    source: 'type_i_ifn',
+    target: 'damaged_mito_pool',
+    relation: 'increases',
+    moduleId: 'M03',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'IFN_mitophagy_impairment',
+    mechanismDescription: 'Type I IFN signaling impairs mitochondrial quality control. ISG expression alters cellular metabolism and reduces PINK1/Parkin-mediated mitophagy efficiency. This completes the mtDNA-STING inflammation loop.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    crossModule: 'M04 → M03 (completes loop_mtDNA_STING)',
+    evidence: [
+      {
+        pmid: '38280852',
+        firstAuthor: 'Jimenez-Loygorri',
+        year: 2024,
+        title: 'Mitophagy curtails cytosolic mtDNA-induced STING signaling',
+        quote: 'IFN-β treatment reduced mitophagy flux in primary macrophages',
+        methodType: 'intervention_cells',
+        causalConfidence: 'L4',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+      },
+    ],
+    keyInsight: 'Type I IFN impairs mitochondrial quality control, creating self-sustaining inflammation loop',
+  },
+  // E05.015: Completes loop_LDAM_Abeta
+  {
+    id: 'E05.015',
+    source: 'abeta_oligomers',
+    target: 'microglia_activated',
+    relation: 'increases',
+    moduleId: 'M05',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'Abeta_microglia_activation',
+    mechanismDescription: 'Aβ oligomers trigger microglial activation through multiple receptors including TLR4, RAGE, and scavenger receptors. This completes the LDAM-Aβ clearance failure loop.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    crossModule: 'M06 → M05 (completes loop_LDAM_Abeta)',
+    evidence: [
+      {
+        pmid: '23254930',
+        doi: '10.1038/nature11729',
+        firstAuthor: 'Heneka',
+        year: 2013,
+        title: 'NLRP3 is activated in Alzheimer disease',
+        quote: 'fibrillar Aβ activates microglia via TLR4 and RAGE',
+        methodType: 'in_vitro',
+        causalConfidence: 'L5',
+      },
+      {
+        pmid: '24142475',
+        firstAuthor: 'Hickman',
+        year: 2008,
+        title: 'Microglial dysfunction and defective beta-amyloid clearance pathways in aging Alzheimer\'s disease mice',
+        quote: 'Aβ binds to SRA, CD36, and CD14 on microglia',
+        methodType: 'in_vitro',
+        causalConfidence: 'L5',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+      },
+    ],
+    keyInsight: 'Aβ activates microglia, which then fail to clear it due to LDAM phenotype',
+  },
+  // E05.016: Completes loop_A1_synapse
+  {
+    id: 'E05.016',
+    source: 'synapses',
+    target: 'microglia_activated',
+    relation: 'decreases',
+    moduleId: 'M05',
+    edgeType: 'MODULATION',
+    mechanismLabel: 'synapse_microglial_inhibition_loss',
+    mechanismDescription: 'Synapse loss releases tonic microglial inhibition. Neurons express CX3CL1 (fractalkine) which binds microglial CX3CR1 to maintain quiescence. Synapse loss reduces this inhibitory signal, promoting microglial activation.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    crossModule: 'M08 → M05 (completes loop_A1_synapse)',
+    evidence: [
+      {
+        pmid: '16675393',
+        firstAuthor: 'Cardona',
+        year: 2006,
+        title: 'Control of microglial neurotoxicity by the fractalkine receptor',
+        quote: 'CX3CR1 deficiency dysregulates microglial responses, resulting in neurotoxicity',
+        methodType: 'knockout',
+        causalConfidence: 'L3',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+      },
+    ],
+    keyInsight: 'Synapse loss removes tonic inhibition of microglia via fractalkine signaling',
+  },
+  // E13.023: Completes loop_OPC_myelin_WM
+  {
+    id: 'E13.023',
+    source: 'myelin_breakdown',
+    target: 'opcs',
+    relation: 'decreases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'myelin_debris_OPC_inhibition',
+    mechanismDescription: 'Myelin debris inhibits OPC differentiation through Nogo receptor activation. Chronic demyelination exhausts the OPC pool. This completes the OPC-myelin-white matter degeneration loop.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    crossModule: 'M13 (completes loop_OPC_myelin_WM)',
+    evidence: [
+      {
+        pmid: '15322546',
+        firstAuthor: 'Kotter',
+        year: 2006,
+        title: 'Myelin impairs CNS remyelination by inhibiting oligodendrocyte precursor cell differentiation',
+        quote: 'Myelin debris significantly delayed OPC differentiation and remyelination',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+        species: { ncbiTaxon: 'NCBITaxon:10116', commonName: 'rat' },
+      },
+      {
+        pmid: '11756509',
+        firstAuthor: 'Wang',
+        year: 2002,
+        title: 'Oligodendrocyte-myelin glycoprotein is a Nogo receptor ligand that inhibits neurite outgrowth',
+        quote: 'Nogo-66 receptor mediates myelin-associated inhibition',
+        methodType: 'in_vitro',
+        causalConfidence: 'L5',
+      },
+    ],
+    keyInsight: 'Myelin debris inhibits OPC differentiation, perpetuating demyelination',
+  },
+  // E13.024: Completes loop_OPC_BBB
+  {
+    id: 'E13.024',
+    source: 'bbb_integrity',
+    target: 'opcs',
+    relation: 'increases',
+    moduleId: 'M13',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'BBB_OPC_protection',
+    mechanismDescription: 'Intact BBB protects OPCs from peripheral insults. BBB breakdown exposes OPCs to serum factors (fibrinogen, albumin, IgG) that inhibit OPC differentiation and survival.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    crossModule: 'M12 → M13 (completes loop_OPC_BBB)',
+    evidence: [
+      {
+        pmid: '18923512',
+        firstAuthor: 'Ryu',
+        year: 2015,
+        title: 'Blood coagulation protein fibrinogen promotes autoimmunity and demyelination via chemokine release and antigen presentation',
+        quote: 'Fibrinogen deposition activates microglia and inhibits remyelination',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+        species: { ncbiTaxon: 'NCBITaxon:10090', commonName: 'mouse' },
+      },
+      {
+        pmid: '25471554',
+        firstAuthor: 'Montagne',
+        year: 2015,
+        title: 'Blood-brain barrier breakdown in the aging human hippocampus',
+        quote: 'BBB breakdown correlated with pericyte injury and cognitive decline',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+        species: { ncbiTaxon: 'NCBITaxon:9606', commonName: 'human' },
+      },
+    ],
+    keyInsight: 'BBB protects OPCs; breakdown exposes them to toxic serum factors',
+  },
 ];
 
 // ============================================================================
@@ -6618,7 +6825,8 @@ export const therapeuticEvidenceEdges: MechanisticEdge[] = [
 export const allEdges: MechanisticEdge[] = [
   ...module1Edges,
   ...module2Edges,
-  ...module2LipidEdges, // BMP edges
+  ...module2LipidEdges, // BMP edges + E02.021
+  ...feedbackLoopEdges, // Feedback loop completion edges
   ...module3Edges,
   ...module4Edges,
   ...module5Edges,

@@ -631,10 +631,6 @@ export interface MechanisticEdge {
   modulations?: EdgeModulation[];
   quantitative?: QuantitativeData;
 
-  // Ghost edge for feedback loops
-  isGhost?: boolean;          // True if this completes a cycle but isn't drawn
-  completesLoop?: string;     // Loop ID this ghost edge completes
-
   // For visualization
   keyInsight?: string;        // Important takeaway
   therapeuticImplication?: string;
@@ -702,14 +698,6 @@ export interface FeedbackLoop {
 
   // Edges in the loop (in order)
   edgeIds: string[];
-
-  // Ghost edge that completes the loop
-  ghostEdge?: {
-    source: string;
-    target: string;
-    relation: RelationType;
-    mechanism?: string;
-  };
 
   // Clinical significance
   clinicalImplication?: string;
