@@ -79,7 +79,7 @@ function Badge({
     default: 'bg-[var(--bg-secondary)] text-[var(--text-body)] border-[var(--border)]',
     primary: 'bg-[var(--accent-orange-light)] text-[var(--accent-orange)] border-[var(--accent-orange)]',
     success: 'bg-[var(--success-light)] text-[var(--success)] border-[var(--success)]',
-    warning: 'bg-amber-50 text-amber-700 border-amber-300',
+    warning: 'bg-[var(--accent-orange-light)] text-[var(--accent-orange)] border-[var(--accent-orange)]',
     danger: 'bg-[var(--danger-light)] text-[var(--danger)] border-[var(--danger)]',
   };
 
@@ -430,10 +430,10 @@ export function TranslationalFailures() {
 
           {/* Core insight cards - 2-column layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-            {/* Card 1: Forced vs Natural */}
+            {/* Card 1: Speed Mismatch */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="bg-[var(--bg-card)] border border-[var(--border)] p-6"
             >
@@ -443,26 +443,26 @@ export function TranslationalFailures() {
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-2">
-                    Forced vs. Natural Pathology
+                    Speed Mismatch
                   </h4>
                   <p className="text-[var(--text-body)] text-sm leading-relaxed mb-3">
-                    Transgenic models develop pathology in <strong>months</strong> through artificial
-                    overexpression. Human Alzheimer&apos;s unfolds over <strong>decades</strong> through
-                    gradual, age-related processes.
+                    Mouse models develop pathology in <strong>months</strong> via gene overexpression.
+                    Human AD unfolds over <strong>decades</strong>. Drugs that clear rapid artificial
+                    buildup may not affect slow natural accumulation.
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-[var(--accent-orange)]">
-                    <ArrowRight className="w-4 h-4" />
-                    <span>Drugs may work on rapid pathology but fail on slow progression</span>
-                  </div>
+                  <p className="text-sm text-[var(--accent-orange)]">
+                    Fast-acting drugs succeed in fast models, fail in slow disease.
+                  </p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Card 2: The Tau Gap */}
+            {/* Card 2: Missing Tau */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
               className="bg-[var(--bg-card)] border border-[var(--border)] p-6"
             >
               <div className="flex items-start gap-4">
@@ -471,25 +471,23 @@ export function TranslationalFailures() {
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-2">
-                    The Tau Gap
+                    Missing Tau
                   </h4>
                   <p className="text-[var(--text-body)] text-sm leading-relaxed mb-3">
-                    Human AD features both amyloid plaques <strong>and</strong> tau tangles. Most mouse
-                    models only develop one or the other. The 3xTg-AD model has both, but the tau is
-                    human-mutant, not wild-type.
+                    Humans get both amyloid plaques and tau tangles. Most mouse models develop only one.
+                    The few models with both use mutant tau, not the wild-type form found in sporadic AD.
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-[var(--danger)]">
-                    <ArrowRight className="w-4 h-4" />
-                    <span>Combination therapies can&apos;t be properly tested</span>
-                  </div>
+                  <p className="text-sm text-[var(--danger)]">
+                    Combination therapies cannot be properly tested.
+                  </p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Card 3: Species Biology */}
+            {/* Card 3: Different Immune Systems */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
               className="bg-[var(--bg-card)] border border-[var(--border)] p-6"
@@ -500,140 +498,94 @@ export function TranslationalFailures() {
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-2">
-                    Species-Specific Biology
+                    Different Immune Systems
                   </h4>
                   <p className="text-[var(--text-body)] text-sm leading-relaxed mb-3">
-                    Mouse and human immune systems differ substantially. Microglia—the brain&apos;s
-                    immune cells—respond differently to amyloid. Anti-inflammatory drugs that work
-                    in mice often fail in humans.
+                    Mouse and human microglia respond differently to amyloid. Anti-inflammatory drugs
+                    that work in mice routinely fail in human trials.
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-[var(--success)]">
-                    <ArrowRight className="w-4 h-4" />
-                    <span>Neuroinflammation therapies need human-relevant testing</span>
-                  </div>
+                  <p className="text-sm text-[var(--success)]">
+                    Neuroinflammation targets need human-relevant validation.
+                  </p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Card 4: The Degu Paradox */}
+            {/* Card 4: The Degu Question */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="bg-gradient-to-r from-amber-50 to-white border border-amber-200 p-6 shadow-md"
+              transition={{ delay: 0.15 }}
+              className="bg-[var(--bg-card)] border border-[var(--border)] p-6"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                  <Beaker className="w-6 h-6 text-amber-600" />
+                <div className="w-12 h-12 rounded-full bg-[var(--accent-orange-light)] flex items-center justify-center flex-shrink-0">
+                  <Beaker className="w-6 h-6 text-[var(--accent-orange)]" />
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-2">
-                    The Degu Paradox
+                    The Degu Question
                   </h4>
                   <p className="text-[var(--text-body)] text-sm leading-relaxed mb-3">
-                    Degus share <strong>human-identical Aβ sequence</strong> and develop natural
-                    plaques with age—no genetic manipulation needed. Yet their cognitive effects
-                    remain debated. If natural plaques don&apos;t reliably cause dementia...
+                    Degus have human-identical Aβ and develop natural plaques with age. No genetic
+                    manipulation needed. Yet cognitive effects remain debated.
                   </p>
-                  <div className="flex items-center gap-2 text-sm text-amber-600 font-medium">
-                    <AlertTriangle className="w-4 h-4" />
-                    <span>Is amyloid itself the cause, or just a marker?</span>
-                  </div>
+                  <p className="text-sm text-[var(--accent-orange)]">
+                    If natural plaques don&apos;t cause dementia, what does?
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Card 5: The Testing Confound */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-[var(--bg-card)] border border-[var(--border)] p-6 lg:col-span-2"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center flex-shrink-0">
+                  <Waves className="w-6 h-6 text-[var(--chart-primary)]" />
+                </div>
+                <div>
+                  <h4 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-2">
+                    The Testing Confound
+                  </h4>
+                  <p className="text-[var(--text-body)] text-sm leading-relaxed mb-3">
+                    The Morris Water Maze is the standard cognition test for AD mice. It requires swimming.
+                    Swimming is exercise. Exercise improves cognition in AD models by restoring glymphatic
+                    clearance and boosting BDNF. <strong>The test may be treating mice while measuring them.</strong>
+                  </p>
+                  <p className="text-sm text-[var(--chart-primary)]">
+                    Control groups get partial treatment. Drug effect sizes may be systematically underestimated.
+                  </p>
                 </div>
               </div>
             </motion.div>
           </div>
-
-          {/* Morris Water Maze Methodological Paradox - Special callout */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-12 mb-12 bg-gradient-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-200 p-8 max-w-4xl mx-auto shadow-lg"
-          >
-            <div className="flex items-start gap-5">
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <Waves className="w-7 h-7 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-semibold px-2 py-0.5 bg-blue-100 text-blue-700 uppercase tracking-wide">
-                    Methodological Confound
-                  </span>
-                </div>
-                <h4 className="font-serif font-bold text-xl text-[var(--text-primary)] mb-3">
-                  The Morris Water Maze Paradox
-                </h4>
-                <p className="text-[var(--text-body)] leading-relaxed mb-4">
-                  The Morris Water Maze (MWM) is the gold standard for testing cognitive function
-                  in AD mouse models. But there&apos;s a problem:{' '}
-                  <strong>MWM involves swimming—a form of aerobic exercise</strong>. Swimming
-                  exercise restores glymphatic clearance, increases BDNF, reduces inflammation, and
-                  improves AQP4 polarization. The test itself may be{' '}
-                  <em>treating</em> the mice while measuring them.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="bg-white/80 border border-blue-100 p-3 rounded">
-                    <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
-                      Testing Protocol = Exercise Intervention
-                    </p>
-                    <p className="text-xs text-[var(--text-muted)]">
-                      4-6 days × 4-6 trials/day of swimming. Enough to induce neurogenesis, ↑BDNF,
-                      ↓TNF-α, and restore glymphatic function (Liang 2025, Bashiri 2020).
-                    </p>
-                  </div>
-                  <div className="bg-white/80 border border-blue-100 p-3 rounded">
-                    <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
-                      No 2×2 Factorial Studies
-                    </p>
-                    <p className="text-xs text-[var(--text-muted)]">
-                      We lack studies comparing: (1) drug + MWM test, (2) placebo + MWM test,
-                      (3) drug + dry maze, (4) placebo + dry maze. The confound remains uncontrolled.
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-                  <div className="flex items-start gap-2">
-                    <AlertTriangle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-[var(--text-body)]">
-                        <strong>Implication:</strong> Control mice (swimming in MWM) receive partial
-                        treatment, potentially masking drug effects. Exercise interventions may show
-                        smaller effects because both groups are exercising.
-                        Drug effect sizes may be systematically underestimated across the entire field.
-                      </p>
-                      <p className="text-xs text-[var(--text-muted)] mt-2 italic">
-                        &ldquo;Morris water maze training is associated with locomotion, and physical
-                        activity robustly increases hippocampal neurogenesis&rdquo; — Ehninger &
-                        Kempermann, 2006
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
 
           {/* Bottom takeaway */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-[var(--text-primary)] text-white p-8 max-w-3xl mx-auto"
+            className="bg-[var(--accent-orange-light)] border-l-4 border-[var(--accent-orange)] p-8 max-w-3xl mx-auto"
           >
             <div className="flex items-start gap-4">
               <Lightbulb className="w-8 h-8 text-[var(--accent-orange)] flex-shrink-0" />
               <div>
-                <h4 className="font-serif font-bold text-xl mb-3">
+                <h4 className="font-serif font-bold text-xl text-[var(--text-primary)] mb-3">
                   The Fundamental Problem
                 </h4>
-                <p className="text-gray-300 leading-relaxed mb-4">
+                <p className="text-[var(--text-body)] leading-relaxed mb-4">
                   We&apos;ve been testing drugs that clear amyloid in models that don&apos;t
                   recapitulate the human disease. Success in mice tells us a drug <em>can</em> clear
-                  plaques—not that clearing plaques <em>helps</em> humans.
+                  plaques, not that clearing plaques <em>helps</em> humans.
                 </p>
-                <p className="text-[var(--accent-orange)] font-medium">
+                <p className="text-[var(--accent-orange)] font-semibold">
                   The 99% failure rate isn&apos;t a failure of drug development. It&apos;s a
                   failure of the hypothesis being tested.
                 </p>

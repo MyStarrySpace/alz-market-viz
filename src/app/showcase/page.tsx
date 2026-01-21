@@ -15,6 +15,7 @@ import { MenopauseComparison, AncestryRiskChart, FatDistributionChart, Intervent
 // Section definitions for navigation
 const sections = [
   { id: 'showcase-hero', label: 'Overview' },
+  { id: 'design-principles', label: 'Design Principles' },
   { id: 'typography', label: 'Typography' },
   { id: 'colors', label: 'Colors' },
   { id: 'buttons', label: 'Buttons' },
@@ -93,6 +94,222 @@ export default function ShowcasePage() {
           <p className="text-[var(--text-muted)] text-lg max-w-2xl">
             A collection of reusable components for the Untangling Alzheimer&apos;s project.
           </p>
+        </Container>
+      </Section>
+
+      {/* Design Principles */}
+      <Section id="design-principles" className="bg-[var(--bg-secondary)]">
+        <Container>
+          <SectionTitle>Design Principles</SectionTitle>
+
+          {/* Information Hierarchy */}
+          <div className="mb-12">
+            <Heading as="h3" animate={false} className="mb-4">Information Hierarchy (Progressive Disclosure)</Heading>
+            <p className="text-[var(--text-body)] mb-8 max-w-3xl">
+              Design content for three levels of reader engagement. Each level should be complete on its own,
+              allowing readers to get value at their preferred depth.
+            </p>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Level 1 */}
+              <Card variant="highlighted" hover={false}>
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-[var(--accent-orange)]">1</span>
+                    <Heading as="h4" animate={false}>Scanners</Heading>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">5 seconds</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-[var(--text-body)] mb-3">For readers who want the gist at a glance.</p>
+                  <ul className="text-sm text-[var(--text-muted)] space-y-1">
+                    <li>• Large statistics with units</li>
+                    <li>• Headings that convey the point</li>
+                    <li>• Visual hierarchy (size, color, weight)</li>
+                    <li>• One takeaway per section</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Level 2 */}
+              <Card variant="default" hover={false}>
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-[var(--text-primary)]">2</span>
+                    <Heading as="h4" animate={false}>Readers</Heading>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">30 seconds</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-[var(--text-body)] mb-3">For readers who want to understand the story.</p>
+                  <ul className="text-sm text-[var(--text-muted)] space-y-1">
+                    <li>• 2-3 sentence explanations</li>
+                    <li>• Card bodies with context</li>
+                    <li>• Interpretive labels on charts</li>
+                    <li>• Clear cause-and-effect language</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Level 3 */}
+              <Card variant="default" hover={false}>
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-[var(--text-primary)]">3</span>
+                    <Heading as="h4" animate={false}>Explorers</Heading>
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">2+ minutes</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-[var(--text-body)] mb-3">For readers who want the full picture.</p>
+                  <ul className="text-sm text-[var(--text-muted)] space-y-1">
+                    <li>• Expandable sections</li>
+                    <li>• Tooltips on technical terms</li>
+                    <li>• Click-through details</li>
+                    <li>• Source citations and links</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Live Example */}
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] p-6">
+              <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-4">Live Example</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  {/* Level 1: The hook */}
+                  <div className="mb-4">
+                    <span className="text-5xl font-serif font-bold text-[var(--accent-orange)]">99%</span>
+                    <span className="text-lg text-[var(--text-muted)] ml-2">failure rate</span>
+                  </div>
+
+                  {/* Level 2: The explanation */}
+                  <p className="text-[var(--text-body)] mb-4">
+                    Of 400+ drugs tested in Alzheimer&apos;s trials, fewer than 5 reached approval.
+                    Most failed despite showing promise in animal models.
+                  </p>
+
+                  {/* Level 3: The deep dive */}
+                  <HierarchyExample />
+                </div>
+
+                <div className="bg-[var(--bg-secondary)] p-4 rounded text-sm">
+                  <p className="font-semibold text-[var(--text-primary)] mb-2">Code Pattern</p>
+                  <pre className="text-xs text-[var(--text-muted)] overflow-x-auto">
+{`{/* Level 1: The hook */}
+<span className="text-5xl font-bold">99%</span>
+<span className="text-lg">failure rate</span>
+
+{/* Level 2: The explanation */}
+<p>Of 400+ drugs tested...</p>
+
+{/* Level 3: The deep dive */}
+<button onClick={toggle}>
+  View breakdown →
+</button>
+{expanded && <DetailTable />}`}
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Copywriting Guidelines */}
+          <div className="mb-12">
+            <Heading as="h3" animate={false} className="mb-4">Copywriting Guidelines</Heading>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card variant="default" hover={false}>
+                <CardHeader>
+                  <Heading as="h4" animate={false}>Do</Heading>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm space-y-2">
+                    <li className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-[var(--success)] flex-shrink-0 mt-0.5" />
+                      <span><strong>One idea per sentence.</strong> Scientific writing averages 12-17 words.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-[var(--success)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Lead with the point.</strong> Conclusions first, then details.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-[var(--success)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Use active voice.</strong> &quot;Mice developed plaques&quot; not &quot;Plaques were developed.&quot;</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-[var(--success)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Be concrete.</strong> &quot;400 drugs failed&quot; not &quot;many candidates proved ineffective.&quot;</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card variant="danger" hover={false}>
+                <CardHeader>
+                  <Heading as="h4" animate={false}>Avoid</Heading>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm space-y-2">
+                    <li className="flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-[var(--danger)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Jargon without context.</strong> Define terms or avoid them.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-[var(--danger)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Hedging language.</strong> &quot;It could potentially perhaps suggest...&quot;</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-[var(--danger)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Em dashes (—).</strong> Use commas, colons, or periods instead.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-[var(--danger)] flex-shrink-0 mt-0.5" />
+                      <span><strong>Word salad.</strong> Dense sentences that sound smart but obscure meaning.</span>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Card Copy Pattern */}
+          <div>
+            <Heading as="h3" animate={false} className="mb-4">Card Copy Pattern</Heading>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs font-semibold text-[var(--danger)] uppercase tracking-wide mb-3">Before (wordy)</p>
+                <Card variant="danger" hover={false}>
+                  <CardContent>
+                    <p className="text-sm text-[var(--text-body)] italic">
+                      &quot;The Morris Water Maze (MWM) is the gold standard for testing cognitive function
+                      in AD mouse models. But there&apos;s a problem: MWM involves swimming, a form of aerobic
+                      exercise. Swimming exercise restores glymphatic clearance, increases BDNF, reduces
+                      inflammation, and improves AQP4 polarization. The test itself may be treating the
+                      mice while measuring them.&quot;
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-[var(--success)] uppercase tracking-wide mb-3">After (concise)</p>
+                <Card variant="success" hover={false}>
+                  <CardContent>
+                    <p className="text-sm text-[var(--text-body)]">
+                      <strong>Title:</strong> The Testing Confound
+                    </p>
+                    <p className="text-sm text-[var(--text-body)] mt-2">
+                      <strong>Body:</strong> The standard mouse cognition test requires swimming. Swimming is exercise.
+                      Exercise improves cognition in AD models. The test may be treating mice while measuring them.
+                    </p>
+                    <p className="text-sm text-[var(--text-body)] mt-2">
+                      <strong>Takeaway:</strong> Control groups get partial treatment.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
         </Container>
       </Section>
 
@@ -671,6 +888,61 @@ function StatDisplay({ value, label, highlight }: StatDisplayProps) {
         {value}
       </div>
       <p className="mt-2 text-sm text-[var(--text-muted)]">{label}</p>
+    </div>
+  );
+}
+
+// Interactive example for information hierarchy
+function HierarchyExample() {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-2 text-sm text-[var(--accent-orange)] hover:underline"
+      >
+        {expanded ? 'Hide' : 'View'} trial breakdown
+        <ArrowRight className={`w-4 h-4 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+      </button>
+
+      {expanded && (
+        <div className="mt-4 p-4 bg-[var(--bg-secondary)] border border-[var(--border)] text-sm">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-[var(--text-muted)]">
+                <th className="pb-2">Phase</th>
+                <th className="pb-2">Started</th>
+                <th className="pb-2">Failed</th>
+                <th className="pb-2">Rate</th>
+              </tr>
+            </thead>
+            <tbody className="text-[var(--text-body)]">
+              <tr>
+                <td className="py-1">Phase I</td>
+                <td>244</td>
+                <td>206</td>
+                <td className="text-[var(--danger)]">84%</td>
+              </tr>
+              <tr>
+                <td className="py-1">Phase II</td>
+                <td>144</td>
+                <td>132</td>
+                <td className="text-[var(--danger)]">92%</td>
+              </tr>
+              <tr>
+                <td className="py-1">Phase III</td>
+                <td>52</td>
+                <td>48</td>
+                <td className="text-[var(--danger)]">92%</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="mt-3 text-xs text-[var(--text-muted)]">
+            Source: Cummings et al. (2014), Alzheimer&apos;s Research &amp; Therapy
+          </p>
+        </div>
+      )}
     </div>
   );
 }

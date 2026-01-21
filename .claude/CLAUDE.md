@@ -378,19 +378,117 @@ export function Component({ ...props }: ComponentProps) {
 - **COPY QUOTES EXACTLY AS THEY APPEAR** from the source—do not correct grammar, change capitalization, or modify punctuation
 - When using web search to gather citations, always verify quotes by fetching the actual source URL when possible
 
-## Writing Style
-- **Avoid em dashes (—)** in all content strings. Use alternatives instead:
+## Writing Style & Copywriting Guidelines
+
+Good copy is clear, concise, and serves the reader. Follow these principles based on [Federal Plain Language Guidelines](https://plainlanguage.gov/guidelines/) and [scientific communication best practices](https://ecampusontario.pressbooks.pub/scientificcommunication/chapter/style-tips/).
+
+### Core Principles
+
+1. **Write for scanners** - 73% of readers skim content. Use:
+   - Short paragraphs (2-3 sentences max)
+   - Bullet points for lists
+   - Bold for key terms
+   - Clear subheadings
+
+2. **One idea per sentence** - Scientific writing averages 12-17 words per sentence. If a sentence has multiple clauses, split it.
+
+3. **Lead with the point** - State conclusions first, then supporting details. Don't make readers hunt for the takeaway.
+
+4. **Use active voice** - "Mice developed plaques" not "Plaques were developed by mice." Active voice is shorter and clearer.
+
+5. **Prefer concrete over abstract** - "400 drugs failed" not "A significant number of therapeutic candidates proved ineffective."
+
+### What to Avoid
+
+- **Jargon without context** - Define technical terms on first use or avoid them
+- **Hedging language** - "It could potentially perhaps suggest" → "Evidence suggests"
+- **Redundant modifiers** - "completely eliminate," "very unique," "basically essential"
+- **Passive constructions** - Especially "It is..." and "There are..."
+- **Run-on explanations** - If you need a semicolon and two commas, make it two sentences
+- **Em dashes (—)** - Use alternatives:
   - Comma + space: "for ALS, but no Western trials"
-  - Colon + space: "stuck in trials: too cheap to fund"
+  - Colon: "stuck in trials: too cheap to fund"
   - Parentheses: "blocked by stigma (not science)"
-  - Semicolon + space: "Phase 3 for stroke; no AD trials"
   - Period and new sentence for longer asides
-- **Avoid run-on sentences and awkward phrasing** when replacing em dashes:
-  - If a comma creates a run-on, split into two sentences instead
-  - Read the result aloud mentally to check for natural flow
-  - Restructure the sentence if no punctuation substitution sounds right
-  - Example: Instead of "The drug works, but only in mice, but no human trials exist" → "The drug works in mice. No human trials exist."
-- This applies to summaries, descriptions, subtitles, and any user-facing text in data files
+
+### Card/Callout Copy Pattern
+
+For insight cards and callouts, follow this structure:
+```
+[Title]: 3-6 words, concrete noun + descriptor
+[Body]: 2-3 sentences max. Problem → Evidence → Implication.
+[Takeaway]: Single sentence starting with action word or "So..."
+```
+
+**Bad example:**
+> "The Morris Water Maze (MWM) is the gold standard for testing cognitive function in AD mouse models. But there's a problem: MWM involves swimming, a form of aerobic exercise. Swimming exercise restores glymphatic clearance, increases BDNF, reduces inflammation, and improves AQP4 polarization. The test itself may be treating the mice while measuring them."
+
+**Good example:**
+> "The standard mouse cognition test requires swimming, which is exercise. Exercise itself improves cognition in AD models. So the test may be treating mice while measuring them."
+
+### Explanatory Content Guidelines
+
+When explaining scientific concepts:
+- **Start with why it matters** to the reader
+- **Use analogies** sparingly and only if they clarify
+- **Show, don't tell** - Use data and examples over adjectives
+- **Avoid "word salad"** - Dense, jargon-heavy sentences that sound smart but communicate poorly
+
+### Tone
+
+- **Authoritative but accessible** - Expert knowledge, plain language
+- **Direct but not aggressive** - State facts without editorializing
+- **Curious but not uncertain** - Present open questions as interesting, not as weakness
+
+### Information Hierarchy (Progressive Disclosure)
+
+Design content for three levels of reader engagement. Each level should be complete on its own.
+
+#### Level 1: Scanners (5 seconds)
+For readers who want the gist at a glance.
+- **Large statistics** with units: "99%" "400 drugs" "$42.5B"
+- **Section headings** that convey the point, not just the topic
+- **Visual hierarchy** through size, color, and weight
+- **One takeaway per section** visible without scrolling
+
+#### Level 2: Readers (30 seconds)
+For readers who want to understand the story.
+- **2-3 sentence explanations** below each statistic
+- **Card bodies** that give context: problem → evidence → implication
+- **Interpretive labels** on charts and diagrams
+- **Clear cause-and-effect** language
+
+#### Level 3: Explorers (2+ minutes)
+For readers who want the full picture. Access via interaction.
+- **Expandable sections** for methodology, caveats, full data
+- **Tooltips** on technical terms and data points
+- **Click-through details** on cards, table rows, chart elements
+- **Source citations** and links to primary research
+
+#### Implementation Pattern
+```tsx
+{/* Level 1: The hook */}
+<div className="text-5xl font-serif font-bold">99%</div>
+<div className="text-lg text-[var(--text-muted)]">failure rate</div>
+
+{/* Level 2: The explanation */}
+<p className="text-[var(--text-body)] mt-4">
+  Of 400+ drugs tested in Alzheimer's trials, fewer than 5 reached approval.
+  Most failed despite showing promise in animal models.
+</p>
+
+{/* Level 3: The deep dive (interactive) */}
+<button onClick={() => setExpanded(!expanded)}>
+  View trial breakdown →
+</button>
+{expanded && <DetailedTrialTable />}
+```
+
+#### Visual Hierarchy Checklist
+- [ ] Can someone get the main point in 5 seconds?
+- [ ] Does the statistic/heading work without the body text?
+- [ ] Is there a clear path to more detail for curious readers?
+- [ ] Are interactive elements discoverable but not distracting?
 
 ## Research Requirements
 - **ALWAYS use web search** to verify factual claims before adding or modifying data content (drug information, trial results, researcher claims, statistics, etc.)
