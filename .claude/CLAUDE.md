@@ -371,12 +371,52 @@ export function Component({ ...props }: ComponentProps) {
 - Keep bundle size minimal - import icons individually
 
 ## Citation Standards
-- The `quote` field in bibliography.ts citations must contain **exact quotes** that can be found in the original source via Ctrl+F
+
+### Bibliography Location
+**ALWAYS add sources to the modular bibliography folder**: `src/data/bibliography/`
+
+The bibliography is organized into topic-specific modules:
+- `foundational.ts` - Core AD discoveries and seminal papers
+- `hypotheses.ts` - Competing theories (amyloid, tau, inflammation, etc.)
+- `mechanisms.ts` - Mechanistic pathway citations (for network edges)
+- `treatments.ts` - Drug trials and therapeutic interventions
+- `trials.ts` - Clinical trial results and methodology
+- `funding.ts` - Funding disparities and investment data
+- `policy.ts` - Regulatory and policy sources
+- `genetics.ts` - Genetic risk factors (APOE, TREM2, etc.)
+- `sexAncestry.ts` - Sex differences and ancestry effects
+- `scandal.ts` - Research misconduct (Bharat Lesne, etc.)
+- `pipelineDrugs.ts` - Pipeline and experimental treatments
+- `precisionMedicine.ts` - Biomarkers and precision medicine
+- `historical.ts` - Historical context and timeline events
+- `failureCascade.ts` - Market failure documentation
+- `drugConcerns.ts` - Safety and efficacy concerns
+
+**DO NOT** add to the legacy `src/data/bibliography.ts` file (deprecated).
+
+### Adding New Sources
+When adding a new source:
+1. Choose the appropriate module file based on topic
+2. Follow the `Source` interface structure from `types.ts`
+3. Include at least one `Citation` with an exact quote
+4. Run `npx tsx scripts/dump-network-data.ts` to verify citations
+
+### Citation Quality Rules
+- The `quote` field must contain **exact quotes** that can be found in the original source via Ctrl+F
 - Do NOT paraphrase or summarize in the quote field—use the exact text from the source
 - If the exact wording cannot be verified, mark the citation with a comment or use the `context` field for editorial notes
 - Each timeline event should reference specific `citationIds` that correspond to verifiable quotes in the bibliography
 - **COPY QUOTES EXACTLY AS THEY APPEAR** from the source—do not correct grammar, change capitalization, or modify punctuation
 - When using web search to gather citations, always verify quotes by fetching the actual source URL when possible
+
+### Mechanistic Framework Edge Citations
+All edges in `src/data/mechanisticFramework/edges.ts` must have an `evidence` array with at least one citation. Each citation should include:
+- `pmid` or `doi` - PubMed ID or DOI for the source
+- `firstAuthor` and `year` - For quick reference
+- `methodType` - Study type (RCT, cohort, animal, in_vitro, etc.)
+- `causalConfidence` - Evidence level (L1-L7)
+
+Run `npx tsx scripts/dump-network-data.ts --include-citations` to audit edge citations.
 
 ## Writing Style & Copywriting Guidelines
 

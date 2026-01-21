@@ -5,7 +5,15 @@
  * Generates markdown tables of all nodes, edges, feedback loops, etc.
  * for easy auditing of the mechanistic framework.
  *
- * Usage: npx tsx scripts/dump-network-data.ts > network-audit.md
+ * Usage:
+ *   npx tsx scripts/dump-network-data.ts > network-audit.md
+ *   npx tsx scripts/dump-network-data.ts --include-citations > full-audit.md
+ *   npx tsx scripts/dump-network-data.ts --citations-only > citations-audit.md
+ *
+ * Options:
+ *   --include-citations  Include detailed citation audit (verbose)
+ *   --citations-only     Only output citation audit (skip network structure)
+ *   --help               Show this help message
  */
 
 import {
@@ -14,6 +22,48 @@ import {
   feedbackLoops,
   modules
 } from '../src/data/mechanisticFramework';
+import type { MechanisticEdge, EvidenceCitation } from '../src/data/mechanisticFramework/types';
+
+// ============================================================================
+// CLI ARGUMENT PARSING
+// ============================================================================
+
+interface CliOptions {
+  includeCitations: boolean;
+  citationsOnly: boolean;
+  help: boolean;
+}
+
+function parseArgs(): CliOptions {
+  const args = process.argv.slice(2);
+  return {
+    includeCitations: args.includes('--include-citations'),
+    citationsOnly: args.includes('--citations-only'),
+    help: args.includes('--help') || args.includes('-h'),
+  };
+}
+
+function showHelp() {
+  console.log(`
+Network Data Dump Script
+
+Generates markdown tables of all nodes, edges, feedback loops, etc.
+for easy auditing of the mechanistic framework.
+
+Usage:
+  npx tsx scripts/dump-network-data.ts [options] > output.md
+
+Options:
+  --include-citations  Include detailed citation audit (verbose)
+  --citations-only     Only output citation audit (skip network structure)
+  --help, -h           Show this help message
+
+Examples:
+  npx tsx scripts/dump-network-data.ts > network-audit.md
+  npx tsx scripts/dump-network-data.ts --include-citations > full-audit.md
+  npx tsx scripts/dump-network-data.ts --citations-only > citations-audit.md
+`);
+}
 
 // Helper to escape pipe characters in markdown tables
 function escapeMarkdown(str: string | undefined): string {
@@ -354,8 +404,267 @@ function generateOrphanCheck() {
   }
 }
 
-// Main execution
+// ============================================================================
+// CITATION AUDIT
+// ============================================================================
+
+interface CitationIssue {
+  edgeId: string;
+  source: string;
+  target: string;
+  module: string;
+  issues: string[];
+}
+
+interface CitationStats {
+  totalEdges: number;
+  edgesWithCitations: number;
+  edgesWithoutCitations: number;
+  totalCitations: number;
+  citationsWithPmid: number;
+  citationsWithDoi: number;
+  citationsWithTitle: number;
+  citationsWithQuote: number;
+  uniquePmids: Set<string>;
+  uniqueDois: Set<string>;
+  byMethodType: Record<string, number>;
+  byConfidence: Record<string, number>;
+}
+
+function validateCitation(citation: EvidenceCitation): string[] {
+  const issues: string[] = [];
+
+  // Required fields
+  if (!citation.firstAuthor) issues.push('Missing firstAuthor');
+  if (!citation.year) issues.push('Missing year');
+  if (!citation.methodType) issues.push('Missing methodType');
+  if (!citation.causalConfidence) issues.push('Missing causalConfidence');
+
+  // Should have pmid OR doi
+  if (!citation.pmid && !citation.doi) {
+    issues.push('Missing both pmid and doi');
+  }
+
+  // Year sanity check
+  if (citation.year && (citation.year < 1900 || citation.year > new Date().getFullYear() + 1)) {
+    issues.push(`Suspicious year: ${citation.year}`);
+  }
+
+  return issues;
+}
+
+function auditEdgeCitations(): { issues: CitationIssue[]; stats: CitationStats } {
+  const issues: CitationIssue[] = [];
+  const stats: CitationStats = {
+    totalEdges: allEdges.length,
+    edgesWithCitations: 0,
+    edgesWithoutCitations: 0,
+    totalCitations: 0,
+    citationsWithPmid: 0,
+    citationsWithDoi: 0,
+    citationsWithTitle: 0,
+    citationsWithQuote: 0,
+    uniquePmids: new Set(),
+    uniqueDois: new Set(),
+    byMethodType: {},
+    byConfidence: {},
+  };
+
+  for (const edge of allEdges) {
+    const edgeIssues: string[] = [];
+
+    if (!edge.evidence || edge.evidence.length === 0) {
+      edgeIssues.push('No citations');
+      stats.edgesWithoutCitations++;
+    } else {
+      stats.edgesWithCitations++;
+      stats.totalCitations += edge.evidence.length;
+
+      for (const citation of edge.evidence) {
+        // Collect stats
+        if (citation.pmid) {
+          stats.citationsWithPmid++;
+          stats.uniquePmids.add(citation.pmid);
+        }
+        if (citation.doi) {
+          stats.citationsWithDoi++;
+          stats.uniqueDois.add(citation.doi);
+        }
+        if (citation.title) stats.citationsWithTitle++;
+        if (citation.quote) stats.citationsWithQuote++;
+
+        if (citation.methodType) {
+          stats.byMethodType[citation.methodType] = (stats.byMethodType[citation.methodType] || 0) + 1;
+        }
+        if (citation.causalConfidence) {
+          stats.byConfidence[citation.causalConfidence] = (stats.byConfidence[citation.causalConfidence] || 0) + 1;
+        }
+
+        // Validate citation
+        const citationIssues = validateCitation(citation);
+        if (citationIssues.length > 0) {
+          edgeIssues.push(`Citation (${citation.firstAuthor || 'unknown'} ${citation.year || '?'}): ${citationIssues.join(', ')}`);
+        }
+      }
+    }
+
+    if (edgeIssues.length > 0) {
+      issues.push({
+        edgeId: edge.id,
+        source: edge.source,
+        target: edge.target,
+        module: edge.moduleId,
+        issues: edgeIssues,
+      });
+    }
+  }
+
+  return { issues, stats };
+}
+
+function generateCitationAudit() {
+  console.log('\n---\n');
+  console.log('## Citation Audit\n');
+
+  const { issues, stats } = auditEdgeCitations();
+
+  // Summary statistics
+  console.log('### Citation Statistics\n');
+  console.log('| Metric | Count |');
+  console.log('|--------|-------|');
+  console.log(`| Total Edges | ${stats.totalEdges} |`);
+  console.log(`| Edges with Citations | ${stats.edgesWithCitations} |`);
+  console.log(`| Edges without Citations | ${stats.edgesWithoutCitations} |`);
+  console.log(`| Total Citations | ${stats.totalCitations} |`);
+  console.log(`| Unique PMIDs | ${stats.uniquePmids.size} |`);
+  console.log(`| Unique DOIs | ${stats.uniqueDois.size} |`);
+  console.log(`| Citations with Title | ${stats.citationsWithTitle} |`);
+  console.log(`| Citations with Quote | ${stats.citationsWithQuote} |`);
+
+  // Coverage percentage
+  const coveragePercent = ((stats.edgesWithCitations / stats.totalEdges) * 100).toFixed(1);
+  console.log(`\n**Citation Coverage**: ${coveragePercent}% of edges have at least one citation\n`);
+
+  // By method type
+  console.log('### Citations by Method Type\n');
+  console.log('| Method Type | Count |');
+  console.log('|-------------|-------|');
+  Object.entries(stats.byMethodType)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([method, count]) => {
+      console.log(`| ${method} | ${count} |`);
+    });
+
+  // By confidence level
+  console.log('\n### Citations by Confidence Level\n');
+  console.log('| Level | Count |');
+  console.log('|-------|-------|');
+  ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'].forEach(level => {
+    const count = stats.byConfidence[level] || 0;
+    console.log(`| ${level} | ${count} |`);
+  });
+
+  // Edges without citations
+  const noCitationEdges = issues.filter(i => i.issues.includes('No citations'));
+  if (noCitationEdges.length > 0) {
+    console.log('\n### ⚠️ Edges Without Citations\n');
+    console.log('| Edge ID | Source → Target | Module |');
+    console.log('|---------|-----------------|--------|');
+    noCitationEdges.forEach(i => {
+      console.log(`| ${i.edgeId} | ${i.source} → ${i.target} | ${i.module} |`);
+    });
+  } else {
+    console.log('\n### ✅ All Edges Have Citations\n');
+  }
+
+  // Other citation issues
+  const otherIssues = issues.filter(i => !i.issues.includes('No citations'));
+  if (otherIssues.length > 0) {
+    console.log('\n### Citation Quality Issues\n');
+    console.log('| Edge ID | Module | Issues |');
+    console.log('|---------|--------|--------|');
+    otherIssues.slice(0, 50).forEach(i => {
+      const issueText = i.issues.map(iss => truncate(iss, 60)).join('; ');
+      console.log(`| ${i.edgeId} | ${i.module} | ${truncate(issueText, 80)} |`);
+    });
+    if (otherIssues.length > 50) {
+      console.log(`\n*...and ${otherIssues.length - 50} more issues*`);
+    }
+  } else {
+    console.log('\n### ✅ No Citation Quality Issues\n');
+  }
+}
+
+function generateDetailedCitationList() {
+  console.log('\n---\n');
+  console.log('## All Edge Citations\n');
+
+  // Group edges by module
+  const edgesByModule = allEdges.reduce((acc, e) => {
+    if (!acc[e.moduleId]) acc[e.moduleId] = [];
+    acc[e.moduleId].push(e);
+    return acc;
+  }, {} as Record<string, MechanisticEdge[]>);
+
+  // Sort modules
+  const sortedModules = Object.keys(edgesByModule).sort((a, b) => {
+    const aNum = parseInt(a.replace(/\D/g, '')) || 0;
+    const bNum = parseInt(b.replace(/\D/g, '')) || 0;
+    return aNum - bNum;
+  });
+
+  for (const moduleId of sortedModules) {
+    const moduleEdges = edgesByModule[moduleId];
+    const module = modules.find(m => m.id === moduleId);
+    const moduleName = module?.name || moduleId;
+
+    console.log(`### ${moduleId}: ${moduleName}\n`);
+
+    for (const edge of moduleEdges.sort((a, b) => a.id.localeCompare(b.id))) {
+      console.log(`#### ${edge.id}: ${edge.source} → ${edge.target}\n`);
+      console.log(`- **Relation**: ${edge.relation}`);
+      console.log(`- **Confidence**: ${edge.causalConfidence}`);
+      console.log(`- **Mechanism**: ${truncate(edge.mechanismLabel, 50)}`);
+
+      if (edge.evidence && edge.evidence.length > 0) {
+        console.log(`- **Citations** (${edge.evidence.length}):`);
+        edge.evidence.forEach((cit, i) => {
+          const pmidStr = cit.pmid ? `PMID:${cit.pmid}` : '';
+          const doiStr = cit.doi ? `DOI:${cit.doi}` : '';
+          const ref = [pmidStr, doiStr].filter(Boolean).join(', ') || 'No ID';
+          console.log(`  ${i + 1}. ${cit.firstAuthor} ${cit.year} (${cit.methodType}, ${cit.causalConfidence}) - ${ref}`);
+          if (cit.title) console.log(`     *${truncate(cit.title, 70)}*`);
+        });
+      } else {
+        console.log(`- **Citations**: ⚠️ None`);
+      }
+      console.log('');
+    }
+  }
+}
+
+// ============================================================================
+// MAIN EXECUTION
+// ============================================================================
+
 function main() {
+  const options = parseArgs();
+
+  if (options.help) {
+    showHelp();
+    return;
+  }
+
+  if (options.citationsOnly) {
+    // Only citation audit
+    console.log('# Citation Audit Report\n');
+    console.log(`Generated: ${new Date().toISOString()}\n`);
+    generateCitationAudit();
+    generateDetailedCitationList();
+    return;
+  }
+
+  // Standard network audit
   generateSummary();
   generateModulesTable();
   generateBiomarkersTable();
@@ -363,6 +672,15 @@ function main() {
   generateFeedbackLoopsTable();
   generateCrossModuleEdgesTable();
   generateOrphanCheck();
+
+  // Always include citation summary in data quality section
+  generateCitationAudit();
+
+  // Optionally include detailed citation list
+  if (options.includeCitations) {
+    generateDetailedCitationList();
+  }
+
   generateNodesTable();
   generateEdgesTable();
 }
