@@ -66,9 +66,9 @@ export const hypothesisPresets: PresetOption[] = [
       'abeta_monomers',
       'abeta_oligomers',
       'abeta_plaques',
-      'tau_hyperphosphorylation',
+      'tau_hyperphosphorylated',
       'neurofibrillary_tangles',
-      'synaptic_dysfunction',
+      'synaptic_plasticity',
       'cognitive_score',
     ],
     color: '#60a5fa', // Soft blue (amyloid color)
@@ -103,10 +103,10 @@ export const hypothesisPresets: PresetOption[] = [
     description: 'Tau and Aβ spread trans-synaptically in a prion-like manner following neural connectivity',
     category: 'hypotheses',
     nodeIds: [
-      'tau_hyperphosphorylation',
+      'tau_hyperphosphorylated',
       'neurofibrillary_tangles',
       'tau_seeding',
-      'synaptic_dysfunction',
+      'synaptic_plasticity',
       'abeta_oligomers',
     ],
     color: '#f472b6', // Soft pink
@@ -263,7 +263,7 @@ export const hypothesisPresets: PresetOption[] = [
       // T - Tau
       'plasma_ptau217',
       'plasma_ptau181',
-      'tau_hyperphosphorylation',
+      'tau_hyperphosphorylated',
       'neurofibrillary_tangles',
       // N - Neurodegeneration
       'plasma_nfl',
@@ -297,7 +297,7 @@ export const hypothesisPresets: PresetOption[] = [
       'retinal_rnfl',
       'neuronal_count',
       // Tau pathology independent of amyloid
-      'tau_hyperphosphorylation',
+      'tau_hyperphosphorylated',
       'plasma_ptau181',
       // Cognitive decline
       'cognitive_score',

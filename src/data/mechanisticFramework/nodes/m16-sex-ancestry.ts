@@ -5,24 +5,8 @@
 import type { MechanisticNode } from '../types';
 
 export const module16Nodes: MechanisticNode[] = [
-  {
-    id: 'estrogen_level',
-    label: 'Estrogen Level',
-    category: 'STOCK',
-    subtype: 'HormoneLevel',
-    moduleId: 'M16',
-    description: 'Estradiol; declines at menopause',
-    mechanism: 'Promotes ferroportin expression, anti-inflammatory',
-  },
-  {
-    id: 'testosterone_level',
-    label: 'Testosterone Level',
-    category: 'STOCK',
-    subtype: 'HormoneLevel',
-    moduleId: 'M16',
-    description: 'Testosterone; higher in males',
-    mechanism: 'Increases autophagy flux',
-  },
+  // NOTE: estrogen_level and testosterone_level moved to M20 (Hormonal Influences)
+  // with more comprehensive definitions including biomarker detection timelines
   {
     id: 'fsh_elevated',
     label: 'FSH Elevated (Menopause)',

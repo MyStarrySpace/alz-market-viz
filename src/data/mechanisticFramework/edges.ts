@@ -3147,6 +3147,126 @@ export const module8Edges: MechanisticEdge[] = [
     ],
     keyInsight: 'C1q elevation is therapeutic target for synapse preservation',
   },
+  // ----------------------------------------------------------------------------
+  // BDNF and Dendritic Spine Edges
+  // ----------------------------------------------------------------------------
+  {
+    id: 'E08.010',
+    source: 'abeta_oligomers',
+    target: 'bdnf',
+    relation: 'decreases',
+    moduleId: 'M08',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M06 → M08',
+    mechanismLabel: 'abeta_bdnf_reduction',
+    mechanismDescription:
+      'Aβ oligomers reduce BDNF expression and secretion. Involves CREB inhibition and impaired TrkB signaling. Contributes to synaptic dysfunction.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '19403830',
+        firstAuthor: 'Peng',
+        year: 2009,
+        title: 'Precursor form of brain-derived neurotrophic factor and mature brain-derived neurotrophic factor are decreased in the pre-clinical stages of Alzheimer disease',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E08.011',
+    source: 'bdnf',
+    target: 'synaptic_plasticity',
+    relation: 'increases',
+    moduleId: 'M08',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'bdnf_synaptic_plasticity',
+    mechanismDescription:
+      'BDNF is essential for LTP, spine formation, and neuronal survival. Signals via TrkB receptor → MAPK/ERK, PI3K/Akt, PLCγ pathways. Master regulator of synaptic plasticity.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '20364143',
+        firstAuthor: 'Cunha',
+        year: 2010,
+        title: 'A simple role for BDNF in learning and memory?',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E08.012',
+    source: 'bdnf',
+    target: 'dendritic_spine_density',
+    relation: 'increases',
+    moduleId: 'M08',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'bdnf_spine_formation',
+    mechanismDescription:
+      'BDNF promotes spine formation and stabilization. TrkB signaling activates Rac1/Cdc42 → actin polymerization → spine morphogenesis. Critical for learning-related structural plasticity.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '19571805',
+        firstAuthor: 'Tanaka',
+        year: 2008,
+        title: 'Protein synthesis and neurotrophin-dependent structural plasticity of single dendritic spines',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E08.013',
+    source: 'abeta_oligomers',
+    target: 'dendritic_spine_density',
+    relation: 'decreases',
+    moduleId: 'M08',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M06 → M08',
+    mechanismLabel: 'abeta_spine_retraction',
+    mechanismDescription:
+      'Aβ oligomers cause rapid spine retraction within hours. Involves calcineurin activation, AMPA receptor internalization, and cofilin-mediated actin depolymerization. Early event in AD pathology.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '16141271',
+        firstAuthor: 'Shankar',
+        year: 2007,
+        title: 'Natural oligomers of the Alzheimer amyloid-beta protein induce reversible synapse loss by modulating an NMDA-type glutamate receptor-dependent signaling pathway',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E08.014',
+    source: 'dendritic_spine_density',
+    target: 'synaptic_plasticity',
+    relation: 'increases',
+    moduleId: 'M08',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'spine_density_plasticity',
+    mechanismDescription:
+      'Higher spine density provides more substrate for synaptic plasticity. Mushroom spines represent stable, functional synapses; thin spines are immature and plastic.',
+    timescale: 'days',
+    causalConfidence: 'L5',
+    evidence: [
+      {
+        pmid: '19812815',
+        firstAuthor: 'Bourne',
+        year: 2009,
+        title: 'Do thin spines learn to be mushroom spines that remember?',
+        methodType: 'review',
+        causalConfidence: 'L5',
+      },
+    ],
+  },
 ];
 
 // ============================================================================
@@ -4755,6 +4875,374 @@ export const module12Edges: MechanisticEdge[] = [
       },
     ],
     keyInsight: 'Non-invasive OCT measure correlates with brain atrophy',
+  },
+  // -------------------------------------------------------------------------
+  // Clearance Pathway Edges (connecting orphan nodes)
+  // -------------------------------------------------------------------------
+  {
+    id: 'E12.035',
+    source: 'isf_abeta_clearance',
+    target: 'intramural_periarterial_drainage',
+    relation: 'increases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'ISF_to_IPAD',
+    mechanismDescription:
+      'ISF carrying soluble Aβ drains along basement membranes within arterial walls (IPAD pathway). This is separate from but complementary to glymphatic clearance.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '27194517',
+        doi: '10.1186/s40478-016-0336-x',
+        firstAuthor: 'Carare',
+        year: 2016,
+        title: 'Intramural periarterial drainage of Aβ',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.036',
+    source: 'intramural_periarterial_drainage',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'IPAD_Abeta_removal',
+    mechanismDescription:
+      'IPAD removes soluble Aβ from brain parenchyma. Impaired in CAA where Aβ deposits in vessel walls. Arterial stiffening with age reduces IPAD efficiency.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    crossModule: 'Output to Module 6 (Amyloid)',
+    evidence: [
+      {
+        pmid: '27194517',
+        firstAuthor: 'Carare',
+        year: 2016,
+        title: 'Review of IPAD in Aβ clearance',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.037',
+    source: 'meningeal_lymphatics',
+    target: 'cervical_lymph_nodes',
+    relation: 'directlyIncreases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'meningeal_lymph_drainage',
+    mechanismDescription:
+      'Meningeal lymphatics drain CSF and brain-derived antigens to deep cervical lymph nodes. This is where brain Aβ first contacts peripheral immune system.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '26030524',
+        doi: '10.1038/nature14432',
+        firstAuthor: 'Louveau',
+        year: 2015,
+        title: 'Structural and functional features of central nervous system lymphatic vessels',
+        quote: 'Meningeal lymphatic vessels drain into the deep cervical lymph nodes',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight: 'LANDMARK: Discovery of brain lymphatic drainage pathway',
+  },
+  {
+    id: 'E12.038',
+    source: 'cervical_lymph_nodes',
+    target: 'splenic_clearance',
+    relation: 'increases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'lymph_to_spleen',
+    mechanismDescription:
+      'Aβ and Aβ-antibody complexes from cervical lymph nodes enter systemic circulation and are filtered by splenic macrophages.',
+    timescale: 'hours',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        firstAuthor: 'Louveau',
+        year: 2015,
+        pmid: '26030524',
+        methodType: 'review',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E12.039',
+    source: 'cervical_lymph_nodes',
+    target: 'hepatic_clearance',
+    relation: 'increases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'lymph_to_liver',
+    mechanismDescription:
+      'Aβ from cervical lymph nodes enters systemic circulation and is cleared by liver Kupffer cells and LRP1 on hepatocytes.',
+    timescale: 'hours',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        firstAuthor: 'Louveau',
+        year: 2015,
+        pmid: '26030524',
+        methodType: 'review',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E12.040',
+    source: 'splenic_clearance',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'spleen_Abeta_removal',
+    mechanismDescription:
+      'Splenic macrophages clear Aβ-antibody immune complexes from blood. Primary peripheral clearance organ. Splenectomy may reduce efficacy of anti-Aβ immunotherapy.',
+    timescale: 'hours',
+    causalConfidence: 'L6',
+    crossModule: 'Output to Module 6 (Amyloid)',
+    evidence: [
+      {
+        firstAuthor: 'DeMattos',
+        year: 2001,
+        pmid: '11741046',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.041',
+    source: 'hepatic_clearance',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
+    moduleId: 'M12',
+    edgeType: 'FLOW',
+    mechanismLabel: 'liver_Abeta_removal',
+    mechanismDescription:
+      'Liver clears 40-60% of peripheral Aβ via Kupffer cells and LRP1-mediated hepatocyte uptake. Works in parallel with splenic clearance.',
+    timescale: 'hours',
+    causalConfidence: 'L6',
+    crossModule: 'Output to Module 6 (Amyloid)',
+    evidence: [
+      {
+        firstAuthor: 'Ghiso',
+        year: 2004,
+        pmid: '14742366',
+        methodType: 'review',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E12.042',
+    source: 'peripheral_sink_hypothesis',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
+    moduleId: 'M12',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'peripheral_sink_mechanism',
+    mechanismDescription:
+      'Theory: Reducing plasma Aβ creates concentration gradient pulling Aβ from brain. Evidence mixed; equilibrium is slow (weeks) and receptor-limited.',
+    timescale: 'weeks',
+    causalConfidence: 'L6',
+    crossModule: 'Output to Module 6 (Amyloid)',
+    evidence: [
+      {
+        firstAuthor: 'DeMattos',
+        year: 2001,
+        pmid: '11741046',
+        title: 'Peripheral anti-Aβ antibody alters CNS and plasma Aβ clearance',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.043',
+    source: 'fcrn_transport',
+    target: 'bbb_integrity',
+    relation: 'regulates',
+    moduleId: 'M12',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'FcRn_antibody_efflux',
+    mechanismDescription:
+      'FcRn at BBB primarily effluxes IgG OUT of brain (brain→blood). Anti-Aβ antibodies achieve only ~0.1% brain uptake because FcRn actively pumps them back out.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        pmid: '11796095',
+        firstAuthor: 'Zhang',
+        year: 2002,
+        title: 'FcRn mediates IgG efflux from brain',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight: 'Explains why massive antibody doses needed for minimal brain effect',
+  },
+  {
+    id: 'E12.044',
+    source: 'fcrn_recycling',
+    target: 'fcrn_transport',
+    relation: 'regulates',
+    moduleId: 'M12',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'FcRn_IgG_half_life',
+    mechanismDescription:
+      'FcRn salvage pathway extends IgG half-life to ~21 days by rescuing antibodies from lysosomal degradation. Maintains high peripheral antibody concentrations.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Roopenian',
+        year: 2007,
+        pmid: '17600545',
+        title: 'FcRn: the neonatal Fc receptor comes of age',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E12.045',
+    source: 'abeta_plaques',
+    target: 'aria_edema',
+    relation: 'increases',
+    moduleId: 'M12',
+    edgeType: 'ADVERSE_EVENT',
+    mechanismLabel: 'CAA_ARIA_E',
+    mechanismDescription:
+      'Anti-Aβ antibody clearance of CAA (cerebral amyloid angiopathy) triggers complement activation and transient BBB disruption → vasogenic edema. Higher in APOE4 carriers.',
+    timescale: 'weeks',
+    causalConfidence: 'L1',
+    crossModule: 'M06 → M12',
+    evidence: [
+      {
+        pmid: '36449413',
+        firstAuthor: 'Sperling',
+        year: 2023,
+        title: 'ARIA in Alzheimer\'s treatment',
+        quote: 'ARIA-E occurs in 20-35% of patients on anti-Aβ antibodies',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+      },
+    ],
+    keyInsight: 'ARIA is not the clearance mechanism - it is an adverse effect of CAA disruption',
+  },
+  {
+    id: 'E12.046',
+    source: 'aria_edema',
+    target: 'aria_hemorrhage',
+    relation: 'increases',
+    moduleId: 'M12',
+    edgeType: 'TRANSITION',
+    mechanismLabel: 'ARIA_progression',
+    mechanismDescription:
+      'Severe ARIA-E can progress to microhemorrhages (ARIA-H) from vessel wall weakening. Risk factors: APOE4/4 genotype, high baseline CAA, anticoagulant use.',
+    timescale: 'weeks',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '36449413',
+        firstAuthor: 'Sperling',
+        year: 2023,
+        title: 'ARIA in Alzheimer\'s treatment',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+      },
+    ],
+  },
+  // -------------------------------------------------------------------------
+  // Biomarker Connection Edges
+  // -------------------------------------------------------------------------
+  {
+    id: 'E12.047',
+    source: 'abeta_plaques',
+    target: 'plasma_abeta42_40_ratio',
+    relation: 'decreases',
+    moduleId: 'M12',
+    edgeType: 'BIOMARKER_EFFECT',
+    mechanismLabel: 'Abeta_sequestration',
+    mechanismDescription:
+      'Brain amyloid deposition sequesters Aβ42 preferentially over Aβ40, decreasing plasma Aβ42/40 ratio. Lower ratio indicates higher brain amyloid burden.',
+    timescale: 'months',
+    causalConfidence: 'L4',
+    crossModule: 'M06 → BOUNDARY',
+    evidence: [
+      {
+        pmid: '31738165',
+        doi: '10.1212/WNL.0000000000008081',
+        firstAuthor: 'Schindler',
+        year: 2019,
+        title: 'High-precision plasma Aβ42/40 predicts brain amyloidosis',
+        quote: 'Plasma Aβ42/40 ratio showed high accuracy for predicting brain amyloidosis',
+        methodType: 'cohort',
+        causalConfidence: 'L4',
+      },
+    ],
+    keyInsight: 'FDA-cleared plasma biomarker; lower ratio = more brain amyloid',
+  },
+  {
+    id: 'E12.048',
+    source: 'abeta_oligomers',
+    target: 'retinal_amyloid',
+    relation: 'directlyIncreases',
+    moduleId: 'M12',
+    edgeType: 'BIOMARKER_EFFECT',
+    mechanismLabel: 'systemic_retinal_Abeta',
+    mechanismDescription:
+      'Aβ deposits in retina mirror brain amyloid burden. Detectable with curcumin fluorescence imaging. Provides non-invasive measure of systemic amyloidosis.',
+    timescale: 'years',
+    causalConfidence: 'L6',
+    crossModule: 'M06 → BOUNDARY',
+    evidence: [
+      {
+        pmid: '32320011',
+        firstAuthor: 'Koronyo',
+        year: 2017,
+        title: 'Retinal amyloid pathology and imaging',
+        quote: 'Retinal Aβ deposits correlate with brain amyloid burden',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E12.049',
+    source: 'tau_hyperphosphorylated',
+    target: 'ad_autoantibody_panel',
+    relation: 'increases',
+    moduleId: 'M12',
+    edgeType: 'BIOMARKER_EFFECT',
+    mechanismLabel: 'tau_autoimmunity',
+    mechanismDescription:
+      'Abnormal tau triggers autoimmune response; anti-MAPT autoantibodies are component of AD autoantibody panel. May reflect early immune recognition of tau pathology.',
+    timescale: 'years',
+    causalConfidence: 'L6',
+    crossModule: 'M07 → BOUNDARY',
+    evidence: [
+      {
+        pmid: '37989443',
+        firstAuthor: 'Fang',
+        year: 2023,
+        title: 'Autoantibody biomarkers for AD',
+        quote: '7-autoantibody panel including anti-MAPT achieves AUC=0.94 for AD detection',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+    keyInsight: 'Autoantibodies may detect AD earlier than pTau217',
   },
 ];
 
@@ -6865,6 +7353,151 @@ export const module18Edges: MechanisticEdge[] = [
     ],
     translationalGap: 'Novel biomarker concept - not yet clinically validated',
   },
+  // -------------------------------------------------------------------------
+  // Healthy State Transition Edges (connecting orphan nodes)
+  // -------------------------------------------------------------------------
+  {
+    id: 'E18.017',
+    source: 'aep_active',
+    target: 'vimentin_intact',
+    relation: 'decreases',
+    moduleId: 'M18',
+    edgeType: 'FLOW',
+    mechanismLabel: 'AEP_vimentin_depletion',
+    mechanismDescription:
+      'Active AEP cleaves intact vimentin at N283, consuming the healthy vimentin pool and generating non-functional fragments.',
+    timescale: 'hours',
+    causalConfidence: 'L5',
+    evidence: [
+      {
+        pmid: '40243407',
+        firstAuthor: 'Zhang',
+        year: 2025,
+        title: 'Vimentin Fragmentation in AD',
+        quote: 'AEP cleaves vimentin at N283',
+        methodType: 'biochemistry',
+        causalConfidence: 'L5',
+      },
+    ],
+  },
+  {
+    id: 'E18.018',
+    source: 'vimentin_intact',
+    target: 'gfap_network_intact',
+    relation: 'directlyIncreases',
+    moduleId: 'M18',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'vimentin_GFAP_maintenance',
+    mechanismDescription:
+      'Full-length vimentin co-polymerizes with GFAP to form and maintain the intermediate filament network. Intact vimentin is required for network stability.',
+    timescale: 'hours',
+    causalConfidence: 'L5',
+    evidence: [
+      {
+        pmid: '40243407',
+        firstAuthor: 'Zhang',
+        year: 2025,
+        title: 'Vimentin-GFAP interaction',
+        quote: 'Vimentin is essential for interaction with GFAP in forming the network structure',
+        methodType: 'biochemistry',
+        causalConfidence: 'L5',
+      },
+    ],
+  },
+  {
+    id: 'E18.019',
+    source: 'gfap_network_intact',
+    target: 'pvs_normal',
+    relation: 'directlyIncreases',
+    moduleId: 'M18',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'cytoskeleton_PVS_maintenance',
+    mechanismDescription:
+      'Intact GFAP-vimentin cytoskeletal network maintains astrocyte endfoot structure and tight apposition to blood vessels, keeping perivascular spaces narrow.',
+    timescale: 'days',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        pmid: '40243407',
+        firstAuthor: 'Zhang',
+        year: 2025,
+        title: 'Vimentin fragmentation in AD',
+        methodType: 'biochemistry',
+        causalConfidence: 'L5',
+      },
+    ],
+  },
+  {
+    id: 'E18.020',
+    source: 'pvs_normal',
+    target: 'glymphatic_clearance',
+    relation: 'directlyIncreases',
+    moduleId: 'M18',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M18 → M12',
+    mechanismLabel: 'PVS_glymphatic_efficiency',
+    mechanismDescription:
+      'Normal narrow perivascular spaces enable efficient CSF-ISF exchange for glymphatic clearance. Enlarged PVS disrupts flow dynamics.',
+    timescale: 'hours',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        pmid: '40826401',
+        firstAuthor: 'Leone',
+        year: 2025,
+        title: 'PVS and glymphatic function',
+        quote: 'PVS enlargement correlates with impaired glymphatic clearance',
+        methodType: 'imaging',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E18.021',
+    source: 'gfap_network_intact',
+    target: 'gfap_network_disrupted',
+    relation: 'decreases',
+    moduleId: 'M18',
+    edgeType: 'TRANSITION',
+    mechanismLabel: 'network_state_balance',
+    mechanismDescription:
+      'Healthy GFAP network and disrupted network are opposing states. As intact network capacity decreases (from vimentin cleavage), disruption increases.',
+    timescale: 'days',
+    causalConfidence: 'L5',
+    evidence: [
+      {
+        pmid: '40243407',
+        firstAuthor: 'Zhang',
+        year: 2025,
+        title: 'Vimentin fragmentation in AD',
+        methodType: 'biochemistry',
+        causalConfidence: 'L5',
+      },
+    ],
+  },
+  {
+    id: 'E18.022',
+    source: 'pvs_normal',
+    target: 'pvs_enlarged',
+    relation: 'decreases',
+    moduleId: 'M18',
+    edgeType: 'TRANSITION',
+    mechanismLabel: 'PVS_state_balance',
+    mechanismDescription:
+      'Normal and enlarged PVS are opposing states. As endfoot integrity declines, PVS transitions from normal to enlarged state.',
+    timescale: 'weeks',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        pmid: '40826401',
+        firstAuthor: 'Leone',
+        year: 2025,
+        title: 'PVS changes in AD',
+        methodType: 'imaging',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
 ];
 
 // ============================================================================
@@ -7040,7 +7673,7 @@ export const therapeuticEvidenceEdges: MechanisticEdge[] = [
   // -------------------------------------------------------------------------
   {
     id: 'E-THER.006',
-    source: 'synaptic_dysfunction',
+    source: 'synaptic_plasticity',
     target: 'cognitive_score',
     relation: 'causesNoChange',
     moduleId: 'M15',
@@ -7109,6 +7742,406 @@ export const therapeuticEvidenceEdges: MechanisticEdge[] = [
 ];
 
 // ============================================================================
+// MODULE 20: Hormonal Influences
+// ============================================================================
+
+export const module20Edges: MechanisticEdge[] = [
+  // -------------------------------------------------------------------------
+  // Estrogen Pathway
+  // -------------------------------------------------------------------------
+  {
+    id: 'E20.001',
+    source: 'estrogen_level',
+    target: 'estrogen_neuroprotection',
+    relation: 'directlyIncreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'estrogen_protective_effects',
+    mechanismDescription:
+      'Estrogen acts via ERα/ERβ receptors to increase BDNF, promote spine formation, reduce APP processing, and enhance mitochondrial function.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Hara',
+        year: 2015,
+        pmid: '25724781',
+        title: 'Estrogen effects on cognitive and synaptic health',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.002',
+    source: 'hrt_intervention',
+    target: 'estrogen_level',
+    relation: 'directlyIncreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'HRT_estrogen_replacement',
+    mechanismDescription:
+      'Hormone replacement therapy restores estrogen levels. Critical window hypothesis: HRT within 5 years of menopause may be neuroprotective; later may be harmful.',
+    timescale: 'days',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '36424867',
+        firstAuthor: 'Saleh',
+        year: 2023,
+        title: 'EPAD HRT study',
+        quote: 'APOE4 women show larger cognitive benefit from HRT',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+    keyInsight: 'Timing matters: early HRT may protect, late HRT may harm',
+  },
+  {
+    id: 'E20.003',
+    source: 'estrogen_neuroprotection',
+    target: 'synaptic_plasticity',
+    relation: 'increases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M08',
+    mechanismLabel: 'estrogen_synapse_support',
+    mechanismDescription:
+      'Estrogen increases BDNF expression and promotes dendritic spine formation, enhancing synaptic plasticity.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Hara',
+        year: 2015,
+        pmid: '25724781',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.004',
+    source: 'estrogen_neuroprotection',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M06',
+    mechanismLabel: 'estrogen_APP_processing',
+    mechanismDescription:
+      'Estrogen reduces amyloidogenic APP processing, decreasing Aβ production.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Hara',
+        year: 2015,
+        pmid: '25724781',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  // -------------------------------------------------------------------------
+  // Testosterone Pathway
+  // -------------------------------------------------------------------------
+  {
+    id: 'E20.005',
+    source: 'testosterone_level',
+    target: 'testosterone_neuroprotection',
+    relation: 'directlyIncreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'testosterone_protective_effects',
+    mechanismDescription:
+      'Testosterone reduces Aβ production and improves synaptic signaling in animal models. However, clinical trial benefits remain unproven.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Rosario',
+        year: 2010,
+        pmid: '20160048',
+        title: 'Testosterone and cognition in aging men',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.006',
+    source: 'testosterone_neuroprotection',
+    target: 'abeta_oligomers',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M06',
+    mechanismLabel: 'testosterone_Abeta_reduction',
+    mechanismDescription:
+      'In animal models, testosterone reduces Aβ production. Human evidence is weaker.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Rosario',
+        year: 2010,
+        pmid: '20160048',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  // -------------------------------------------------------------------------
+  // Stress/HPA Axis Pathway
+  // -------------------------------------------------------------------------
+  {
+    id: 'E20.007',
+    source: 'chronic_stress',
+    target: 'hpa_axis_activation',
+    relation: 'directlyIncreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'stress_HPA_activation',
+    mechanismDescription:
+      'Chronic psychological stress activates the HPA axis: CRH → ACTH → cortisol release from adrenals.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Lupien',
+        year: 2009,
+        pmid: '19341762',
+        title: 'Effects of stress throughout the lifespan on the brain',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.008',
+    source: 'hpa_axis_activation',
+    target: 'cortisol_level',
+    relation: 'directlyIncreases',
+    moduleId: 'M20',
+    edgeType: 'FLOW',
+    mechanismLabel: 'HPA_cortisol_release',
+    mechanismDescription:
+      'HPA axis activation triggers adrenal cortisol release. In AD, hippocampal damage removes inhibitory control, leading to chronic elevation.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Lupien',
+        year: 2009,
+        pmid: '19341762',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.009',
+    source: 'cortisol_level',
+    target: 'tau_hyperphosphorylated',
+    relation: 'increases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M07',
+    mechanismLabel: 'cortisol_tau_phosphorylation',
+    mechanismDescription:
+      'Chronic cortisol elevation enhances tau hyperphosphorylation and promotes tau pathology.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Green',
+        year: 2006,
+        pmid: '16551324',
+        title: 'Glucocorticoids increase amyloid-beta and tau pathology',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.010',
+    source: 'cortisol_level',
+    target: 'synaptic_plasticity',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M08',
+    mechanismLabel: 'cortisol_synapse_damage',
+    mechanismDescription:
+      'Chronic cortisol causes hippocampal atrophy and synaptic dysfunction, impairing plasticity.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Lupien',
+        year: 2009,
+        pmid: '19341762',
+        methodType: 'review',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+  {
+    id: 'E20.011',
+    source: 'stress_reduction',
+    target: 'hpa_axis_activation',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'stress_intervention_HPA',
+    mechanismDescription:
+      'Mindfulness, meditation, exercise, and social support normalize HPA axis function and reduce cortisol.',
+    timescale: 'weeks',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Creswell',
+        year: 2014,
+        pmid: '24344319',
+        title: 'Mindfulness training and cortisol responses to stress',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+      },
+    ],
+  },
+  // -------------------------------------------------------------------------
+  // Thyroid Pathway
+  // -------------------------------------------------------------------------
+  {
+    id: 'E20.012',
+    source: 'thyroid_function',
+    target: 'hypothyroidism',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'TRANSITION',
+    mechanismLabel: 'thyroid_dysfunction',
+    mechanismDescription:
+      'Low thyroid function (low T3/T4, high TSH) indicates hypothyroidism. Both hypo- and hyperthyroidism increase AD risk.',
+    timescale: 'months',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        firstAuthor: 'Tan',
+        year: 2008,
+        pmid: '18838538',
+        title: 'Thyroid function and Alzheimer disease (Framingham)',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  {
+    id: 'E20.013',
+    source: 'hypothyroidism',
+    target: 'cognitive_score',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → OUTCOME',
+    mechanismLabel: 'hypothyroid_cognition',
+    mechanismDescription:
+      'Hypothyroidism associated with 2-fold increased AD risk (Framingham). May contribute via reduced brain metabolism and impaired synaptic plasticity.',
+    timescale: 'months',
+    causalConfidence: 'L6',
+    evidence: [
+      {
+        firstAuthor: 'Tan',
+        year: 2008,
+        pmid: '18838538',
+        title: 'Thyroid function and Alzheimer disease (Framingham)',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  // -------------------------------------------------------------------------
+  // Insulin Signaling Pathway
+  // -------------------------------------------------------------------------
+  {
+    id: 'E20.014',
+    source: 'intranasal_insulin',
+    target: 'insulin_signaling',
+    relation: 'directlyIncreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    mechanismLabel: 'intranasal_insulin_delivery',
+    mechanismDescription:
+      'Intranasal insulin bypasses BBB to deliver insulin directly to brain. SNIFF trials showed memory improvement in APOE4-negative patients only.',
+    timescale: 'hours',
+    causalConfidence: 'L1',
+    evidence: [
+      {
+        pmid: '21984625',
+        firstAuthor: 'Craft',
+        year: 2012,
+        title: 'SNIFF-120 trial',
+        quote: 'Intranasal insulin improved memory in APOE4-negative adults with MCI or AD',
+        methodType: 'rct',
+        causalConfidence: 'L1',
+      },
+    ],
+    keyInsight: 'APOE4 carriers did not benefit - different insulin resistance mechanism',
+  },
+  {
+    id: 'E20.015',
+    source: 'insulin_signaling',
+    target: 'insulin_resistance',
+    relation: 'decreases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M01',
+    mechanismLabel: 'insulin_signaling_resistance',
+    mechanismDescription:
+      'Intact brain insulin signaling counteracts insulin resistance. Impaired signaling (Type 3 diabetes) reduces glucose uptake and Aβ clearance.',
+    timescale: 'days',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Steen',
+        year: 2005,
+        pmid: '15750215',
+        title: 'Type 3 diabetes hypothesis',
+        methodType: 'cohort',
+        causalConfidence: 'L6',
+      },
+    ],
+  },
+  // -------------------------------------------------------------------------
+  // Melatonin/Circadian Pathway
+  // -------------------------------------------------------------------------
+  {
+    id: 'E20.016',
+    source: 'melatonin_level',
+    target: 'glymphatic_clearance',
+    relation: 'increases',
+    moduleId: 'M20',
+    edgeType: 'INFLUENCE',
+    crossModule: 'M20 → M12',
+    mechanismLabel: 'melatonin_sleep_glymphatic',
+    mechanismDescription:
+      'Melatonin regulates circadian rhythm, which controls sleep-dependent glymphatic clearance. Also has direct antioxidant and anti-inflammatory properties.',
+    timescale: 'hours',
+    causalConfidence: 'L4',
+    evidence: [
+      {
+        firstAuthor: 'Xie',
+        year: 2013,
+        pmid: '24136970',
+        title: 'Sleep drives metabolite clearance from the adult brain',
+        methodType: 'intervention_animal',
+        causalConfidence: 'L4',
+      },
+    ],
+  },
+];
+
+// ============================================================================
 // EXPORT ALL EDGES
 // ============================================================================
 
@@ -7134,6 +8167,7 @@ export const allEdges: MechanisticEdge[] = [
   ...module16Edges,
   ...module17Edges,
   ...module18Edges,
+  ...module20Edges,
   ...therapeuticEvidenceEdges,
 ];
 
