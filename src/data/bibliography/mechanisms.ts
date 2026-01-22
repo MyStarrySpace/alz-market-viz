@@ -750,26 +750,7 @@ export const mechanismsSources: Source[] = [
     ],
   },
 
-  {
-    id: 'ehninger-mwm-paradox-2006',
-    type: 'journal',
-    authors: ['Dan Ehninger', 'Gerd Kempermann'],
-    title: 'Paradoxical effects of learning the Morris water maze on adult hippocampal neurogenesis in mice may be explained by a combination of stress and physical activity',
-    publication: 'Genes, Brain and Behavior',
-    year: 2006,
-    volume: '5(1)',
-    pages: '29-39',
-    doi: '10.1111/j.1601-183X.2005.00129.x',
-    url: 'https://pubmed.ncbi.nlm.nih.gov/16436187/',
-    citations: [
-      {
-        id: 'ehninger-2006-mwm-confound',
-        quote: 'Morris water maze training is associated with locomotion, and physical activity robustly increases hippocampal neurogenesis... HID animals were found to travel longer average distances per trial to reach the platform, raising the possibility that a different degree of physical activity might account for the differential effects on adult hippocampal neurogenesis.',
-        usedIn: ['translationalFailures'],
-        context: 'METHODOLOGICAL CONFOUND: MWM testing involves swimming exercise which itself increases neurogenesis, potentially confounding AD drug testing results.',
-      },
-    ],
-  },
+  // NOTE: ehninger-mwm-paradox-2006 removed - MWM confound claim needs more study (Han et al 2026)
 
   {
     id: 'shokri-kojori-sleep-deprivation-2018',

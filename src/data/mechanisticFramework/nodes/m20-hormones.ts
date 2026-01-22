@@ -23,6 +23,7 @@ export const module20Nodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'HormoneSignal',
     moduleId: 'M20',
+    sharedWith: ['M16'], // Used by sex → estrogen_level edges in M16
     boundaryDirection: 'input',
     description: 'Circulating estrogen (E2) - declines sharply at menopause',
     mechanism: 'Estrogen is neuroprotective: promotes synaptic plasticity, reduces Aβ production, and enhances mitochondrial function. Menopause triggers 60% decline in E2 levels over 2-3 years. APOE4 women lose these protective effects earlier and more severely.',
@@ -67,6 +68,7 @@ export const module20Nodes: MechanisticNode[] = [
     category: 'BOUNDARY',
     subtype: 'HormoneSignal',
     moduleId: 'M20',
+    sharedWith: ['M16'], // Used by sex → testosterone_level edges in M16
     boundaryDirection: 'input',
     description: 'Circulating testosterone - gradual decline with age in men',
     mechanism: 'Testosterone declines ~1-2% per year after age 30 in men. Low bioavailable testosterone associated with higher dementia risk (HR 1.29). However, testosterone replacement trials show mixed results for cognition. Currently a BIOMARKER not a proven therapeutic target.',

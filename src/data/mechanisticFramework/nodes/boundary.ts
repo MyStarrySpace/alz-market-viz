@@ -238,13 +238,14 @@ export const boundaryNodes: MechanisticNode[] = [
     description: 'Death; ultimate endpoint',
   },
 
-  // Measured Stocks (Proximal to Output Boundaries - SHARED by many modules)
+  // Output Boundary Biomarkers - Clinical endpoints at system boundary
   {
     id: 'cognitive_score',
     label: 'Cognitive Score',
-    category: 'STOCK',
-    subtype: 'MetaboliteSignal',
+    category: 'BOUNDARY',
+    subtype: 'CognitiveScore',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'output',
     sharedWith: ['M06', 'M07', 'M08', 'M13', 'M17'], // Amyloid, Tau, Complement, Cholinergic, AS01
     description: 'Psychometric assessment of cognition - primary clinical endpoint',
     units: 'MMSE (0-30), ADAS-Cog (0-70), CDR-SB (0-18), MoCA (0-30)',
@@ -253,9 +254,10 @@ export const boundaryNodes: MechanisticNode[] = [
   {
     id: 'synapses',
     label: 'Synapse Density',
-    category: 'STOCK',
-    subtype: 'OrganellePool',
+    category: 'BOUNDARY',
+    subtype: 'Biomarker',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'output',
     sharedWith: ['M06', 'M08'], // Amyloid (LTP), Complement (pruning)
     references: { process: 'GO:0045202' },
     description: 'Synapse density in cortex/hippocampus - strongest correlate of cognition',
@@ -265,9 +267,10 @@ export const boundaryNodes: MechanisticNode[] = [
   {
     id: 'neuronal_count',
     label: 'Neuron Count',
-    category: 'STOCK',
-    subtype: 'CellPopulation',
+    category: 'BOUNDARY',
+    subtype: 'Biomarker',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'output',
     references: { cellType: 'CL:0000540' },
     description: 'Neuron number in affected regions',
     units: 'Stereology, NeuN+ counts',
@@ -276,9 +279,10 @@ export const boundaryNodes: MechanisticNode[] = [
   {
     id: 'brain_volume',
     label: 'Brain Volume',
-    category: 'STOCK',
-    subtype: 'CompartmentState',
+    category: 'BOUNDARY',
+    subtype: 'Biomarker',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'output',
     references: { anatomy: 'UBERON:0000955' },
     description: 'Regional brain volumes',
     units: 'MRI volumetrics (hippocampus, entorhinal cortex)',
@@ -287,9 +291,10 @@ export const boundaryNodes: MechanisticNode[] = [
   {
     id: 'csf_biomarkers',
     label: 'CSF Biomarkers',
-    category: 'STOCK',
-    subtype: 'MetaboliteSignal',
+    category: 'BOUNDARY',
+    subtype: 'Biomarker',
     moduleId: 'BOUNDARY',
+    boundaryDirection: 'output',
     description: 'Fluid biomarkers',
     units: 'Aβ42 pg/mL, pTau181 pg/mL, NfL pg/mL, sTREM2 pg/mL',
     roles: ['BIOMARKER'],

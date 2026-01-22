@@ -3661,26 +3661,8 @@ export const module10Edges: MechanisticEdge[] = [
       },
     ],
   },
-  {
-    id: 'E10.003',
-    source: 'apoe_lipidation_reduced',
-    target: 'abeta_clearance',
-    relation: 'increases',
-    moduleId: 'M10',
-    mechanismLabel: 'APOE4_Abeta_clearance',
-    mechanismDescription: 'Hypolipidated APOE4 is less effective at Aβ clearance via LRP1 and BBB transport',
-    causalConfidence: 'L4',
-    crossModule: 'Output to Module 6 (Amyloid)',
-    evidence: [
-      {
-        firstAuthor: 'Castellano',
-        year: 2011,
-        pmid: '21725313',
-        methodType: 'intervention_animal',
-        causalConfidence: 'L4',
-      },
-    ],
-  },
+  // NOTE: E10.003 removed - duplicate of E_CM.010 with incorrect 'increases' relation
+  // The correct edge is E_CM.010: apoe_lipidation_reduced --decreases--> abeta_clearance
   {
     id: 'E10.004',
     source: 'aging',

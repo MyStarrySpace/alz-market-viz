@@ -281,11 +281,11 @@ export default function ShowcasePage() {
                 <Card variant="danger" hover={false}>
                   <CardContent>
                     <p className="text-sm text-[var(--text-body)] italic">
-                      &quot;The Morris Water Maze (MWM) is the gold standard for testing cognitive function
-                      in AD mouse models. But there&apos;s a problem: MWM involves swimming, a form of aerobic
-                      exercise. Swimming exercise restores glymphatic clearance, increases BDNF, reduces
-                      inflammation, and improves AQP4 polarization. The test itself may be treating the
-                      mice while measuring them.&quot;
+                      &quot;The pharmaceutical industry has invested approximately $42.5 billion in patented
+                      Alzheimer&apos;s drug development over the past two decades, whereas generic drug
+                      repurposing studies have received only approximately $500 million in funding.
+                      This represents an 85:1 ratio of investment that favors patented compounds over
+                      potentially effective generic alternatives.&quot;
                     </p>
                   </CardContent>
                 </Card>
@@ -296,14 +296,14 @@ export default function ShowcasePage() {
                 <Card variant="success" hover={false}>
                   <CardContent>
                     <p className="text-sm text-[var(--text-body)]">
-                      <strong>Title:</strong> The Testing Confound
+                      <strong>Title:</strong> The Patent Cliff
                     </p>
                     <p className="text-sm text-[var(--text-body)] mt-2">
-                      <strong>Body:</strong> The standard mouse cognition test requires swimming. Swimming is exercise.
-                      Exercise improves cognition in AD models. The test may be treating mice while measuring them.
+                      <strong>Body:</strong> $42.5B went to patented drugs. $500M went to generics. That&apos;s 85:1.
+                      Generic drugs can&apos;t recoup trial costs, so they don&apos;t get tested.
                     </p>
                     <p className="text-sm text-[var(--text-body)] mt-2">
-                      <strong>Takeaway:</strong> Control groups get partial treatment.
+                      <strong>Takeaway:</strong> The market selects for patents, not science.
                     </p>
                   </CardContent>
                 </Card>

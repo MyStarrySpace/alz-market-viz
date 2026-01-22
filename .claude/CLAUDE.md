@@ -461,10 +461,10 @@ For insight cards and callouts, follow this structure:
 ```
 
 **Bad example:**
-> "The Morris Water Maze (MWM) is the gold standard for testing cognitive function in AD mouse models. But there's a problem: MWM involves swimming, a form of aerobic exercise. Swimming exercise restores glymphatic clearance, increases BDNF, reduces inflammation, and improves AQP4 polarization. The test itself may be treating the mice while measuring them."
+> "The pharmaceutical industry has invested approximately $42.5 billion in patented Alzheimer's drug development over the past two decades, whereas generic drug repurposing studies have received only approximately $500 million in funding. This represents an 85:1 ratio of investment that favors patented compounds over potentially effective generic alternatives."
 
 **Good example:**
-> "The standard mouse cognition test requires swimming, which is exercise. Exercise itself improves cognition in AD models. So the test may be treating mice while measuring them."
+> "$42.5B went to patented drugs. $500M went to generics. That's 85:1. Generic drugs can't recoup trial costs, so they don't get tested. The market selects for patents, not science."
 
 ### Explanatory Content Guidelines
 

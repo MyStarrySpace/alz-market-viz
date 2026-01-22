@@ -14,7 +14,6 @@ import {
   Users,
   Clock,
   Target,
-  Waves,
 } from 'lucide-react';
 import {
   Container,
@@ -538,33 +537,6 @@ export function TranslationalFailures() {
               </div>
             </motion.div>
 
-            {/* Card 5: The Testing Confound */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="bg-[var(--bg-card)] border border-[var(--border)] p-6 lg:col-span-2"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center flex-shrink-0">
-                  <Waves className="w-6 h-6 text-[var(--chart-primary)]" />
-                </div>
-                <div>
-                  <h4 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-2">
-                    The Testing Confound
-                  </h4>
-                  <p className="text-[var(--text-body)] text-sm leading-relaxed mb-3">
-                    The Morris Water Maze is the standard cognition test for AD mice. It requires swimming.
-                    Swimming is exercise. Exercise improves cognition in AD models by restoring glymphatic
-                    clearance and boosting BDNF. <strong>The test may be treating mice while measuring them.</strong>
-                  </p>
-                  <p className="text-sm text-[var(--chart-primary)]">
-                    Control groups get partial treatment. Drug effect sizes may be systematically underestimated.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           {/* Bottom takeaway */}
